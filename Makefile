@@ -9,16 +9,24 @@ all:
 ifeq ($(BUILD), fw)
 SRC_ROOT_DIR := src
 
+ifeq ($(and $(OBJ_DIR), $(SRC_ROOT_DIR), $(BUILD_DIR), $(INCLUDE_ROOT_DIR)),)
+$(error Invalid build path setup. Required variables are not set)
+endif
+
 include build/fw/config.mk
 
-ifneq ($(COMPILER), gcc)
-$(error Only GCC compiler is supported for AVR)
+ifeq ($(and $(clock), $(machine), $(COMPILER)),)
+$(error Invalid build setup. Required variables are not set)
 endif
 
 include build/fw/toolchain_avr_gcc.mk
 include build/gcc_rules.mk
 
 include $(SRC_ROOT_DIR)/fw/build.mk
+
+ifeq ($(and $(CC), $(OBJCOPY), $(OBJDUMP), $(PROGRAMMER)),)
+$(error Invalid toolchain setup. Required variables are not set)
+endif
 
 $(call compile_target,firmware)
 $(call link_target,firmware)
