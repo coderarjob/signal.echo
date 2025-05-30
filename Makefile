@@ -33,6 +33,8 @@ $(call link_target,firmware)
 $(call link_target_firmware_bin,firmware)
 
 all: $(firmware_BIN)
+
+include build/fw/$(PROGRAMMER).mk
 endif
 
 clean:
