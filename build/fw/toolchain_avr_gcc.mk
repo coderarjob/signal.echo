@@ -6,10 +6,13 @@ AR := avr-ar
 
 PROGRAMMER := avrdude
 
+cc_definitions := -DF_CPU=$(clock) 
+
 ld_flags := -mmcu=${machine}           \
 			-L $(BUILD_DIR)
 
-cc_flags := -mmcu=${machine}           \
+cc_flags := $(cc_definitions)          \
+			-mmcu=${machine}           \
 		    -mint8                     \
 		    -fpack-struct              \
 		    -funsigned-char            \

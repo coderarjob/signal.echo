@@ -1,7 +1,7 @@
 # Implicit rules
 $(OBJ_DIR)/%.o: $(SRC_ROOT_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) -c $(CFLAGS) -DF_CPU=$(clock) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/%.elf:
 	@mkdir -p $(dir $@)
