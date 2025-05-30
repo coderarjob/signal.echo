@@ -15,7 +15,7 @@ endif
 
 include build/fw/config.mk
 
-ifeq ($(and $(clock), $(machine), $(COMPILER)),)
+ifeq ($(and $(clock), $(machine), $(COMPILER), $(ARCH)),)
 $(error Invalid build setup. Required variables are not set)
 endif
 
@@ -24,7 +24,7 @@ include build/gcc_rules.mk
 
 include $(SRC_ROOT_DIR)/fw/build.mk
 
-ifeq ($(and $(CC), $(OBJCOPY), $(OBJDUMP), $(PROGRAMMER)),)
+ifeq ($(and $(CC), $(OBJCOPY), $(OBJDUMP), $(PROGRAMMER), $(AR), $(LD)),)
 $(error Invalid toolchain setup. Required variables are not set)
 endif
 
