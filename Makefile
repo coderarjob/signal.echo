@@ -33,6 +33,18 @@ endif
 include build/fw/$(PROGRAMMER).mk
 include $(SRC_ROOT_DIR)/fw/build.mk
 
+# ============================================================================================
+else ifeq ($(BUILD), ut)
+# ============================================================================================
+
+include build/ut/toolchain_gcc.mk
+
+ifeq ($(and $(CC), $(OBJCOPY), $(OBJDUMP), $(AR), $(LD)),)
+$(error Invalid toolchain setup. Required variables are not set)
+endif
+
+include $(SRC_ROOT_DIR)/unittests/build.mk
+
 endif
 # ============================================================================================
 
