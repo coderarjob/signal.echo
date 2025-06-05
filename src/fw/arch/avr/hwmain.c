@@ -31,32 +31,6 @@ void hw_init()
     sei();
 }
 
-void status_led_off()
-{
-    BIT_CLEAR (STATUS_PORT, STATUS_PIN_NO);
-}
-
-void status_led_on()
-{
-    BIT_SET (STATUS_PORT, STATUS_PIN_NO);
-}
-
-bool is_switch_pressed()
-{
-    // Set = Unpressed, Clear = Pressed
-    return !IS_BIT_SET (SWITCH_PIN, SWITCH_PIN_NO);
-}
-
-void loop_delay (uint16_t count)
-{
-    _delay_loop_2 (count);
-}
-
-void holdoff_test_init()
-{
-    MAKE_PIN_OUTPUT (HOLDOFF_OUTPUT_DDR, HOLDOFF_OUTPUT_PIN_NO);
-}
-
 void holdoff_test_body (uint16_t pulse_width)
 {
     BIT_SET (HOLDOFF_OUTPUT_PORT, HOLDOFF_OUTPUT_PIN_NO);
@@ -65,20 +39,10 @@ void holdoff_test_body (uint16_t pulse_width)
     _delay_loop_1 (pulse_width);
 }
 
-void runt_pulse_init()
-{
-    RUNT_OUTPUT_DDR = 0xFF; // Make every pin as output
-}
-
 void runt_pulse_body (uint16_t pulse_width, uint8_t high_level, uint8_t low_level)
 {
     RUNT_OUTPUT_PORT = (high_level << 1); // Make PC1:PC4 as high
     _delay_loop_2 (pulse_width);
     RUNT_OUTPUT_PORT = (low_level);
     _delay_loop_2 (pulse_width);
-}
-
-void runt_pulse_exit()
-{
-    RUNT_OUTPUT_PORT = 0x0; // Make all pins low
 }
