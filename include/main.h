@@ -14,6 +14,7 @@
 #define RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT 512
 
 #define RUNT_TEST_RUNT_HIGH_LEVEL               0x7
+#define RUNT_TEST_RUNT_LOW_LEVEL                0x7
 #define RUNT_TEST_NORMAL_HIGH_LEVEL             0xF // 0xF is full rail high
 #define RUNT_TEST_NORMAL_LOW_LEVEL              0x0 // 0x0 is full rail low
 

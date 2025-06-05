@@ -85,20 +85,37 @@ YT_TEST (test, runt_pulse_test_normal_pulses)
 
 YT_TEST (test, runt_pulse_test_runt_pulses)
 {
-    unsigned int iter_num        = RUNT_PULSE_FREQ;
+    unsigned int iter_num        = RUNT_PULSE_FREQ * 4; // We expect 4 runt pulses (2 +ve, 2 -ve)
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
     YT_MUST_CALL_IN_ORDER (runt_pulse_init);
+    // Normal pulse
     YT_MUST_CALL_IN_ORDER (runt_pulse_body, YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT),
                            YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
-    YT_MUST_CALL_IN_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                           YT_V (RUNT_TEST_RUNT_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+
+    // Order of +ve or -ve runt pulse does not matter. We are verifying if both types of runt pulses
+    // occur. We check twice to verify that internal states do flip after each runt pulse
+    // generation.
+
+    // Positive Runt pulse
+    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                            YT_V (RUNT_TEST_RUNT_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    // Positive Runt pulse
+    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                            YT_V (RUNT_TEST_RUNT_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    // Negative Runt pulse
+    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                            YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+    // Negative Runt pulse
+    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                            YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+
     YT_MUST_CALL_IN_ORDER (runt_pulse_exit);
 
     runt_pulse_test();
 
-    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, RUNT_PULSE_FREQ);
+    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, iter_num);
 
     YT_END();
 }
