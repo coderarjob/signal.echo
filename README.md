@@ -13,8 +13,8 @@ along with firmware in this repo.
 - [X] Firmware: Runt pulse
 - [ ] Firmware: Sine wave pattern
 - [ ] Firmware: Burst data in two lines
-- [ ] Firmware: Separate arch independent codes
-- [ ] Unittests: Add unittests for utils
+- [X] Firmware: Separate arch independent codes
+- [X] Unittests: Add unittests for utils
 
 ## Building prerequisites
 
