@@ -1,28 +1,36 @@
 #pragma once
 
-#define BAUD         10000
-#define BAUD_COUNTER (((unsigned int)F_CPU / (16 * BAUD)) - 1)
+#include <stdbool.h>
 
-#define HIGH8(v)     ((v >> 8) & 0xFF)
-#define LOW8(v)      (v & 0xFF)
+#define USART_TEST_DELAY_LOOP_COUNT             65535
+#define USART_TEST_STRING                       "Hello"
 
-#define BIT_CLEAR_MASK(port, mask)  ((port) &= ~(mask))
-#define BIT_SET_MASK(port, mask)    ((port) |= (mask))
-#define IS_BIT_SET_MASK(port, mask) ((port) &= (mask))
+#define HOLDOFF_TEST_NUMBER_OF_PULSES           20
+#define HOLDOFF_TEST_PULSE_WIDTH_LOOP_COUNT     255
+#define HOLDOFF_TEST_GAP_DELAY_LOOP_COUNT       65535
 
-#define BIT_CLEAR(port, pin)        BIT_CLEAR_MASK (port, 1 << (pin))
-#define BIT_SET(port, pin)          BIT_SET_MASK (port, 1 << (pin))
-#define IS_BIT_SET(port, pin)       IS_BIT_SET_MASK (port, 1 << (pin))
+#define RUNT_PULSE_FREQ                         1000 // 1 runt pulse after this many pulses
+#define RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT   255
+#define RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT 512
 
-#define MAKE_PIN_INPUT_PULLUP(ddrr, port, pin) \
-    do {                                       \
-        BIT_CLEAR (ddrr, pin);                 \
-        BIT_SET (port, pin);                   \
-    } while (0)
-#define MAKE_PIN_INPUT_NO_PULLUP(ddrr, pin) BIT_CLEAR (ddrr, pin)
-#define MAKE_PIN_OUTPUT(ddrr, pin)          BIT_SET (ddrr, pin)
+#define RUNT_TEST_RUNT_HIGH_LEVEL               0x7
+#define RUNT_TEST_NORMAL_HIGH_LEVEL             0xF // 0xF is full rail high
+#define RUNT_TEST_NORMAL_LOW_LEVEL              0x0 // 0x0 is full rail low
 
-void usart_off();
-void usart_on();
-void usart_send_char (char c);
-void usart_send_string (const char* str);
+typedef enum TestModes {
+    UNKNOWN_TEST,
+    USART_TEST,
+    HOLDOFF_TEST,
+    RUNT_PULSE,
+    TEST_COUNT
+} TestModes;
+
+void mode_advance();
+TestModes mode_get();
+bool mode_is_dirty();
+
+void usart_test();
+void holdoff_test();
+void runt_pulse_test();
+
+void irq_switch_pressed();

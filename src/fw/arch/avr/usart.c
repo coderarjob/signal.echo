@@ -1,5 +1,7 @@
 #include <avr/io.h>
 #include <main.h>
+#include <utils.h>
+#include <hw.h>
 
 static void wait_transmit_complete()
 {
@@ -12,14 +14,14 @@ void usart_on()
     UBRRH = 0;    // HIGH8(BAUD_COUNTER);
     UBRRL = 0x4A; // LOW8(BAUD_COUNTER);
 
-    BIT_SET_MASK(UCSRC, (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0) | (1 << USBS));
-    BIT_SET_MASK(UCSRB, (1 << TXEN));
+    BIT_SET_MASK (UCSRC, (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0) | (1 << USBS));
+    BIT_SET_MASK (UCSRB, (1 << TXEN));
 }
 
 void usart_off()
 {
     wait_transmit_complete();
-    BIT_CLEAR_MASK(UCSRB, (1 << TXEN));
+    BIT_CLEAR_MASK (UCSRB, (1 << TXEN));
 }
 
 void usart_send_string (const char* str)
