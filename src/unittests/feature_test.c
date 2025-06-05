@@ -99,17 +99,15 @@ YT_TEST (test, runt_pulse_test_runt_pulses)
     // generation.
 
     // Positive Runt pulse
-    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                            YT_V (RUNT_TEST_RUNT_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
-    // Positive Runt pulse
-    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                            YT_V (RUNT_TEST_RUNT_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    YT_MUST_CALL_ANY_ORDER_EXACT_TIMES (2, runt_pulse_body,
+                                        YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                                        YT_V (RUNT_TEST_RUNT_HIGH_LEVEL),
+                                        YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
     // Negative Runt pulse
-    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                            YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
-    // Negative Runt pulse
-    YT_MUST_CALL_ANY_ORDER (runt_pulse_body, YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                            YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+    YT_MUST_CALL_ANY_ORDER_EXACT_TIMES (2, runt_pulse_body,
+                                        YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                                        YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL),
+                                        YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
 
     YT_MUST_CALL_IN_ORDER (runt_pulse_exit);
 
