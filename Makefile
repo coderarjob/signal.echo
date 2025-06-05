@@ -30,8 +30,8 @@ ifeq ($(and $(CC), $(OBJCOPY), $(OBJDUMP), $(PROGRAMMER), $(AR), $(LD)),)
 $(error Invalid toolchain setup. Required variables are not set)
 endif
 
-include build/fw/$(PROGRAMMER).mk
 include $(SRC_ROOT_DIR)/fw/build.mk
+include build/fw/$(PROGRAMMER).mk
 
 # ============================================================================================
 else ifeq ($(BUILD), ut)
