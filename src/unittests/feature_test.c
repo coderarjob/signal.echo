@@ -26,7 +26,23 @@ YT_TEST (test, usart_test_normal)
 
     usart_test();
 
-    YT_EQ_SCALAR (true, true);
+    YT_EQ_SCALAR (usart_send_string_fake.invokeCount, iter_num);
+
+    YT_END();
+}
+
+YT_TEST (test, usart_test_reset_after_char_overflow)
+{
+    unsigned int iter_num        = 'Z' - 'A' + 2;
+    mode_is_dirty_fake.resources = &iter_num;
+    mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
+
+    YT_MUST_CALL_IN_ORDER (usart_send_char, YT_V ('Z'));
+    YT_MUST_CALL_IN_ORDER (usart_send_char, YT_V ('A'));
+
+    usart_test();
+
+    YT_EQ_SCALAR (usart_send_string_fake.invokeCount, iter_num);
 
     YT_END();
 }
@@ -82,7 +98,7 @@ YT_TEST (test, runt_pulse_test_runt_pulses)
 
     runt_pulse_test();
 
-    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, RUNT_PULSE_FREQ + 1);
+    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, RUNT_PULSE_FREQ);
 
     YT_END();
 }
@@ -90,11 +106,16 @@ YT_TEST (test, runt_pulse_test_runt_pulses)
 void reset()
 {
     YT_RESET_MOCK (mode_is_dirty);
+    YT_RESET_MOCK (runt_pulse_body);
+    YT_RESET_MOCK (holdoff_test_body);
+    YT_RESET_MOCK (usart_send_char);
+    YT_RESET_MOCK (usart_send_string);
 }
 
 int main (void)
 {
     usart_test_normal();
+    usart_test_reset_after_char_overflow();
     holdoff_test_normal();
     runt_pulse_test_normal_pulses();
     runt_pulse_test_runt_pulses();
