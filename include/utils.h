@@ -5,7 +5,7 @@
 
 #define BIT_CLEAR_MASK(data, mask)  ((data) &= ~(mask))
 #define BIT_SET_MASK(data, mask)    ((data) |= (mask))
-#define IS_BIT_SET_MASK(data, mask)  ((data) &= (mask))
+#define IS_BIT_SET_MASK(data, mask) (((data) & (mask)) != 0)
 
 #define BIT_CLEAR(data, bit)        BIT_CLEAR_MASK (data, 1 << (bit))
 #define BIT_SET(data, bit)          BIT_SET_MASK (data, 1 << (bit))
