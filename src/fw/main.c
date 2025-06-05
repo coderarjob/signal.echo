@@ -65,11 +65,11 @@ void runt_pulse_test()
 
     while (!mode_is_dirty()) {
         if (--runtFreq) {
-            runtFreq = RUNT_PULSE_FREQ;
-            runt_pulse_body (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT, RUNT_TEST_RUNT_HIGH_LEVEL,
+            runt_pulse_body (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT, RUNT_TEST_NORMAL_HIGH_LEVEL,
                              RUNT_TEST_NORMAL_LOW_LEVEL);
         } else {
-            runt_pulse_body (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT, RUNT_TEST_NORMAL_HIGH_LEVEL,
+            runtFreq = RUNT_PULSE_FREQ;
+            runt_pulse_body (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT, RUNT_TEST_RUNT_HIGH_LEVEL,
                              RUNT_TEST_NORMAL_LOW_LEVEL);
         }
     }
