@@ -33,12 +33,13 @@ void usart_test()
     usart_on();
     char c = 'A';
     while (!mode_is_dirty()) {
-        if (++c > 'Z') {
-            c = 'A';
-        }
         loop_delay (USART_TEST_DELAY_LOOP_COUNT);
         usart_send_string (USART_TEST_STRING);
         usart_send_char (c);
+
+        if (++c > 'Z') {
+            c = 'A';
+        }
     }
     usart_off();
 }
