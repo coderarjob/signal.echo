@@ -3,6 +3,8 @@
 #include <main.h>
 #include <hw.h>
 
+#ifndef UNITTESTS
+
 __attribute__ ((noreturn)) int main (void)
 {
     hw_init();
@@ -23,6 +25,8 @@ __attribute__ ((noreturn)) int main (void)
         }
     }
 }
+
+#endif /* UNITTESTS */
 
 void usart_test()
 {

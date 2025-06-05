@@ -1,10 +1,10 @@
 #pragma once
 
-#include <avrmmu/ports.h>
-#include <util/delay_basic.h>
 #include <stdbool.h>
 
 #ifndef UNITTESTS
+#include <util/delay_basic.h>
+#include <avrmmu/ports.h>
 
 static inline void runt_pulse_exit()
 {

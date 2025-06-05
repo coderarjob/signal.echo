@@ -4,7 +4,7 @@ OBJDUMP := objdump
 OBJCOPY := objcopy
 AR := ar
 
-cc_definitions :=
+cc_definitions := -DUNITTESTS
 
 ld_flags :=
 
