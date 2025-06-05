@@ -3,10 +3,10 @@
 #define HIGH8(v)                    ((v >> 8) & 0xFF)
 #define LOW8(v)                     (v & 0xFF)
 
-#define BIT_CLEAR_MASK(port, mask)  ((port) &= ~(mask))
-#define BIT_SET_MASK(port, mask)    ((port) |= (mask))
-#define IS_BIT_SET_MASK(port, mask) ((port) &= (mask))
+#define BIT_CLEAR_MASK(data, mask)  ((data) &= ~(mask))
+#define BIT_SET_MASK(data, mask)    ((data) |= (mask))
+#define IS_BIT_SET_MASK(data, mask)  ((data) &= (mask))
 
-#define BIT_CLEAR(port, pin)        BIT_CLEAR_MASK (port, 1 << (pin))
-#define BIT_SET(port, pin)          BIT_SET_MASK (port, 1 << (pin))
-#define IS_BIT_SET(port, pin)       IS_BIT_SET_MASK (port, 1 << (pin))
+#define BIT_CLEAR(data, bit)        BIT_CLEAR_MASK (data, 1 << (bit))
+#define BIT_SET(data, bit)          BIT_SET_MASK (data, 1 << (bit))
+#define IS_BIT_SET(data, bit)       IS_BIT_SET_MASK (data, 1 << (bit))
