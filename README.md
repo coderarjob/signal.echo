@@ -10,11 +10,12 @@ along with firmware in this repo.
 - [ ] Firmware: RS232 sample output (negative)
 - [X] Firmware: Holdoff test
 - [ ] Firmware: I2C sample output
-- [X] Firmware: Runt pulse
+- [X] Firmware: Runt pulse (+ve & -ve runt pulses)
 - [ ] Firmware: Sine wave pattern
 - [ ] Firmware: Burst data in two lines
 - [X] Firmware: Separate arch independent codes
 - [X] Unittests: Add unittests for utils
+- [X] Unittests: Add unittests for existing tests
 
 ## Building prerequisites
 
@@ -23,7 +24,21 @@ along with firmware in this repo.
 3. avr-gcc
 4. avr-libc
 
-Building is simple just call `make` from the source directory.
+### Firmware
+
+```
+BUILD_DIR=out make
+```
+
+Firmware is the `./out/firmware.hex` file. To program micro with avrdude, we can do `make program`.
+
+### Unittests
+
+We can build every unittests and run them using the `run` target.
+
+```
+BUILD=ut BUILD_DIR=out/ut make run
+```
 
 # Feedback
 
