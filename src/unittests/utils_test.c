@@ -1,16 +1,16 @@
-#include <bits/stdint-uintn.h>
 #include <utils.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #include <yukti.h>
 
 YT_TEST (utils, high8)
 {
-    YT_EQ_SCALAR (HIGH8 (0xFA13), 0xFA);
-    YT_EQ_SCALAR (HIGH8 (0x13FA), 0x13);
-    YT_EQ_SCALAR (HIGH8 (0x13), 0x00);
-    YT_EQ_SCALAR (HIGH8 (0x00), 0x00);
-    YT_EQ_SCALAR (HIGH8 (0xFFFF), 0xFF);
-    YT_EQ_SCALAR (HIGH8 (0x123456), 0x12);
+    YT_EQ_SCALAR (HIGH8_16BITS (0xFA13), 0xFA);
+    YT_EQ_SCALAR (HIGH8_16BITS (0x13FA), 0x13);
+    YT_EQ_SCALAR (HIGH8_16BITS (0x13), 0x00);
+    YT_EQ_SCALAR (HIGH8_16BITS (0x00), 0x00);
+    YT_EQ_SCALAR (HIGH8_16BITS (0xFFFF), 0xFF);
+    YT_EQ_SCALAR (HIGH8_32BITS (0x12345678), 0x12);
+
     YT_END();
 }
 

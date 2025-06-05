@@ -1,6 +1,7 @@
 #pragma once
 
-#define HIGH8(v)                    ((v >> 8) & 0xFF)
+#define HIGH8_16BITS(v)             ((v >> 8) & 0xFF)
+#define HIGH8_32BITS(v)             ((v >> 24) & 0xFF)
 #define LOW8(v)                     (v & 0xFF)
 
 #define BIT_CLEAR_MASK(data, mask)  ((data) &= ~(mask))
