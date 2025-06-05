@@ -120,11 +120,7 @@ YT_TEST (test, runt_pulse_test_runt_pulses)
 
 void reset()
 {
-    YT_RESET_MOCK (mode_is_dirty);
-    YT_RESET_MOCK (runt_pulse_body);
-    YT_RESET_MOCK (holdoff_test_body);
-    YT_RESET_MOCK (usart_send_char);
-    YT_RESET_MOCK (usart_send_string);
+    reset_all_mocks();
 }
 
 int main (void)
