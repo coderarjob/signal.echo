@@ -1,4 +1,4 @@
-## Demo board for oscilloscope testing
+## ScopeTester | Demo board for oscilloscope testing
 
 This is a hardware project based on Atmega8A microcontroller. This project came about from a
 personal need for a demo board to test my new oscilloscope. I plan to create a complete PCB
@@ -16,6 +16,23 @@ along with firmware in this repo.
 - [X] Firmware: Separate arch independent codes
 - [X] Unittests: Add unittests for utils
 - [X] Unittests: Add unittests for existing tests
+
+### Test screenshots
+
+* Serial RS232 (TTL Level) decoding test
+![rs232](/docs/images/usart.png)
+
+* Positve Runt pulse
+![Positive runt pulse](/docs/images/positive_runt.png)
+
+* Negative Runt pulse
+![Negative runt pulse](/docs/images/negative_runt.png)
+
+* Holdoff demo (Unstable trigger)
+![Unstable trigger](/docs/images/holdoff_unstable.gif)
+
+* Holdoff demo (After proper holdoff adjustment - Stable trigger)
+![Stable trigger](/docs/images/holdoff_stable.gif)
 
 ## Building prerequisites
 
