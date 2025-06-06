@@ -19,20 +19,25 @@ along with firmware in this repo.
 
 ### Test screenshots
 
-* Serial RS232 (TTL Level) decoding test
-![rs232](/docs/images/usart.png)
+##### 1. Serial RS232 (TTL Level) decoding test
 
-* Positve Runt pulse
-![Positive runt pulse](/docs/images/positive_runt.png)
+![rs232](docs/images/usart.png)
 
-* Negative Runt pulse
-![Negative runt pulse](/docs/images/negative_runt.png)
+##### 2. Positve Runt pulse
 
-* Holdoff demo (Unstable trigger)
-![Unstable trigger](/docs/images/holdoff_unstable.gif)
+![Positive runt pulse](docs/images/positive_runt.png)
 
-* Holdoff demo (After proper holdoff adjustment - Stable trigger)
-![Stable trigger](/docs/images/holdoff_stable.gif)
+##### 3. Negative Runt pulse
+
+![Negative runt pulse](docs/images/negative_runt.png)
+
+##### 4. Holdoff demo
+
+* Unstable trigger
+![Unstable trigger](docs/images/holdoff_unstable.gif)
+
+* After proper holdoff adjustment - Stable trigger
+![Stable trigger](docs/images/holdoff_stable.gif)
 
 ## Building prerequisites
 
