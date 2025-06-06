@@ -1,7 +1,7 @@
-    Demo board for testing Oscilloscopes
+    ScopeTester - Demo board for testing Oscilloscopes
     Copyright (C) 2024  Arjob Mukherjee
 
-    This file is part of oscilloscope-test-board project.
+    This file is part of ScopeTester project.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
