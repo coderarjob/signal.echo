@@ -66,7 +66,7 @@ YT_TEST (test, holdoff_test_normal)
 
 YT_TEST (test, runt_pulse_test_normal_pulses)
 {
-    unsigned int iter_num        = 1;
+    unsigned int iter_num        = RUNT_PULSE_FREQ - 1;
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
@@ -74,11 +74,17 @@ YT_TEST (test, runt_pulse_test_normal_pulses)
     YT_MUST_CALL_IN_ORDER (runt_pulse_body, YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT),
                            YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
 
+    // Positive Runt pulse
+    YT_MUST_NEVER_CALL (runt_pulse_body, _, YT_V (RUNT_TEST_RUNT_HIGH_LEVEL), _);
+
+    // Negative Runt pulse
+    YT_MUST_NEVER_CALL (runt_pulse_body, _, _, YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+
     YT_MUST_CALL_IN_ORDER (runt_pulse_exit);
 
     runt_pulse_test();
 
-    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, 1);
+    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, iter_num);
 
     YT_END();
 }
@@ -89,25 +95,36 @@ YT_TEST (test, runt_pulse_test_runt_pulses)
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
+    // Total number of pulseses is iter_num (i.e RUNT_PULSE_FREQ * 4).
+    // * 2 Positive Runt pulses
+    // * 2 Negative Runt pulses
+    // * iter_num - (2 + 2) Normal pulses
+
+    // Notes: Given that the exact number of calls known, we should be using EXACT_TIMES macros
+    // instead of ATLEAST onces, but the former does not exists yet!
+
     YT_MUST_CALL_IN_ORDER (runt_pulse_init);
+
     // Normal pulse
-    YT_MUST_CALL_IN_ORDER (runt_pulse_body, YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT),
-                           YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (iter_num - 4, runt_pulse_body,
+                                         YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT),
+                                         YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL),
+                                         YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
 
     // Order of +ve or -ve runt pulse does not matter. We are verifying if both types of runt pulses
     // occur. We check twice to verify that internal states do flip after each runt pulse
     // generation.
 
     // Positive Runt pulse
-    YT_MUST_CALL_ANY_ORDER_EXACT_TIMES (2, runt_pulse_body,
-                                        YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                                        YT_V (RUNT_TEST_RUNT_HIGH_LEVEL),
-                                        YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (2, runt_pulse_body,
+                                          YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                                          YT_V (RUNT_TEST_RUNT_HIGH_LEVEL),
+                                          YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
     // Negative Runt pulse
-    YT_MUST_CALL_ANY_ORDER_EXACT_TIMES (2, runt_pulse_body,
-                                        YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                                        YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL),
-                                        YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (2, runt_pulse_body,
+                                          YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
+                                          YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL),
+                                          YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
 
     YT_MUST_CALL_IN_ORDER (runt_pulse_exit);
 
