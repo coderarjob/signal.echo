@@ -31,7 +31,7 @@ YT_TEST (test, usart_test_normal)
     YT_END();
 }
 
-YT_TEST (test, usart_test_reset_after_char_overflow)
+YT_TEST (usart, usart_test_reset_after_char_overflow)
 {
     unsigned int iter_num        = 'Z' - 'A' + 2;
     mode_is_dirty_fake.resources = &iter_num;
@@ -47,7 +47,7 @@ YT_TEST (test, usart_test_reset_after_char_overflow)
     YT_END();
 }
 
-YT_TEST (test, holdoff_test_normal)
+YT_TEST (holdoff, holdoff_test_normal)
 {
     unsigned int iter_num        = 1;
     mode_is_dirty_fake.resources = &iter_num;
@@ -64,7 +64,7 @@ YT_TEST (test, holdoff_test_normal)
     YT_END();
 }
 
-YT_TEST (test, runt_pulse_test_normal_pulses)
+YT_TEST (runt_pulse, runt_pulse_test_normal_pulses)
 {
     unsigned int iter_num        = RUNT_PULSE_FREQ - 1;
     mode_is_dirty_fake.resources = &iter_num;
@@ -89,7 +89,7 @@ YT_TEST (test, runt_pulse_test_normal_pulses)
     YT_END();
 }
 
-YT_TEST (test, runt_pulse_test_runt_pulses)
+YT_TEST (runt_pulse, runt_pulse_test_runt_pulses)
 {
     unsigned int iter_num        = RUNT_PULSE_FREQ * 4; // We expect 4 runt pulses (2 +ve, 2 -ve)
     mode_is_dirty_fake.resources = &iter_num;
@@ -135,6 +135,35 @@ YT_TEST (test, runt_pulse_test_runt_pulses)
     YT_END();
 }
 
+YT_TEST (two_pulses, two_pulse_test_normal)
+{
+    unsigned int iter_num        = 1;
+    mode_is_dirty_fake.resources = &iter_num;
+    mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
+
+    YT_MUST_CALL_IN_ORDER (two_pulses_test_init);
+
+    YT_MUST_CALL_IN_ORDER (two_pulses_test_body, YT_V (false),
+                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES),
+                           YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+
+    YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));
+
+    YT_MUST_CALL_IN_ORDER (two_pulses_test_body, YT_V (true),
+                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES),
+                           YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+
+    YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));
+
+    YT_MUST_CALL_IN_ORDER (two_pulses_test_exit);
+
+    two_pulses_test();
+
+    YT_EQ_SCALAR (two_pulses_test_body_fake.invokeCount, 2 * iter_num);
+
+    YT_END();
+}
+
 void reset()
 {
     reset_all_mocks();
@@ -147,5 +176,6 @@ int main (void)
     holdoff_test_normal();
     runt_pulse_test_normal_pulses();
     runt_pulse_test_runt_pulses();
+    two_pulse_test_normal();
     return 0;
 }
