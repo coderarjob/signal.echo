@@ -1,23 +1,15 @@
-## ScopeTester | Demo board for oscilloscope testing
+<p align="center">
+    <img src="/docs/images/logo.svg"/>
+    <br/>
+</p>
+
+## About
 
 This is a hardware project based on Atmega8A microcontroller. This project came about from a
 personal need for a demo board to test my new oscilloscope. I plan to create a complete PCB
 along with firmware in this repo.
 
-### Goals
-
-- [X] Firmware: RS232 sample output (positive)
-- [ ] Firmware: RS232 sample output (negative)
-- [X] Firmware: Holdoff test
-- [ ] Firmware: I2C sample output
-- [X] Firmware: Runt pulse (+ve & -ve runt pulses)
-- [ ] Firmware: Sine wave pattern
-- [ ] Firmware: Burst data in two lines
-- [X] Firmware: Separate arch independent codes
-- [X] Unittests: Add unittests for utils
-- [X] Unittests: Add unittests for existing tests
-
-### Test screenshots
+### Screenshots
 
 ##### 1. Serial RS232 (TTL Level) decoding test
 
@@ -38,6 +30,19 @@ along with firmware in this repo.
 
 * After proper holdoff adjustment - Stable trigger
 ![Stable trigger](docs/images/holdoff_stable.gif)
+
+### Goals
+
+- [X] Firmware: RS232 sample output (positive)
+- [ ] Firmware: RS232 sample output (negative)
+- [X] Firmware: Holdoff test
+- [ ] Firmware: I2C sample output
+- [X] Firmware: Runt pulse (+ve & -ve runt pulses)
+- [ ] Firmware: Sine wave pattern
+- [ ] Firmware: Burst data in two lines
+- [X] Firmware: Separate arch independent codes
+- [X] Unittests: Add unittests for utils
+- [X] Unittests: Add unittests for existing tests
 
 ## Building prerequisites
 

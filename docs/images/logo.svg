@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="81.202202mm"
+   height="27.771023mm"
+   viewBox="0 0 81.202202 27.771023"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(-15.133221,-8.043379)">
+    <g
+       id="g35">
+      <path
+         style="fill:#ffc107;fill-opacity:1;stroke:none;stroke-width:0.658856;stroke-linecap:square;stroke-dasharray:none"
+         d="m 94.299787,17.938389 c -1.891886,-1.891885 -3.783772,-3.428953 -5.675655,-2.231509 -1.891886,1.19731 -3.783774,5.033702 -5.675521,8.150382 -1.891883,3.11682 -3.783769,4.829018 -5.675658,3.517904 -1.891882,-1.31098 -3.783771,-5.360203 -5.675654,-8.368052 -1.891886,-3.007846 -3.783771,-4.372687 -5.675657,-3.423708 -1.891883,0.94898 -3.783772,3.757531 -5.675519,4.709961 -1.891885,0.952573 -3.783768,-0.41793 -5.675657,-3.423708 -1.891883,-3.005634 -3.783772,-7.0520964 -5.675657,-8.3680486 -1.891883,-1.3159484 -3.783772,0.403018 -5.675655,3.5179016 -1.891888,3.114886 -3.783771,6.948652 -5.675521,8.15052 -1.891883,1.201869 -3.783772,-0.339748 -5.675654,-2.231643"
+         title="sin(1*x)*cos(2*x)"
+         id="path32" />
+      <path
+         style="fill:#3cb1c3;fill-opacity:1;stroke:none;stroke-width:0.658856;stroke-linecap:square;stroke-dasharray:none"
+         d="m 96.335417,17.926471 c -1.891883,-1.891885 -3.783769,-3.428953 -5.675655,-2.231504 -1.891886,1.197308 -3.783771,5.0337 -5.675518,8.15038 -1.891883,3.11682 -3.783772,4.829018 -5.675655,3.517901 -1.891885,-1.310977 -3.783774,-5.360203 -5.675657,-8.368052 -1.891889,-3.00784 -3.783771,-4.372687 -5.675657,-3.423705 -1.891886,0.94898 -3.783772,3.757528 -5.675519,4.709963 -1.891888,0.952574 -3.783771,-0.417935 -5.675657,-3.423708 -1.891886,-3.005636 -3.783772,-7.0521 -5.675654,-8.3680484 -1.891889,-1.315952 -3.783775,0.4030141 -5.675661,3.5179014 -1.891885,3.114884 -3.783768,6.94865 -5.675515,8.150521 -1.891889,1.201865 -3.783775,-0.339748 -5.675657,-2.231649"
+         title="sin(1*x)*cos(2*x)"
+         id="path33" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:9.6835px;line-height:1;font-family:Sans;-inkscape-font-specification:'Sans Bold';text-align:start;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#3d3846;fill-opacity:1;stroke:none;stroke-width:0.148397;stroke-linecap:square;stroke-dasharray:none"
+         x="14.848859"
+         y="28.796877"
+         id="text33"><tspan
+           id="tspan33"
+           style="fill:#3d3846;stroke-width:0.148397"
+           x="14.848859"
+           y="28.796877">ScopeTester</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.65658px;line-height:1;font-family:Sans;-inkscape-font-specification:'Sans Bold';text-align:start;text-decoration-color:#000000;letter-spacing:-0.286227px;word-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#77767b;fill-opacity:1;stroke:none;stroke-width:0.17566;stroke-linecap:square;stroke-dasharray:none"
+         x="14.725474"
+         y="34.59314"
+         id="text34"
+         transform="scale(0.99710529,1.0029031)"><tspan
+           id="tspan34"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:-0.286227px;fill:#77767b;stroke-width:0.17566"
+           x="14.725474"
+           y="34.59314">Demo waveforms for testing oscilloscopes</tspan></text>
+    </g>
+  </g>
+</svg>
