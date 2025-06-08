@@ -1,7 +1,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <main.h>
-#include <hw.h>
+
+#if MPU_ARCH == AVR
+    #include <avrmmu/hwmain.h>
+#endif
 
 #ifndef UNITTESTS
 

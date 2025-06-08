@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include <main.h>
 #include <utils.h>
-#include <hw.h>
 
 static void wait_transmit_complete()
 {

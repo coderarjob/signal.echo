@@ -5,8 +5,10 @@ OBJCOPY := avr-objcopy
 AR := avr-ar
 
 PROGRAMMER := avrdude
+MPU_ARCH   := AVR
 
-cc_definitions := -DF_CPU=$(clock) 
+cc_definitions := -DF_CPU=$(clock)        \
+				  -DMPU_ARCH=$(MPU_ARCH)
 
 ld_flags := -mmcu=${machine}           \
 			-L $(BUILD_DIR)

@@ -1,5 +1,7 @@
-#include <hw.h>
 #include <main.h>
+#if MPU_ARCH == AVR
+    #include <avrmmu/hwmain.h>
+#endif
 
 void irq_switch_pressed()
 {
