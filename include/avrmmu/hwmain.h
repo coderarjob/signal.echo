@@ -1,10 +1,26 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifndef UNITTESTS
 #include <util/delay_basic.h>
 #include <avrmmu/ports.h>
+#include <utils.h>
+
+static inline void two_pulses_test_init()
+{
+    BIT_SET_MASK (TWO_PULSES_TEST_OUTPUT_DDR,
+                  (1 << TWO_PULSES_TEST_OUTPUT_PIN_NO0) | (1 << TWO_PULSES_TEST_OUTPUT_PIN_NO1));
+    BIT_CLEAR_MASK (TWO_PULSES_TEST_OUTPUT_PORT,
+                    (1 << TWO_PULSES_TEST_OUTPUT_PIN_NO0) | (1 << TWO_PULSES_TEST_OUTPUT_PIN_NO1));
+}
+
+static inline void two_pulses_test_exit()
+{
+    BIT_CLEAR_MASK (TWO_PULSES_TEST_OUTPUT_PORT,
+                    (1 << TWO_PULSES_TEST_OUTPUT_PIN_NO0) | (1 << TWO_PULSES_TEST_OUTPUT_PIN_NO1));
+}
 
 static inline void runt_pulse_exit()
 {
@@ -49,4 +65,6 @@ void loop_delay (uint16_t count);
 void holdoff_test_init();
 void runt_pulse_init();
 void runt_pulse_exit();
+void two_pulses_test_exit();
+void two_pulses_test_init();
 #endif

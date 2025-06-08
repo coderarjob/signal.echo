@@ -3,25 +3,35 @@
 #include <avr/io.h>
 #include <utils.h>
 
-#define SWITCH_PIN_NO         PD2
-#define SWITCH_PORT           PORTD
-#define SWITCH_PIN            PIND
-#define SWITCH_DDR            DDRD
+#define DIGITAL_OUTPUT_PORT            PORTD
+#define DIGITAL_OUTPUT_DDR             DDRD
+#define DIGITAL_OUTPUT_PIN_NO0         PD1
+#define DIGITAL_OUTPUT_PIN_NO1         PD0
 
-#define STATUS_PIN_NO         PB1
-#define STATUS_PORT           PORTB
-#define STATUS_PIN            PINB
-#define STATUS_DDR            DDRB
+#define SWITCH_PIN_NO                  PD2
+#define SWITCH_PORT                    PORTD
+#define SWITCH_PIN                     PIND
+#define SWITCH_DDR                     DDRD
 
-#define RUNT_OUTPUT_PORT      PORTC
-#define RUNT_OUTPUT_DDR       DDRC
+#define STATUS_PIN_NO                  PB1
+#define STATUS_PORT                    PORTB
+#define STATUS_PIN                     PINB
+#define STATUS_DDR                     DDRB
 
-#define HOLDOFF_OUTPUT_PIN_NO PD1
-#define HOLDOFF_OUTPUT_PORT   PORTD
-#define HOLDOFF_OUTPUT_DDR    DDRD
+#define RUNT_OUTPUT_PORT               PORTC
+#define RUNT_OUTPUT_DDR                DDRC
 
-#define BAUD                  10000
-#define BAUD_COUNTER          (((unsigned int)F_CPU / (16 * BAUD)) - 1)
+#define HOLDOFF_OUTPUT_PIN_NO          DIGITAL_OUTPUT_PIN_NO0
+#define HOLDOFF_OUTPUT_PORT            DIGITAL_OUTPUT_PORT
+#define HOLDOFF_OUTPUT_DDR             DIGITAL_OUTPUT_DDR
+
+#define TWO_PULSES_TEST_OUTPUT_PIN_NO0 DIGITAL_OUTPUT_PIN_NO0
+#define TWO_PULSES_TEST_OUTPUT_PIN_NO1 DIGITAL_OUTPUT_PIN_NO1
+#define TWO_PULSES_TEST_OUTPUT_PORT    DIGITAL_OUTPUT_PORT
+#define TWO_PULSES_TEST_OUTPUT_DDR     DIGITAL_OUTPUT_DDR
+
+#define BAUD                           10000
+#define BAUD_COUNTER                   (((unsigned int)F_CPU / (16 * BAUD)) - 1)
 
 #define MAKE_PIN_INPUT_PULLUP(ddrr, port, pin) \
     do {                                       \

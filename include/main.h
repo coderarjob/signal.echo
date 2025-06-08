@@ -18,11 +18,16 @@
 #define RUNT_TEST_NORMAL_HIGH_LEVEL             0xFU // 0xF is full rail high
 #define RUNT_TEST_NORMAL_LOW_LEVEL              0x0U // 0x0 is full rail low
 
+#define TWO_PULSES_TEST_NUMBER_OF_PULSES        20U
+#define TWO_PULSES_TEST_DELAY_LOOP_COUNT        65535U
+#define TWO_PULSES_TEST_PULSE_WIDTH             255U
+
 typedef enum TestModes {
     UNKNOWN_TEST,
     USART_TEST,
     HOLDOFF_TEST,
     RUNT_PULSE,
+    TWO_PULSES_TEST,
     TEST_COUNT
 } TestModes;
 
@@ -33,5 +38,6 @@ bool mode_is_dirty();
 void usart_test();
 void holdoff_test();
 void runt_pulse_test();
+void two_pulses_test();
 
 void irq_switch_pressed();

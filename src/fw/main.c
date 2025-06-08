@@ -19,6 +19,9 @@ __attribute__ ((noreturn)) int main (void)
         case RUNT_PULSE:
             runt_pulse_test();
             break;
+        case TWO_PULSES_TEST:
+            two_pulses_test();
+            break;
         default:
             status_led_on();
             break;
@@ -49,7 +52,7 @@ void holdoff_test()
     holdoff_test_init();
 
     while (!mode_is_dirty()) {
-        for (int i = 0; i < HOLDOFF_TEST_NUMBER_OF_PULSES; i++) {
+        for (unsigned i = 0; i < HOLDOFF_TEST_NUMBER_OF_PULSES; i++) {
             holdoff_test_body (HOLDOFF_TEST_PULSE_WIDTH_LOOP_COUNT);
         }
         loop_delay (HOLDOFF_TEST_GAP_DELAY_LOOP_COUNT);
@@ -83,4 +86,17 @@ void runt_pulse_test()
     }
 
     runt_pulse_exit();
+}
+
+void two_pulses_test()
+{
+    two_pulses_test_init();
+
+    while (!mode_is_dirty()) {
+        two_pulses_test_body (false, TWO_PULSES_TEST_NUMBER_OF_PULSES, TWO_PULSES_TEST_PULSE_WIDTH);
+        loop_delay (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
+        two_pulses_test_body (true, TWO_PULSES_TEST_NUMBER_OF_PULSES, TWO_PULSES_TEST_PULSE_WIDTH);
+        loop_delay (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
+    }
+    two_pulses_test_exit();
 }

@@ -3,8 +3,8 @@
 #include <utils.h>
 #include <avrmmu/ports.h>
 #include <avr/interrupt.h>
-#include <stdbool.h>
 #include <util/delay_basic.h>
+#include <avrmmu/hwmain.h>
 
 ISR (INT0_vect)
 {
@@ -45,4 +45,16 @@ void runt_pulse_body (uint16_t pulse_width, uint8_t high_level, uint8_t low_leve
     _delay_loop_2 (pulse_width);
     RUNT_OUTPUT_PORT = (low_level << 1); // Make PC1:PC4 as high
     _delay_loop_2 (pulse_width);
+}
+
+void two_pulses_test_body (bool isPrimaryPin, uint16_t num_pulses, uint16_t pulse_width)
+{
+    uint8_t pin = (isPrimaryPin) ? TWO_PULSES_TEST_OUTPUT_PIN_NO0 : TWO_PULSES_TEST_OUTPUT_PIN_NO1;
+
+    while (num_pulses--) {
+        BIT_SET (TWO_PULSES_TEST_OUTPUT_PORT, pin);
+        _delay_loop_2 (pulse_width);
+        BIT_CLEAR (TWO_PULSES_TEST_OUTPUT_PORT, pin);
+        _delay_loop_2 (pulse_width);
+    }
 }
