@@ -13,6 +13,12 @@ ISR (INT0_vect)
 
 void hw_init()
 {
+    // Reset output pins (make them output & output low)
+    DIGITAL_OUTPUT_DDR  = 0xFF;
+    DIGITAL_OUTPUT_PORT = 0x00;
+    ANALOG_OUTPUT_DDR   = 0xFF;
+    ANALOG_OUTPUT_DDR   = 0x00;
+
     // Make the Interrupt 0 pin as the input
     MAKE_PIN_INPUT_PULLUP (SWITCH_DDR, SWITCH_PORT, SWITCH_PIN_NO);
 

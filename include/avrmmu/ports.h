@@ -8,6 +8,9 @@
 #define DIGITAL_OUTPUT_PIN_NO0         PD1
 #define DIGITAL_OUTPUT_PIN_NO1         PD0
 
+#define ANALOG_OUTPUT_PORT             PORTC
+#define ANALOG_OUTPUT_DDR              DDRC
+
 #define SWITCH_PIN_NO                  PD2
 #define SWITCH_PORT                    PORTD
 #define SWITCH_PIN                     PIND
@@ -18,8 +21,8 @@
 #define STATUS_PIN                     PINB
 #define STATUS_DDR                     DDRB
 
-#define RUNT_OUTPUT_PORT               PORTC
-#define RUNT_OUTPUT_DDR                DDRC
+#define RUNT_OUTPUT_PORT               ANALOG_OUTPUT_PORT
+#define RUNT_OUTPUT_DDR                ANALOG_OUTPUT_DDR
 
 #define HOLDOFF_OUTPUT_PIN_NO          DIGITAL_OUTPUT_PIN_NO0
 #define HOLDOFF_OUTPUT_PORT            DIGITAL_OUTPUT_PORT
