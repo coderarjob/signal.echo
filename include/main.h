@@ -30,6 +30,7 @@ typedef enum TestModes {
 void mode_advance();
 TestModes mode_get();
 bool mode_is_dirty();
+void mode_reset();
 
 void hw_init();
 void usart_off();

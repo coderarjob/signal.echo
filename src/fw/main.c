@@ -11,6 +11,7 @@
 __attribute__ ((noreturn)) int main (void)
 {
     hw_init();
+    mode_reset();
     while (1) {
         switch (mode_get()) {
         case USART_TEST:

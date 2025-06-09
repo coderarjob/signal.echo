@@ -22,3 +22,9 @@ bool mode_is_dirty()
 {
     return modeIsDirty;
 }
+
+void mode_reset()
+{
+    modeIsDirty = false;
+    currentMode = USART_TEST;
+}
