@@ -127,13 +127,13 @@ YT_TEST (two_pulses, two_pulse_test_normal)
     YT_MUST_CALL_IN_ORDER (two_pulses_test_init);
 
     YT_MUST_CALL_IN_ORDER (two_pulses_test_body, YT_V (false),
-                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES),
+                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0),
                            YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
 
     YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));
 
     YT_MUST_CALL_IN_ORDER (two_pulses_test_body, YT_V (true),
-                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES),
+                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1),
                            YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
 
     YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));

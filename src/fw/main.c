@@ -82,9 +82,11 @@ void two_pulses_test()
     two_pulses_test_init();
 
     while (!mode_is_dirty()) {
-        two_pulses_test_body (false, TWO_PULSES_TEST_NUMBER_OF_PULSES, TWO_PULSES_TEST_PULSE_WIDTH);
+        two_pulses_test_body (false, TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0,
+                              TWO_PULSES_TEST_PULSE_WIDTH);
         loop_delay (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
-        two_pulses_test_body (true, TWO_PULSES_TEST_NUMBER_OF_PULSES, TWO_PULSES_TEST_PULSE_WIDTH);
+        two_pulses_test_body (true, TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1,
+                              TWO_PULSES_TEST_PULSE_WIDTH);
         loop_delay (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
     }
     two_pulses_test_exit();

@@ -15,7 +15,8 @@
 #define RUNT_TEST_NORMAL_HIGH_LEVEL             0xFU // 0xF is full rail high
 #define RUNT_TEST_NORMAL_LOW_LEVEL              0x0U // 0x0 is full rail low
 
-#define TWO_PULSES_TEST_NUMBER_OF_PULSES        20U
+#define TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0   20U
+#define TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1   50U
 #define TWO_PULSES_TEST_DELAY_LOOP_COUNT        65535U
 #define TWO_PULSES_TEST_PULSE_WIDTH             255U
 
@@ -47,4 +48,3 @@ void two_pulses_test();
 void two_pulses_test_body (bool isPrimaryPin, uint16_t num_pulses, uint16_t pulse_width);
 
 void irq_switch_pressed();
-
