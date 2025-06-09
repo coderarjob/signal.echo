@@ -25,9 +25,6 @@ YT_DECLARE_FUNC_VOID (runt_pulse_init);
 YT_DECLARE_FUNC_VOID (runt_pulse_exit);
 YT_DECLARE_FUNC_VOID (runt_pulse_body, uint16_t, uint8_t, uint8_t);
 
-YT_DECLARE_FUNC_VOID (holdoff_test_init);
-YT_DECLARE_FUNC_VOID (holdoff_test_body, uint16_t);
-
 YT_DECLARE_FUNC_VOID (two_pulses_test_exit);
 YT_DECLARE_FUNC_VOID (two_pulses_test_init);
 YT_DECLARE_FUNC_VOID (two_pulses_test_body, bool, uint16_t, uint16_t);
@@ -53,9 +50,6 @@ YT_DEFINE_FUNC_VOID (runt_pulse_init);
 YT_DEFINE_FUNC_VOID (runt_pulse_exit);
 YT_DEFINE_FUNC_VOID (runt_pulse_body, uint16_t, uint8_t, uint8_t);
 
-YT_DEFINE_FUNC_VOID (holdoff_test_init);
-YT_DEFINE_FUNC_VOID (holdoff_test_body, uint16_t);
-
 YT_DEFINE_FUNC_VOID (two_pulses_test_exit);
 YT_DEFINE_FUNC_VOID (two_pulses_test_init);
 YT_DEFINE_FUNC_VOID (two_pulses_test_body, bool, uint16_t, uint16_t);
@@ -77,9 +71,6 @@ void reset_all_mocks()
     YT_RESET_MOCK (usart_on);
     YT_RESET_MOCK (usart_send_char);
     YT_RESET_MOCK (usart_send_string);
-
-    YT_RESET_MOCK (holdoff_test_init);
-    YT_RESET_MOCK (holdoff_test_body);
 
     YT_RESET_MOCK (runt_pulse_init);
     YT_RESET_MOCK (runt_pulse_exit);

@@ -23,23 +23,18 @@ along with firmware in this repo.
 
 ![Negative runt pulse](docs/images/negative_runt.png)
 
-##### 4. Holdoff demo
+##### 4. Burse mode pulses
 
-* Unstable trigger
-![Unstable trigger](docs/images/holdoff_unstable.gif)
-
-* After proper holdoff adjustment - Stable trigger
-![Stable trigger](docs/images/holdoff_stable.gif)
+![Negative runt pulse](docs/images/burst_pulses.png)
 
 ### Goals
 
 - [X] Firmware: RS232 sample output (positive)
 - [ ] Firmware: RS232 sample output (negative)
-- [X] Firmware: Holdoff test
 - [ ] Firmware: I2C sample output
 - [X] Firmware: Runt pulse (+ve & -ve runt pulses)
 - [ ] Firmware: Sine wave pattern
-- [ ] Firmware: Burst data in two lines
+- [X] Firmware: Burst data in two lines
 - [X] Firmware: Separate arch independent codes
 - [X] Unittests: Add unittests for utils
 - [X] Unittests: Add unittests for existing tests

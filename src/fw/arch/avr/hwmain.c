@@ -31,14 +31,6 @@ void hw_init()
     sei();
 }
 
-void holdoff_test_body (uint16_t pulse_width)
-{
-    BIT_SET (HOLDOFF_OUTPUT_PORT, HOLDOFF_OUTPUT_PIN_NO);
-    _delay_loop_1 (pulse_width);
-    BIT_CLEAR (HOLDOFF_OUTPUT_PORT, HOLDOFF_OUTPUT_PIN_NO);
-    _delay_loop_1 (pulse_width);
-}
-
 void runt_pulse_body (uint16_t pulse_width, uint8_t high_level, uint8_t low_level)
 {
     RUNT_OUTPUT_PORT = (high_level << 1); // Make PC1:PC4 as high

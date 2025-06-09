@@ -16,9 +16,6 @@ __attribute__ ((noreturn)) int main (void)
         case USART_TEST:
             usart_test();
             break;
-        case HOLDOFF_TEST:
-            holdoff_test();
-            break;
         case RUNT_PULSE:
             runt_pulse_test();
             break;
@@ -48,18 +45,6 @@ void usart_test()
         }
     }
     usart_off();
-}
-
-void holdoff_test()
-{
-    holdoff_test_init();
-
-    while (!mode_is_dirty()) {
-        for (unsigned i = 0; i < HOLDOFF_TEST_NUMBER_OF_PULSES; i++) {
-            holdoff_test_body (HOLDOFF_TEST_PULSE_WIDTH_LOOP_COUNT);
-        }
-        loop_delay (HOLDOFF_TEST_GAP_DELAY_LOOP_COUNT);
-    }
 }
 
 void runt_pulse_test()

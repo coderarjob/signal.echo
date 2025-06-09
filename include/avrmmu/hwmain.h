@@ -52,17 +52,11 @@ static inline void loop_delay (uint16_t count)
 {
     _delay_loop_2 (count);
 }
-
-static inline void holdoff_test_init()
-{
-    MAKE_PIN_OUTPUT (HOLDOFF_OUTPUT_DDR, HOLDOFF_OUTPUT_PIN_NO);
-}
 #else
 void status_led_off();
 void status_led_on();
 bool is_switch_pressed();
 void loop_delay (uint16_t count);
-void holdoff_test_init();
 void runt_pulse_init();
 void runt_pulse_exit();
 void two_pulses_test_exit();

@@ -47,23 +47,6 @@ YT_TEST (usart, usart_test_reset_after_char_overflow)
     YT_END();
 }
 
-YT_TEST (holdoff, holdoff_test_normal)
-{
-    unsigned int iter_num        = 1;
-    mode_is_dirty_fake.resources = &iter_num;
-    mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
-
-    YT_MUST_CALL_IN_ORDER (holdoff_test_init);
-    YT_MUST_CALL_IN_ORDER (holdoff_test_body, YT_V (HOLDOFF_TEST_PULSE_WIDTH_LOOP_COUNT));
-    YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (HOLDOFF_TEST_GAP_DELAY_LOOP_COUNT));
-
-    holdoff_test();
-
-    YT_EQ_SCALAR (holdoff_test_body_fake.invokeCount, HOLDOFF_TEST_NUMBER_OF_PULSES);
-
-    YT_END();
-}
-
 YT_TEST (runt_pulse, runt_pulse_test_normal_pulses)
 {
     unsigned int iter_num        = RUNT_PULSE_FREQ - 1;
@@ -173,7 +156,6 @@ int main (void)
 {
     usart_test_normal();
     usart_test_reset_after_char_overflow();
-    holdoff_test_normal();
     runt_pulse_test_normal_pulses();
     runt_pulse_test_runt_pulses();
     two_pulse_test_normal();
