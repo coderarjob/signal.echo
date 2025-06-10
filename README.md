@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="/docs/images/logo.svg"/>
+    <img src="/docs/images/logo.png"/>
     <br/>
 </p>
 
@@ -15,7 +15,7 @@ along with firmware in this repo.
 
 ![rs232](docs/images/usart.png)
 
-##### 2. Positve Runt pulse
+##### 2. Positive Runt pulse
 
 ![Positive runt pulse](docs/images/positive_runt.png)
 
@@ -23,7 +23,7 @@ along with firmware in this repo.
 
 ![Negative runt pulse](docs/images/negative_runt.png)
 
-##### 4. Burse mode pulses
+##### 4. Burst mode pulses
 
 ![Negative runt pulse](docs/images/burst_pulses.png)
 
