@@ -13,6 +13,7 @@ __attribute__ ((noreturn)) int main (void)
     hw_init();
     mode_reset();
     while (1) {
+        set_status_led (mode_get());
         switch (mode_get()) {
         case USART_TEST:
             usart_test();
@@ -24,7 +25,7 @@ __attribute__ ((noreturn)) int main (void)
             two_pulses_test();
             break;
         default:
-            status_led_on();
+            mode_reset();
             break;
         }
     }

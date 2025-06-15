@@ -32,14 +32,15 @@ static inline void runt_pulse_init()
     RUNT_OUTPUT_DDR = 0xFF; // Make every pin as output
 }
 
-static inline void status_led_off()
+static inline void set_status_led (uint8_t state)
 {
-    BIT_CLEAR (STATUS_PORT, STATUS_PIN_NO);
+    BIT_CLEAR_MASK(STATUS_PORT, STATUS_OUT_REG_MASK);
+    STATUS_PORT |= (state << STATUS_OUT_REG_SHIFT) & STATUS_OUT_REG_MASK;
 }
 
-static inline void status_led_on()
+static inline void status_led_off()
 {
-    BIT_SET (STATUS_PORT, STATUS_PIN_NO);
+    set_status_led (0);
 }
 
 static inline bool is_switch_pressed()
@@ -54,7 +55,7 @@ static inline void loop_delay (uint16_t count)
 }
 #else
 void status_led_off();
-void status_led_on();
+void set_status_led (uint8_t state);
 bool is_switch_pressed();
 void loop_delay (uint16_t count);
 void runt_pulse_init();

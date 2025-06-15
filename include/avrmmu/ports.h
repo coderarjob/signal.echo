@@ -20,10 +20,12 @@
 #define SWITCH_PIN                     PIND
 #define SWITCH_DDR                     DDRD
 
-#define STATUS_PIN_NO                  PB1
-#define STATUS_PORT                    PORTB
-#define STATUS_PIN                     PINB
-#define STATUS_DDR                     DDRB
+#define STATUS_PORT                    PORTD
+#define STATUS_PIN                     PIND
+#define STATUS_DDR                     DDRD
+#define STATUS_OUT_REG_SHIFT           5
+#define STATUS_OUT_REG_COUNT           3
+#define STATUS_OUT_REG_MASK            BIT_MASK (STATUS_OUT_REG_SHIFT, STATUS_OUT_REG_COUNT)
 
 #define RUNT_OUTPUT_PORT               ANALOG_OUTPUT_PORT
 #define RUNT_OUTPUT_DDR                ANALOG_OUTPUT_DDR
