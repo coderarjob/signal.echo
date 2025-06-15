@@ -10,6 +10,9 @@
 
 #define ANALOG_OUTPUT_PORT             PORTC
 #define ANALOG_OUTPUT_DDR              DDRC
+#define ANALOG_OUTPUT_PIN_SHIFT        0
+#define ANALOG_OUTPUT_PIN_COUNT        6
+#define ANALOG_OUTPUT_PIN_MASK         BIT_MASK (ANALOG_OUTPUT_PIN_SHIFT, ANALOG_OUTPUT_PIN_COUNT)
 
 #define SWITCH_PIN_NO                  PD2
 #define SWITCH_PORT                    PORTD

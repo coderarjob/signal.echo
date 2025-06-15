@@ -13,35 +13,45 @@ ISR (INT0_vect)
 
 void hw_init()
 {
-    // Reset output pins (make them output & output low)
-    DIGITAL_OUTPUT_DDR  = 0xFF;
-    DIGITAL_OUTPUT_PORT = 0x00;
-    ANALOG_OUTPUT_DDR   = 0xFF;
-    ANALOG_OUTPUT_DDR   = 0x00;
+    // ===========================================
+    // Outputs
+    // Make digital, analog and status led pins as output and clear them
+    // ===========================================
+    BIT_SET_MASK (DIGITAL_OUTPUT_DDR,
+                  (1 << DIGITAL_OUTPUT_PIN_NO0) | (1 << DIGITAL_OUTPUT_PIN_NO1));
+    BIT_CLEAR_MASK (DIGITAL_OUTPUT_PORT,
+                    (1 << DIGITAL_OUTPUT_PIN_NO0) | (1 << DIGITAL_OUTPUT_PIN_NO1));
 
+    BIT_SET_MASK (ANALOG_OUTPUT_DDR, ANALOG_OUTPUT_PIN_MASK);
+    BIT_CLEAR_MASK (ANALOG_OUTPUT_PORT, ANALOG_OUTPUT_PIN_MASK);
+
+    BIT_SET (STATUS_DDR, STATUS_PIN_NO);
+    BIT_CLEAR (STATUS_PORT, STATUS_PIN_NO);
+
+    // ===========================================
+    // Inputs
+    // Make switch pin as input and enable pullup
+    // ===========================================
     // Make the Interrupt 0 pin as the input
-    MAKE_PIN_INPUT_PULLUP (SWITCH_DDR, SWITCH_PORT, SWITCH_PIN_NO);
 
-    // Enable interrupt
 #if SWITCH_PIN_NO != PD2
     #error "Wrong switch pin set"
 #endif
 
+    MAKE_PIN_INPUT_PULLUP (SWITCH_DDR, SWITCH_PORT, SWITCH_PIN_NO);
+
+    // Enable interrupt
     BIT_CLEAR_MASK (MCUCR, (1 << ISC01 | 1 << ISC00)); // Trigger at Low level
     BIT_SET_MASK (GICR, (1 << INT0));                  // Enable the interrupt
-
-    // Status port
-    MAKE_PIN_OUTPUT (STATUS_DDR, STATUS_PIN_NO);
-    BIT_CLEAR (STATUS_PORT, STATUS_PIN_NO);
 
     sei();
 }
 
 void runt_pulse_body (uint16_t pulse_width, uint8_t high_level, uint8_t low_level)
 {
-    RUNT_OUTPUT_PORT = high_level; // Make PC0:PC3 as high
+    RUNT_OUTPUT_PORT = high_level & ANALOG_OUTPUT_PIN_MASK;
     _delay_loop_2 (pulse_width);
-    RUNT_OUTPUT_PORT = low_level; // Make PC0:PC3 as high
+    RUNT_OUTPUT_PORT = low_level & ANALOG_OUTPUT_PIN_MASK;
     _delay_loop_2 (pulse_width);
 }
 
