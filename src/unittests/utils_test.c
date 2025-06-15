@@ -126,6 +126,18 @@ YT_TEST (utils, is_bit_set)
     YT_END();
 }
 
+YT_TEST (utils, bit_mask_creation)
+{
+    YT_EQ_SCALAR(BIT_MASK(0, 2), 0x3);
+    YT_EQ_SCALAR(BIT_MASK(0, 6), 0x3F);
+    YT_EQ_SCALAR(BIT_MASK(0, 3), 0x7);
+
+    YT_EQ_SCALAR(BIT_MASK(1, 2), 0x6);
+    YT_EQ_SCALAR(BIT_MASK(2, 6), 0xFC);
+    YT_EQ_SCALAR(BIT_MASK(3, 3), 0x38);
+    YT_END();
+}
+
 void reset()
 {
 }
@@ -140,5 +152,6 @@ int main (void)
     bits_set();
     is_bit_set_mask();
     is_bit_set();
+    bit_mask_creation();
     return 0;
 }
