@@ -17,10 +17,8 @@ void hw_init()
     // Outputs
     // Make digital, analog and status led pins as output and clear them
     // ===========================================
-    BIT_SET_MASK (DIGITAL_OUTPUT_DDR,
-                  (1 << DIGITAL_OUTPUT_PIN_NO0) | (1 << DIGITAL_OUTPUT_PIN_NO1));
-    BIT_CLEAR_MASK (DIGITAL_OUTPUT_PORT,
-                    (1 << DIGITAL_OUTPUT_PIN_NO0) | (1 << DIGITAL_OUTPUT_PIN_NO1));
+    BIT_SET_MASK (DIGITAL_OUTPUT_DDR, DIGITAL_OUTPUT_MASK);
+    BIT_CLEAR_MASK (DIGITAL_OUTPUT_PORT, DIGITAL_OUTPUT_MASK);
 
     BIT_SET_MASK (ANALOG_OUTPUT_DDR, ANALOG_OUTPUT_PIN_MASK);
     BIT_CLEAR_MASK (ANALOG_OUTPUT_PORT, ANALOG_OUTPUT_PIN_MASK);

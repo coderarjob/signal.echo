@@ -7,6 +7,7 @@
 #define DIGITAL_OUTPUT_DDR             DDRD
 #define DIGITAL_OUTPUT_PIN_NO0         PD0
 #define DIGITAL_OUTPUT_PIN_NO1         PD1
+#define DIGITAL_OUTPUT_MASK            (1 << DIGITAL_OUTPUT_PIN_NO1) | (1 << DIGITAL_OUTPUT_PIN_NO0)
 
 #define ANALOG_OUTPUT_PORT             PORTC
 #define ANALOG_OUTPUT_DDR              DDRC
