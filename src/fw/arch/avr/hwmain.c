@@ -39,9 +39,9 @@ void hw_init()
 
 void runt_pulse_body (uint16_t pulse_width, uint8_t high_level, uint8_t low_level)
 {
-    RUNT_OUTPUT_PORT = (high_level << 1); // Make PC1:PC4 as high
+    RUNT_OUTPUT_PORT = high_level; // Make PC0:PC3 as high
     _delay_loop_2 (pulse_width);
-    RUNT_OUTPUT_PORT = (low_level << 1); // Make PC1:PC4 as high
+    RUNT_OUTPUT_PORT = low_level; // Make PC0:PC3 as high
     _delay_loop_2 (pulse_width);
 }
 
