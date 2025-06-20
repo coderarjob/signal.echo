@@ -1,11 +1,21 @@
 #include <main.h>
-#if MPU_ARCH == AVR
-    #include <avrmmu/hwmain.h>
+#include <arch/avr/hal.h>
+#if HW_VER == 1
+    #include <hw/v1/hwspec.h>
 #endif
 
 void irq_switch_pressed()
 {
     mode_advance();
-    loop_delay(65535);
-    while(is_switch_pressed());
+    HAL_LOOP_DELAY (65535);
+    while (!IS_BIT_SET (HAL_IO_IN_READ (SWITCH_INPUT_GPIO), SWITCH_INPUT_GPIO_PIN))
+        ;
 }
+
+#if MPU_ARCH == AVR
+    #include <avr/interrupt.h>
+ISR (INT0_vect)
+{
+    irq_switch_pressed();
+}
+#endif // MPU_ARCH == AVR

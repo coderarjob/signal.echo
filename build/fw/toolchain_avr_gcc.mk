@@ -8,7 +8,12 @@ PROGRAMMER := avrdude
 MPU_ARCH   := AVR
 
 cc_definitions := -DF_CPU=$(clock)        \
-				  -DMPU_ARCH=$(MPU_ARCH)
+				  -DMPU_ARCH=$(MPU_ARCH)  \
+				  -DHW_VER=$(HW_VER)
+
+ifeq ($(DEBUG), 1)
+	cc_definitions += -DDEBUG
+endif
 
 ld_flags := -mmcu=${machine}           \
 			-L $(BUILD_DIR)
@@ -29,6 +34,6 @@ cc_flags := $(cc_definitions)          \
 		    -MP
 
 
-ifdef DEBUG
+ifeq ($(DEBUG), 1)
 	cc_flags += -g
 endif

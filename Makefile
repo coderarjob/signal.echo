@@ -16,7 +16,7 @@ all:
 include build/gcc_rules.mk
 include build/fw/config.mk
 
-ifeq ($(and $(clock), $(machine), $(COMPILER), $(ARCH)),)
+ifeq ($(and $(clock), $(machine), $(COMPILER), $(ARCH), $(HW_VER)),)
 $(error Invalid build setup. Required variables are not set)
 endif
 

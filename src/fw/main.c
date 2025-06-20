@@ -1,12 +1,82 @@
-#include <stdbool.h>
-#include <stdint.h>
+#include <arch/avr/hal.h>
+#if HW_VER == 1
+    #include <hw/v1/hwspec.h>
+#endif
 #include <main.h>
 
-#if MPU_ARCH == AVR
-    #include <avrmmu/hwmain.h>
-#endif
+#if defined(DEBUG)
+void hwspec_sanity_check()
+{
+    #if MPU_ARCH == AVR && SWITCH_INPUT_GPIO_PIN != PD2
+        #error "Wrong switch pin set"
+    #endif
 
-#ifndef UNITTESTS
+    #define CHECK_OVERLAP(comb, mask) (((comb) & (mask)) != (mask))
+
+    // Port A checks
+    // N/A
+
+    // Port D checks
+    // N/A
+
+    // Port B
+    #define GPIO_B_COMB                                                                         \
+        (SWITCH_INPUT_PIN_MASK ^ STATUS_OUTPUT_PIN_MASK ^ TWO_PULSES_TEST_OUTPUT_PIN_NO0_MASK ^ \
+         TWO_PULSES_TEST_OUTPUT_PIN_NO1_MASK)
+
+    #if CHECK_OVERLAP(GPIO_B_COMB, SWITCH_INPUT_PIN_MASK) ||               \
+        CHECK_OVERLAP(GPIO_B_COMB, STATUS_OUTPUT_PIN_MASK) ||              \
+        CHECK_OVERLAP(GPIO_B_COMB, TWO_PULSES_TEST_OUTPUT_PIN_NO0_MASK) || \
+        CHECK_OVERLAP(GPIO_B_COMB, TWO_PULSES_TEST_OUTPUT_PIN_NO1_MASK)
+        #error "GPIO_B pin overlapped"
+    #endif // GPIO_B_COMB checks
+
+    // Port C
+    #define GPIO_C_COMB (RUNT_PULSE_TEST_OUTPUT_PIN_MASK)
+
+    #if CHECK_OVERLAP(GPIO_C_COMB, RUNT_PULSE_TEST_OUTPUT_PIN_MASK)
+        #error "GPIO_C pin overlapped"
+    #endif // GPIO_C_COMB checks
+}
+#endif // defined(DEBUG)
+
+void hw_init()
+{
+    // ===========================================
+    // Outputs
+    // Make digital, analog and status led pins as output and clear them
+    // ===========================================
+    HAL_IO_MAKE_OUTPUT (DIGITAL_OUTPUT_GPIO, DIGITAL_OUTPUT_PIN_MASK);
+    HAL_IO_OUT_LOW (DIGITAL_OUTPUT_GPIO, DIGITAL_OUTPUT_PIN_MASK);
+
+    HAL_IO_MAKE_OUTPUT (ANALOG_OUTPUT_GPIO, ANALOG_OUTPUT_PIN_MASK);
+    HAL_IO_OUT_LOW (ANALOG_OUTPUT_GPIO, ANALOG_OUTPUT_PIN_MASK);
+
+    HAL_IO_MAKE_OUTPUT (STATUS_OUTPUT_GPIO, STATUS_OUTPUT_PIN_MASK);
+    HAL_IO_OUT_LOW (STATUS_OUTPUT_GPIO, STATUS_OUTPUT_PIN_MASK);
+
+    // ===========================================
+    // Inputs
+    // Make switch pin as input and enable pullup
+    // ===========================================
+    HAL_IO_MAKE_INPUT_WITH_PULLUP (SWITCH_INPUT_GPIO, SWITCH_INPUT_PIN_MASK);
+    hal_interrupt_enable (SWITCH_INPUT_INTERRUPT);
+
+    HAL_INTERRUPT_SET();
+
+    // ===========================================
+    // IO & Schematic sanity check
+    // ===========================================
+#if defined(DEBUG)
+    hwspec_sanity_check();
+#endif
+}
+
+static inline void set_status_led (uint8_t state)
+{
+    HAL_IO_OUT_WRITE_BITS (STATUS_OUTPUT_GPIO, state, STATUS_OUTPUT_PIN_SHIFT,
+                           STATUS_OUTPUT_PIN_MASK);
+}
 
 __attribute__ ((noreturn)) int main (void)
 {
@@ -25,70 +95,15 @@ __attribute__ ((noreturn)) int main (void)
             two_pulses_test();
             break;
         default:
-            mode_reset();
+            hal_impl_panic();
             break;
         }
     }
 }
 
-#endif /* UNITTESTS */
-
-void usart_test()
+void hal_impl_panic()
 {
-    usart_on();
-    char c = 'A';
-    while (!mode_is_dirty()) {
-        loop_delay (USART_TEST_DELAY_LOOP_COUNT);
-        usart_send_string (USART_TEST_STRING);
-        usart_send_char (c);
-
-        if (++c > 'Z') {
-            c = 'A';
-        }
-    }
-    usart_off();
-}
-
-void runt_pulse_test()
-{
-    runt_pulse_init();
-
-    // Number of runt pulses per 1000 normal pulses
-    uint32_t runtFreq        = RUNT_PULSE_FREQ;
-    bool isPositiveRuntPulse = true; // true: Runt when going high, false: Runt when going low.
-
-    while (!mode_is_dirty()) {
-        uint8_t lowLevel    = RUNT_TEST_NORMAL_LOW_LEVEL;
-        uint8_t highLevel   = RUNT_TEST_NORMAL_HIGH_LEVEL;
-        uint16_t pulseWidth = RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT;
-
-        if (--runtFreq == 0) {
-            runtFreq   = RUNT_PULSE_FREQ;
-            pulseWidth = RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT;
-            if (isPositiveRuntPulse) {
-                highLevel = RUNT_TEST_RUNT_HIGH_LEVEL;
-            } else {
-                lowLevel = RUNT_TEST_RUNT_LOW_LEVEL;
-            }
-            isPositiveRuntPulse ^= 1;
-        }
-        runt_pulse_body (pulseWidth, highLevel, lowLevel);
-    }
-
-    runt_pulse_exit();
-}
-
-void two_pulses_test()
-{
-    two_pulses_test_init();
-
-    while (!mode_is_dirty()) {
-        two_pulses_test_body (false, TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0,
-                              TWO_PULSES_TEST_PULSE_WIDTH);
-        loop_delay (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
-        two_pulses_test_body (true, TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1,
-                              TWO_PULSES_TEST_PULSE_WIDTH);
-        loop_delay (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
-    }
-    two_pulses_test_exit();
+    HAL_IO_OUT_HIGH (STATUS_OUTPUT_GPIO, STATUS_OUTPUT_PIN_MASK);
+    while (1)
+        ;
 }
