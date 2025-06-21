@@ -4,6 +4,7 @@
 #endif
 #include <stdint.h>
 #include <main.h>
+#include <utils.h>
 
 void usart_test()
 {
@@ -79,15 +80,12 @@ static inline void two_pulses_test_exit()
     HAL_IO_OUT_LOW (TWO_PULSES_TEST_OUTPUT_GPIO, TWO_PULSES_TEST_OUTPUT_PIN_MASK);
 }
 
-static void two_pulses_test_body (bool isPrimaryPin, uint16_t num_pulses, uint16_t pulse_width)
+static void two_pulses_test_body (uint8_t pin_mask, uint16_t num_pulses, uint16_t pulse_width)
 {
-    uint8_t mask = (isPrimaryPin) ? TWO_PULSES_TEST_OUTPUT_PIN_NO0_MASK
-                                  : TWO_PULSES_TEST_OUTPUT_PIN_NO1_MASK;
-
     while (num_pulses--) {
-        HAL_IO_OUT_HIGH (TWO_PULSES_TEST_OUTPUT_GPIO, mask);
+        HAL_IO_OUT_HIGH (TWO_PULSES_TEST_OUTPUT_GPIO, pin_mask);
         HAL_LOOP_DELAY (pulse_width);
-        HAL_IO_OUT_LOW (TWO_PULSES_TEST_OUTPUT_GPIO, mask);
+        HAL_IO_OUT_LOW (TWO_PULSES_TEST_OUTPUT_GPIO, pin_mask);
         HAL_LOOP_DELAY (pulse_width);
     }
 }
@@ -97,11 +95,11 @@ void two_pulses_test()
     two_pulses_test_init();
 
     while (!mode_is_dirty()) {
-        two_pulses_test_body (false, TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0,
-                              TWO_PULSES_TEST_PULSE_WIDTH);
+        two_pulses_test_body (TWO_PULSES_TEST_OUTPUT_PIN_NO0_MASK,
+                              TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0, TWO_PULSES_TEST_PULSE_WIDTH);
         HAL_LOOP_DELAY (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
-        two_pulses_test_body (true, TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1,
-                              TWO_PULSES_TEST_PULSE_WIDTH);
+        two_pulses_test_body (TWO_PULSES_TEST_OUTPUT_PIN_NO1_MASK,
+                              TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1, TWO_PULSES_TEST_PULSE_WIDTH);
         HAL_LOOP_DELAY (TWO_PULSES_TEST_DELAY_LOOP_COUNT);
     }
 
