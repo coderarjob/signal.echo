@@ -132,7 +132,10 @@ __attribute__ ((noreturn)) void hal_impl_panic();
 
 #define HAL_LOOP_DELAY(count)                     _delay_loop_2 (count)
 
-typedef AVR_HAL_Interrupts HAL_Interrupts;
+typedef enum HAL_Interrupts {
+    HAL_Interrupt_External0 = AVR_HAL_INTERRUPTS_EXT_INTERRUPT0
+} HAL_Interrupts;
+
 #define HAL_INTERRUPT_SET()   sei()
 #define HAL_INTERRUPT_CLEAR() cli()
 void hal_interrupt_enable (HAL_Interrupts);

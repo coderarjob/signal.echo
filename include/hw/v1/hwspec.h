@@ -17,7 +17,7 @@
 #define SWITCH_INPUT_GPIO                   HAL_GPIO_D
 #define SWITCH_INPUT_GPIO_PIN               HAL_GPIO_D_PIN2
 #define SWITCH_INPUT_PIN_MASK               (1 << SWITCH_INPUT_GPIO_PIN)
-#define SWITCH_INPUT_INTERRUPT              AVR_HAL_INTERRUPTS_EXT_INTERRUPT0
+#define SWITCH_INPUT_INTERRUPT              HAL_Interrupt_External0
 
 #define STATUS_OUTPUT_GPIO                  HAL_GPIO_D
 #define STATUS_OUTPUT_PIN_SHIFT             5

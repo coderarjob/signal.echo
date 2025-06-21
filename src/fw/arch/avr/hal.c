@@ -39,9 +39,9 @@ void hal_usart_send_char (char c)
     UDR = c;
 }
 
-void hal_interrupt_enable (AVR_HAL_Interrupts interrupt)
+void hal_interrupt_enable (HAL_Interrupts interrupt)
 {
-    if (interrupt == AVR_HAL_INTERRUPTS_EXT_INTERRUPT0) {
+    if ((AVR_HAL_Interrupts)interrupt == AVR_HAL_INTERRUPTS_EXT_INTERRUPT0) {
         BIT_CLEAR_MASK (MCUCR, (1 << ISC01 | 1 << ISC00)); // Trigger at Low level
         BIT_SET_MASK (GICR, (1 << INT0));                  // Enable the interrupt
     } else {
