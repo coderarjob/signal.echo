@@ -4,6 +4,9 @@
 #include <yukti.h>
 #include <mocks.h>
 #include <assert.h>
+#if HW_VER == 1
+    #include <hw/v1/hwspec.h>
+#endif
 
 bool mode_is_dirty_after_some_iterations_handler()
 {
@@ -17,16 +20,16 @@ YT_TEST (test, usart_test_normal)
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
-    YT_MUST_CALL_IN_ORDER (usart_on);
-    YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (USART_TEST_DELAY_LOOP_COUNT));
-    YT_MUST_CALL_IN_ORDER (usart_send_string, _);
-    YT_MUST_CALL_IN_ORDER (usart_send_char, YT_V ('A'));
-    YT_MUST_CALL_IN_ORDER (usart_send_char, YT_V ('B'));
-    YT_MUST_CALL_IN_ORDER (usart_off);
+    YT_MUST_CALL_IN_ORDER (hal_usart_on, YT_V (HAL_IMPL_USART_BAUD));
+    YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (USART_TEST_DELAY_LOOP_COUNT));
+    YT_MUST_CALL_IN_ORDER (hal_usart_send_string, _);
+    YT_MUST_CALL_IN_ORDER (hal_usart_send_char, YT_V ('A'));
+    YT_MUST_CALL_IN_ORDER (hal_usart_send_char, YT_V ('B'));
+    YT_MUST_CALL_IN_ORDER (hal_usart_off);
 
     usart_test();
 
-    YT_EQ_SCALAR (usart_send_string_fake.invokeCount, iter_num);
+    YT_EQ_SCALAR (hal_usart_send_string_fake.invokeCount, iter_num);
 
     YT_END();
 }
@@ -37,12 +40,12 @@ YT_TEST (usart, usart_test_reset_after_char_overflow)
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
-    YT_MUST_CALL_IN_ORDER (usart_send_char, YT_V ('Z'));
-    YT_MUST_CALL_IN_ORDER (usart_send_char, YT_V ('A'));
+    YT_MUST_CALL_IN_ORDER (hal_usart_send_char, YT_V ('Z'));
+    YT_MUST_CALL_IN_ORDER (hal_usart_send_char, YT_V ('A'));
 
     usart_test();
 
-    YT_EQ_SCALAR (usart_send_string_fake.invokeCount, iter_num);
+    YT_EQ_SCALAR (hal_usart_send_string_fake.invokeCount, iter_num);
 
     YT_END();
 }
@@ -53,21 +56,31 @@ YT_TEST (runt_pulse, runt_pulse_test_normal_pulses)
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
-    YT_MUST_CALL_IN_ORDER (runt_pulse_init);
-    YT_MUST_CALL_IN_ORDER (runt_pulse_body, YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT),
-                           YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL), YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    // runt_pulse_test_init
+    YT_MUST_CALL_IN_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                           YT_V (RUNT_PULSE_TEST_OUTPUT_PIN_MASK));
 
-    // Positive Runt pulse
-    YT_MUST_NEVER_CALL (runt_pulse_body, _, YT_V (RUNT_TEST_RUNT_HIGH_LEVEL), _);
+    // runt_pulse_test_body - normal pulses
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                           YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL));
+    YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT));
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                           YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT));
 
-    // Negative Runt pulse
-    YT_MUST_NEVER_CALL (runt_pulse_body, _, _, YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+    // runt_pulse_test_body - Positive Runt pulse (must never occur)
+    YT_MUST_NEVER_CALL (HAL_IO_OUT_WRITE, _, YT_V (RUNT_TEST_RUNT_HIGH_LEVEL));
 
-    YT_MUST_CALL_IN_ORDER (runt_pulse_exit);
+    // runt_pulse_test_body - Negative Runt pulse (must never occur)
+    YT_MUST_NEVER_CALL (HAL_IO_OUT_WRITE, _, YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+
+    // runt_pulse_test_exit
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                           YT_V (RUNT_PULSE_TEST_OUTPUT_PIN_MASK));
 
     runt_pulse_test();
 
-    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, iter_num);
+    YT_EQ_SCALAR (HAL_IO_OUT_WRITE_fake.invokeCount, iter_num * 2);
 
     YT_END();
 }
@@ -86,34 +99,45 @@ YT_TEST (runt_pulse, runt_pulse_test_runt_pulses)
     // Notes: Given that the exact number of calls known, we should be using EXACT_TIMES macros
     // instead of ATLEAST onces, but the former does not exists yet!
 
-    YT_MUST_CALL_IN_ORDER (runt_pulse_init);
+    // runt_pulse_test_init
+    YT_MUST_CALL_IN_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                           YT_V (RUNT_PULSE_TEST_OUTPUT_PIN_MASK));
 
-    // Normal pulse
-    YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (iter_num - 4, runt_pulse_body,
-                                         YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT),
-                                         YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL),
-                                         YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    // runt_pulse_test_body - Normal pulses
+    // The order does not matter, we must have (iter_num - 2) normal +ve edges and the same number
+    // of normal -ve edges.
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (iter_num - 2, HAL_IO_OUT_WRITE,
+                                          YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                                          YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL));
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (iter_num - 4, HAL_LOOP_DELAY,
+                                          YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT));
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (iter_num - 2, HAL_IO_OUT_WRITE,
+                                          YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                                          YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (iter_num - 4, HAL_LOOP_DELAY,
+                                          YT_V (RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT));
 
     // Order of +ve or -ve runt pulse does not matter. We are verifying if both types of runt pulses
     // occur. We check twice to verify that internal states do flip after each runt pulse
     // generation.
 
     // Positive Runt pulse
-    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (2, runt_pulse_body,
-                                          YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                                          YT_V (RUNT_TEST_RUNT_HIGH_LEVEL),
-                                          YT_V (RUNT_TEST_NORMAL_LOW_LEVEL));
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (2, HAL_IO_OUT_WRITE, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                                          YT_V (RUNT_TEST_RUNT_HIGH_LEVEL));
     // Negative Runt pulse
-    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (2, runt_pulse_body,
-                                          YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT),
-                                          YT_V (RUNT_TEST_NORMAL_HIGH_LEVEL),
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (2, HAL_IO_OUT_WRITE, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
                                           YT_V (RUNT_TEST_RUNT_LOW_LEVEL));
+    // Runt pulse width
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (8, HAL_LOOP_DELAY,
+                                          YT_V (RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT));
 
-    YT_MUST_CALL_IN_ORDER (runt_pulse_exit);
+    // runt_pulse_test_exit
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (RUNT_PULSE_TEST_OUTPUT_GPIO),
+                           YT_V (RUNT_PULSE_TEST_OUTPUT_PIN_MASK));
 
     runt_pulse_test();
 
-    YT_EQ_SCALAR (runt_pulse_body_fake.invokeCount, iter_num);
+    YT_EQ_SCALAR (HAL_IO_OUT_WRITE_fake.invokeCount, iter_num * 2);
 
     YT_END();
 }
@@ -124,25 +148,41 @@ YT_TEST (two_pulses, two_pulse_test_normal)
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
-    YT_MUST_CALL_IN_ORDER (two_pulses_test_init);
+    // two_pulses_test_init
+    YT_MUST_CALL_IN_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (TWO_PULSES_TEST_OUTPUT_GPIO),
+                           YT_V (TWO_PULSES_TEST_OUTPUT_PIN_MASK));
 
-    YT_MUST_CALL_IN_ORDER (two_pulses_test_body, YT_V (false),
-                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0),
-                           YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+    // two_pulses_test_body (gpio 0)
+    for (unsigned int i = 0; i < TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN0; i++) {
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_HIGH, YT_V (TWO_PULSES_TEST_OUTPUT_GPIO),
+                               YT_V (TWO_PULSES_TEST_OUTPUT_PIN_NO0_MASK));
+        YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (TWO_PULSES_TEST_OUTPUT_GPIO),
+                               YT_V (TWO_PULSES_TEST_OUTPUT_PIN_NO0_MASK));
+        YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+    }
 
-    YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));
+    // delay between two pulses (delay before gpio 1)
+    YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));
 
-    YT_MUST_CALL_IN_ORDER (two_pulses_test_body, YT_V (true),
-                           YT_V (TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1),
-                           YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+    // two_pulses_test_body (gpio 1)
+    for (unsigned int i = 0; i < TWO_PULSES_TEST_NUMBER_OF_PULSES_PIN1; i++) {
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_HIGH, YT_V (TWO_PULSES_TEST_OUTPUT_GPIO),
+                               YT_V (TWO_PULSES_TEST_OUTPUT_PIN_NO1_MASK));
+        YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (TWO_PULSES_TEST_OUTPUT_GPIO),
+                               YT_V (TWO_PULSES_TEST_OUTPUT_PIN_NO1_MASK));
+        YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (TWO_PULSES_TEST_PULSE_WIDTH));
+    }
 
-    YT_MUST_CALL_IN_ORDER (loop_delay, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));
+    // delay between two pulses (delay before gpio 0)
+    YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (TWO_PULSES_TEST_DELAY_LOOP_COUNT));
 
-    YT_MUST_CALL_IN_ORDER (two_pulses_test_exit);
+    // runt_pulse_test_exit
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (TWO_PULSES_TEST_OUTPUT_GPIO),
+                           YT_V (TWO_PULSES_TEST_OUTPUT_PIN_MASK));
 
     two_pulses_test();
-
-    YT_EQ_SCALAR (two_pulses_test_body_fake.invokeCount, 2 * iter_num);
 
     YT_END();
 }
@@ -159,5 +199,5 @@ int main (void)
     runt_pulse_test_normal_pulses();
     runt_pulse_test_runt_pulses();
     two_pulse_test_normal();
-    return 0;
+    YT_RETURN_WITH_REPORT();
 }

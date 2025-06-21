@@ -21,5 +21,17 @@ $(call link_target,$(ARCH)_hal_test)
 
 # ==================================================================
 
-ALL := $(utils_test_ELF) \
-	   $($(ARCH)_hal_test_ELF)
+feature_test_SRC := $(SRC_DIR)feature_test.c   \
+					$(SRC_ROOT_DIR)/fw/tests.c
+
+feature_test_CFLAGS := $(cc_flags)
+feature_test_LDFLAGS := $(ld_flags)
+feature_test_DEP :=
+
+$(call compile_target,feature_test)
+$(call link_target,feature_test)
+# ==================================================================
+
+ALL := $(utils_test_ELF)       \
+	   $($(ARCH)_hal_test_ELF) \
+	   $(feature_test_ELF)     \

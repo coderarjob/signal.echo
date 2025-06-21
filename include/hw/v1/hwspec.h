@@ -1,6 +1,7 @@
 #pragma once
 
-#include <arch/avr/hal.h>
+#include <hal.h>
+#include <utils.h>
 
 #define DIGITAL_OUTPUT_GPIO                 HAL_GPIO_D
 #define DIGITAL_OUTPUT_PIN_NO0              HAL_GPIO_D_PIN0

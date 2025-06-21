@@ -4,7 +4,10 @@ OBJDUMP := objdump
 OBJCOPY := objcopy
 AR := ar
 
-cc_definitions := -DUNITTESTS
+cc_definitions := -DF_CPU=$(clock)        \
+				  -DMPU_ARCH=$(MPU_ARCH)  \
+				  -DHW_VER=$(HW_VER)      \
+				  -DUNITTESTS
 
 ld_flags :=
 
