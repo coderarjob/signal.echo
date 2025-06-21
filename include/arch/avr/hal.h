@@ -140,7 +140,7 @@ typedef enum HAL_Interrupts {
 #define HAL_INTERRUPT_CLEAR() cli()
 void hal_interrupt_enable (HAL_Interrupts);
 
-#define HAL_BAUD_COUNTER(baud) (((unsigned int)F_CPU / (16U * (baud))) - 1)
+#define HAL_BAUD_COUNTER(baud) (uint16_t) (((uint32_t)F_CPU / ((uint32_t)16 * (baud))) - 1)
 void hal_usart_on (uint32_t baud);
 void hal_usart_off();
 void hal_usart_send_string (const char* str);
