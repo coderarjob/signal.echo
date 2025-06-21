@@ -10,17 +10,16 @@ $(call compile_target,utils_test)
 $(call link_target,utils_test)
 
 # ==================================================================
-feature_test_SRC := $(SRC_DIR)feature_test.c \
-					$(SRC_ROOT_DIR)/fw/main.c
+$(ARCH)_hal_test_SRC := $(SRC_DIR)arch/$(ARCH)/hal_test.c
 
-feature_test_CFLAGS := $(cc_flags)
-feature_test_LDFLAGS := $(ld_flags)
-feature_test_DEP :=
+$(ARCH)_hal_test_CFLAGS := $(cc_flags)
+$(ARCH)_hal_test_LDFLAGS := $(ld_flags)
+$(ARCH)_hal_test_DEP := -DHAL_UNITTEST
 
-$(call compile_target,feature_test)
-$(call link_target,feature_test)
+$(call compile_target,$(ARCH)_hal_test)
+$(call link_target,$(ARCH)_hal_test)
 
 # ==================================================================
 
 ALL := $(utils_test_ELF) \
-	   $(feature_test_ELF)
+	   $($(ARCH)_hal_test_ELF)

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <stdint.h>
-#include <util/delay_basic.h>
-#include <avr/interrupt.h>
-#include <avr/io.h>
+#if !defined(UNITTESTS)
+    #include <util/delay_basic.h>
+    #include <avr/interrupt.h>
+    #include <avr/io.h>
+#endif // !defined (UNITTESTS)
 #include <utils.h>
 #include <stdbool.h>
 
@@ -15,10 +17,12 @@ typedef enum AVR_HAL_Interrupts {
     AVR_HAL_INTERRUPTS_EXT_INTERRUPT0,
 } AVR_HAL_Interrupts;
 
+#if !defined(UNITTESTS)
 static inline bool hal_usart_is_transmit_complete()
 {
     return (UCSRA & (1 << UDRE)) != 0;
 }
+#endif // !defined (UNITTESTS)
 
 #define AVR_HAL_GPIO_A_PORT_REG PORTA
 #define AVR_HAL_GPIO_A_PIN_REG  PINA
