@@ -18,19 +18,20 @@ endif
 ld_flags := -mmcu=${machine}           \
 			-L $(BUILD_DIR)
 
-cc_flags := $(cc_definitions)          \
-			-mmcu=${machine}           \
-		    -mint8                     \
-		    -fpack-struct              \
-		    -funsigned-char            \
-		    -funsigned-bitfields       \
-		    -fshort-enums              \
-		    -Os                        \
-		    -Wall                      \
-		    -Wextra                    \
-		    -std=c99                   \
-		    -I $(INCLUDE_ROOT_DIR)     \
-		    -MMD                       \
+cc_flags := $(cc_definitions)               \
+			-mmcu=${machine}                \
+		    -mint8                          \
+		    -fpack-struct                   \
+		    -funsigned-char                 \
+		    -funsigned-bitfields            \
+		    -fshort-enums                   \
+		    -Os                             \
+		    -Wall                           \
+		    -Wextra                         \
+		    -std=c99                        \
+		    -I $(INCLUDE_ROOT_DIR)          \
+		    -I $(INCLUDE_ROOT_DIR)/arch/avr \
+		    -MMD                            \
 		    -MP
 
 
