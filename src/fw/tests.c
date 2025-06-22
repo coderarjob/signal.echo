@@ -105,3 +105,32 @@ void two_pulses_test()
 
     two_pulses_test_exit();
 }
+
+static inline void sawtooth_test_init()
+{
+    HAL_IO_MAKE_OUTPUT (SAWTOOTH_TEST_OUTPUT_GPIO, SAWTOOTH_TEST_OUTPUT_PIN_MASK);
+}
+
+static inline void sawtooth_test_exit()
+{
+    HAL_IO_OUT_LOW (SAWTOOTH_TEST_OUTPUT_GPIO, SAWTOOTH_TEST_OUTPUT_PIN_MASK);
+}
+
+void sawtooth_test()
+{
+    uint16_t value = SAWTOOTH_TEST_LOW_LEVEL;
+
+    sawtooth_test_init();
+
+    while (!mode_is_dirty()) {
+        HAL_IO_OUT_WRITE (SAWTOOTH_TEST_OUTPUT_GPIO, value);
+#if SAWTOOTH_TEST_DELAY_LOOP_COUNT > 0
+        HAL_LOOP_DELAY (SAWTOOTH_TEST_DELAY_LOOP_COUNT);
+#endif
+        value += SAWTOOTH_TEST_INCREMENT;
+        if (value > SAWTOOTH_TEST_HIGH_LEVEL) {
+            value = SAWTOOTH_TEST_LOW_LEVEL;
+        }
+    }
+    sawtooth_test_exit();
+}

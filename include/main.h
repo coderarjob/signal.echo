@@ -20,11 +20,17 @@
 #define TWO_PULSES_TEST_DELAY_LOOP_COUNT        65535U
 #define TWO_PULSES_TEST_PULSE_WIDTH             23U
 
+#define SAWTOOTH_TEST_HIGH_LEVEL                0x3F
+#define SAWTOOTH_TEST_LOW_LEVEL                 0x00
+#define SAWTOOTH_TEST_INCREMENT                 0x01
+#define SAWTOOTH_TEST_DELAY_LOOP_COUNT          0x00
+
 typedef enum TestModes {
     UNKNOWN_TEST,
     USART_TEST,
     RUNT_PULSE,
     TWO_PULSES_TEST,
+    SAWTOOTH_TEST,
     TEST_COUNT
 } TestModes;
 
@@ -36,3 +42,4 @@ void mode_reset();
 void usart_test();
 void runt_pulse_test();
 void two_pulses_test();
+void sawtooth_test();

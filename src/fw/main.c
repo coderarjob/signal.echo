@@ -94,6 +94,9 @@ __attribute__ ((noreturn)) int main (void)
         case TWO_PULSES_TEST:
             two_pulses_test();
             break;
+        case SAWTOOTH_TEST:
+            sawtooth_test();
+            break;
         default:
             hal_impl_panic();
             break;
