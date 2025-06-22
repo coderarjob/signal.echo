@@ -124,9 +124,6 @@ void sawtooth_test()
 
     while (!mode_is_dirty()) {
         HAL_IO_OUT_WRITE (SAWTOOTH_TEST_OUTPUT_GPIO, value);
-#if SAWTOOTH_TEST_DELAY_LOOP_COUNT > 0
-        HAL_LOOP_DELAY (SAWTOOTH_TEST_DELAY_LOOP_COUNT);
-#endif
         value += SAWTOOTH_TEST_INCREMENT;
         if (value > SAWTOOTH_TEST_HIGH_LEVEL) {
             value = SAWTOOTH_TEST_LOW_LEVEL;
@@ -160,9 +157,6 @@ void triangle_test()
         if (value == TRIANGLE_TEST_HIGH_LEVEL || value == TRIANGLE_TEST_LOW_LEVEL) {
             isRising = !isRising;
         }
-#if TRIANGLE_TEST_DELAY_LOOP_COUNT > 0
-        HAL_LOOP_DELAY (triangle_TEST_DELAY_LOOP_COUNT);
-#endif
     }
     triangle_test_exit();
 }

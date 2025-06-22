@@ -23,12 +23,10 @@
 #define SAWTOOTH_TEST_HIGH_LEVEL                0x3F
 #define SAWTOOTH_TEST_LOW_LEVEL                 0x00
 #define SAWTOOTH_TEST_INCREMENT                 0x01
-#define SAWTOOTH_TEST_DELAY_LOOP_COUNT          0x00
 
 #define TRIANGLE_TEST_HIGH_LEVEL                0x3F
 #define TRIANGLE_TEST_LOW_LEVEL                 0x00
 #define TRIANGLE_TEST_INCREMENT                 0x01
-#define TRIANGLE_TEST_DELAY_LOOP_COUNT          0x00
 
 typedef enum TestModes {
     UNKNOWN_TEST,
