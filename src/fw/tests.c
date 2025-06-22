@@ -134,3 +134,35 @@ void sawtooth_test()
     }
     sawtooth_test_exit();
 }
+
+static inline void triangle_test_init()
+{
+    HAL_IO_MAKE_OUTPUT (TRIANGLE_TEST_OUTPUT_GPIO, TRIANGLE_TEST_OUTPUT_PIN_MASK);
+}
+
+static inline void triangle_test_exit()
+{
+    HAL_IO_OUT_LOW (TRIANGLE_TEST_OUTPUT_GPIO, TRIANGLE_TEST_OUTPUT_PIN_MASK);
+}
+
+void triangle_test()
+{
+    uint16_t value = TRIANGLE_TEST_LOW_LEVEL;
+    bool isRising  = true;
+
+    triangle_test_init();
+
+    while (!mode_is_dirty()) {
+        HAL_IO_OUT_WRITE (TRIANGLE_TEST_OUTPUT_GPIO, value);
+
+        value = (isRising) ? value + TRIANGLE_TEST_INCREMENT : value - TRIANGLE_TEST_INCREMENT;
+
+        if (value == TRIANGLE_TEST_HIGH_LEVEL || value == TRIANGLE_TEST_LOW_LEVEL) {
+            isRising = !isRising;
+        }
+#if TRIANGLE_TEST_DELAY_LOOP_COUNT > 0
+        HAL_LOOP_DELAY (triangle_TEST_DELAY_LOOP_COUNT);
+#endif
+    }
+    triangle_test_exit();
+}

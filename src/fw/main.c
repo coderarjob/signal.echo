@@ -97,6 +97,9 @@ __attribute__ ((noreturn)) int main (void)
         case SAWTOOTH_TEST:
             sawtooth_test();
             break;
+        case TRIANGLE_TEST:
+            triangle_test();
+            break;
         default:
             hal_impl_panic();
             break;
