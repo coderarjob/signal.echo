@@ -27,6 +27,14 @@ along with firmware in this repo.
 
 ![Negative runt pulse](docs/images/burst_pulses.png)
 
+##### 5. Triangle wave
+
+![Triangle wave](docs/images/triangle_wave.png)
+
+##### 6. Sawtooth wave
+
+![Sawtooth wave](docs/images/sawtooth_wave.png)
+
 ### Goals
 
 - [X] Firmware: RS232 sample output (positive)
@@ -34,6 +42,8 @@ along with firmware in this repo.
 - [ ] Firmware: I2C sample output
 - [X] Firmware: Runt pulse (+ve & -ve runt pulses)
 - [ ] Firmware: Sine wave pattern
+- [X] Firmware: Triangle wave pattern
+- [X] Firmware: Sawtooth wave pattern
 - [X] Firmware: Burst data in two lines
 - [X] Firmware: Separate arch independent codes
 - [X] Unittests: Add unittests for utils
