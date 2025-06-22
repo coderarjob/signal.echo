@@ -20,6 +20,9 @@
 #define TWO_PULSES_TEST_DELAY_LOOP_COUNT        65535U
 #define TWO_PULSES_TEST_PULSE_WIDTH             23U
 
+#define DAC_WIDTH_BITS                          6U
+#define DAC_WIDTH_MAX_VALUE                     64U
+
 #define SAWTOOTH_TEST_HIGH_LEVEL                0x3F
 #define SAWTOOTH_TEST_LOW_LEVEL                 0x00
 #define SAWTOOTH_TEST_INCREMENT                 0x01

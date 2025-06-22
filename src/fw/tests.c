@@ -119,15 +119,14 @@ static inline void sawtooth_test_exit()
 void sawtooth_test()
 {
     uint16_t value = SAWTOOTH_TEST_LOW_LEVEL;
-
     sawtooth_test_init();
 
     while (!mode_is_dirty()) {
-        HAL_IO_OUT_WRITE (SAWTOOTH_TEST_OUTPUT_GPIO, value);
-        value += SAWTOOTH_TEST_INCREMENT;
-        if (value > SAWTOOTH_TEST_HIGH_LEVEL) {
-            value = SAWTOOTH_TEST_LOW_LEVEL;
+        for (unsigned i = 0; i < DAC_WIDTH_MAX_VALUE; i++) {
+            HAL_IO_OUT_WRITE (SAWTOOTH_TEST_OUTPUT_GPIO, value);
+            value++;
         }
+        value = SAWTOOTH_TEST_LOW_LEVEL;
     }
     sawtooth_test_exit();
 }
@@ -145,17 +144,23 @@ static inline void triangle_test_exit()
 void triangle_test()
 {
     uint16_t value = TRIANGLE_TEST_LOW_LEVEL;
-    bool isRising  = true;
 
     triangle_test_init();
 
     while (!mode_is_dirty()) {
-        HAL_IO_OUT_WRITE (TRIANGLE_TEST_OUTPUT_GPIO, value);
-
-        value = (isRising) ? value + TRIANGLE_TEST_INCREMENT : value - TRIANGLE_TEST_INCREMENT;
-
-        if (value == TRIANGLE_TEST_HIGH_LEVEL || value == TRIANGLE_TEST_LOW_LEVEL) {
-            isRising = !isRising;
+        value = SAWTOOTH_TEST_LOW_LEVEL;
+        for (unsigned i = 0; i < DAC_WIDTH_MAX_VALUE; i++) {
+            HAL_IO_OUT_WRITE (TRIANGLE_TEST_OUTPUT_GPIO, value);
+            value++;
+        }
+        value = SAWTOOTH_TEST_HIGH_LEVEL;
+        for (unsigned i = 0; i < DAC_WIDTH_MAX_VALUE; i++) {
+            HAL_IO_OUT_WRITE (TRIANGLE_TEST_OUTPUT_GPIO, value);
+            value--;
+            // The below instructions is hacky way to make the number of instructions for the
+            // falling egde same as the rising one above. Its hacky because it depends on the
+            // compiler generated instructions.
+            __asm__ volatile("nop");
         }
     }
     triangle_test_exit();
