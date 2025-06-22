@@ -30,10 +30,14 @@ along with firmware in this repo.
 ##### 5. Triangle wave
 
 ![Triangle wave](docs/images/triangle_wave.png)
+![Triangle wave](docs/images/triangle_wave_freq_dist.png)
+![Triangle wave](docs/images/triangle_wave_fft.png)
 
 ##### 6. Sawtooth wave
 
 ![Sawtooth wave](docs/images/sawtooth_wave.png)
+![Sawtooth wave](docs/images/sawtooth_wave_freq_dist.png)
+![Sawtooth wave](docs/images/sawtooth_wave_fft.png)
 
 ### Goals
 
