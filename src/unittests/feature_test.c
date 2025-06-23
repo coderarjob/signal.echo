@@ -187,6 +187,78 @@ YT_TEST (two_pulses, two_pulse_test_normal)
     YT_END();
 }
 
+YT_TEST (sawtooth, sawtooth_test_normal)
+{
+    unsigned int iter_num        = 2;
+    mode_is_dirty_fake.resources = &iter_num;
+    mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
+
+    // sawtooth_test_init
+    YT_MUST_CALL_IN_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (SAWTOOTH_TEST_OUTPUT_GPIO),
+                           YT_V (SAWTOOTH_TEST_OUTPUT_PIN_MASK));
+
+    // sawtooth test body
+    for (unsigned i = 0; i < iter_num; i++) {
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (SAWTOOTH_TEST_OUTPUT_GPIO),
+                               YT_V (SAWTOOTH_TEST_LOW_LEVEL));
+
+        YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (DAC_WIDTH_MAX_VALUE - 2, HAL_IO_OUT_WRITE,
+                                             YT_V (SAWTOOTH_TEST_OUTPUT_GPIO), _);
+
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (SAWTOOTH_TEST_OUTPUT_GPIO),
+                               YT_V (SAWTOOTH_TEST_HIGH_LEVEL));
+    }
+
+    // sawtooth_test_exit
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (SAWTOOTH_TEST_OUTPUT_GPIO),
+                           YT_V (SAWTOOTH_TEST_OUTPUT_PIN_MASK));
+    sawtooth_test();
+    YT_END();
+}
+
+YT_TEST (triangle, triangle_test_normal)
+{
+    unsigned int iter_num        = 2;
+    mode_is_dirty_fake.resources = &iter_num;
+    mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
+
+    // triangle_test_init
+    YT_MUST_CALL_IN_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (TRIANGLE_TEST_OUTPUT_GPIO),
+                           YT_V (TRIANGLE_TEST_OUTPUT_PIN_MASK));
+
+    // triangle test body
+    for (unsigned i = 0; i < iter_num; i++) {
+        // triangle test body (rising edge)
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (TRIANGLE_TEST_OUTPUT_GPIO),
+                               YT_V (TRIANGLE_TEST_LOW_LEVEL));
+
+        YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (DAC_WIDTH_MAX_VALUE - 2, HAL_IO_OUT_WRITE,
+                                             YT_V (TRIANGLE_TEST_OUTPUT_GPIO), _);
+
+        // At the end of the rising edge we must have reached the HIGH level. Since that is also the
+        // level at which the falling egde must start, we check this condition once.
+        //
+        // However depending on the implementation HAL_IO_OUT_WRITE (for the HIGH level) might get
+        // called twice (once at the end of the rising ege and another immediately afterwards at the
+        // start of the falling edge). Both these cases would be considered valid by this test.
+        //
+        // Similar thing happen at the transision fron falling to rising edge.
+
+        // triangle test body (falling edge)
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (TRIANGLE_TEST_OUTPUT_GPIO),
+                               YT_V (TRIANGLE_TEST_HIGH_LEVEL));
+
+        YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (DAC_WIDTH_MAX_VALUE - 2, HAL_IO_OUT_WRITE,
+                                             YT_V (TRIANGLE_TEST_OUTPUT_GPIO), _);
+    }
+
+    // triangle_test_exit
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (TRIANGLE_TEST_OUTPUT_GPIO),
+                           YT_V (TRIANGLE_TEST_OUTPUT_PIN_MASK));
+    triangle_test();
+    YT_END();
+}
+
 void reset()
 {
     reset_all_mocks();
@@ -199,5 +271,7 @@ int main (void)
     runt_pulse_test_normal_pulses();
     runt_pulse_test_runt_pulses();
     two_pulse_test_normal();
+    sawtooth_test_normal();
+    triangle_test_normal();
     YT_RETURN_WITH_REPORT();
 }
