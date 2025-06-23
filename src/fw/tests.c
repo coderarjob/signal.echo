@@ -157,10 +157,12 @@ void triangle_test()
         for (unsigned i = 0; i < DAC_WIDTH_MAX_VALUE; i++) {
             HAL_IO_OUT_WRITE (TRIANGLE_TEST_OUTPUT_GPIO, value);
             value--;
+#ifndef UNITTESTS
             // The below instructions is hacky way to make the number of instructions for the
             // falling egde same as the rising one above. Its hacky because it depends on the
             // compiler generated instructions.
             __asm__ volatile("nop");
+#endif // UNITTESTS
         }
     }
     triangle_test_exit();
