@@ -167,3 +167,96 @@ void triangle_test()
     }
     triangle_test_exit();
 }
+
+static inline void i2c_test_init()
+{
+    HAL_IO_MAKE_OUTPUT (I2C_TEST_OUTPUT_GPIO, I2C_TEST_OUTPUT_PIN_MASK);
+
+    // In idle state both SDL, SCL are high
+    HAL_IO_OUT_HIGH (I2C_TEST_OUTPUT_GPIO, I2C_TEST_OUTPUT_PIN_MASK);
+}
+
+static inline void i2c_test_exit()
+{
+    // In idle state both SDL, SCL are high
+    HAL_IO_OUT_HIGH (I2C_TEST_OUTPUT_GPIO, I2C_TEST_OUTPUT_PIN_MASK);
+}
+
+#define I2C_TEST_SDA_HIGH() HAL_IO_OUT_HIGH (I2C_TEST_OUTPUT_GPIO, I2C_TEST_OUTPUT_PIN_SDA_MASK);
+
+#define I2C_TEST_SDA_LOW()  HAL_IO_OUT_LOW (I2C_TEST_OUTPUT_GPIO, I2C_TEST_OUTPUT_PIN_SDA_MASK);
+
+#define I2C_TEST_SCL_HIGH()                                                   \
+    do {                                                                      \
+        HAL_LOOP_DELAY (I2C_TEST_SCL_HOLD_DELAY / 2);                         \
+        HAL_IO_OUT_HIGH (I2C_TEST_OUTPUT_GPIO, I2C_TEST_OUTPUT_PIN_SCL_MASK); \
+        HAL_LOOP_DELAY (I2C_TEST_SCL_HOLD_DELAY / 2);                         \
+    } while (0)
+
+#define I2C_TEST_SCL_LOW()                                                   \
+    do {                                                                     \
+        HAL_LOOP_DELAY (I2C_TEST_SCL_HOLD_DELAY / 2);                        \
+        HAL_IO_OUT_LOW (I2C_TEST_OUTPUT_GPIO, I2C_TEST_OUTPUT_PIN_SCL_MASK); \
+        HAL_LOOP_DELAY (I2C_TEST_SCL_HOLD_DELAY / 2);                        \
+    } while (0)
+
+static inline void i2c_start()
+{
+    // Start bit: SDA pulled low while SCL is high.
+    I2C_TEST_SCL_HIGH();
+    I2C_TEST_SDA_LOW();
+}
+
+static inline void i2c_stop()
+{
+    // In preparation to the stop bit, we pull the SDA line low with an extra clock pulse.
+    I2C_TEST_SCL_LOW();
+    I2C_TEST_SDA_LOW();
+
+    // Stop bit: SDA pulled high while SCL is high.
+    I2C_TEST_SCL_HIGH();
+    I2C_TEST_SDA_HIGH();
+}
+
+static void i2c_send_byte (uint8_t b)
+{
+    for (unsigned i = 0; i < 8; i++, b = b << 1) {
+        I2C_TEST_SCL_LOW();
+        if (b & 0x80) {
+            I2C_TEST_SDA_HIGH();
+        } else {
+            I2C_TEST_SDA_LOW();
+        }
+        I2C_TEST_SCL_HIGH();
+    }
+
+    // Send ACK
+    // One extra clock pulse when SDA is low
+    I2C_TEST_SCL_LOW();
+    I2C_TEST_SDA_LOW();
+    I2C_TEST_SCL_HIGH();
+    HAL_LOOP_DELAY (20);
+}
+
+void i2c_test()
+{
+    i2c_test_init();
+    while (!mode_is_dirty()) {
+        // Start the packet
+        i2c_start();
+
+        // Send address, always is 0x5
+        i2c_send_byte ((5 << 1) | 1); // Address = 5, R/W bit = 1
+
+        // Send data as ASCII string
+        for (char* c = I2C_TEST_STRING; *c != '\0'; c++) {
+            i2c_send_byte (*c);
+        }
+        // Packet finished
+        i2c_stop();
+
+        // Some delay before next packet.
+        HAL_LOOP_DELAY (40);
+    }
+    i2c_test_exit();
+}

@@ -100,6 +100,9 @@ __attribute__ ((noreturn)) int main (void)
         case TRIANGLE_TEST:
             triangle_test();
             break;
+        case I2C_TEST:
+            i2c_test();
+            break;
         default:
             hal_impl_panic();
             break;

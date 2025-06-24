@@ -15,11 +15,13 @@ along with firmware in this repo.
 
 ![rs232](docs/images/usart.png)
 
-##### 2. Positive Runt pulse
+##### 2. Serial I2C decoding test
+
+![rs232](docs/images/i2c.png)
+
+##### 3. Positive & negative Runt detection pulse
 
 ![Positive runt pulse](docs/images/positive_runt.png)
-
-##### 3. Negative Runt pulse
 
 ![Negative runt pulse](docs/images/negative_runt.png)
 
@@ -43,7 +45,7 @@ along with firmware in this repo.
 
 - [X] Firmware: RS232 sample output (positive)
 - [ ] Firmware: RS232 sample output (negative)
-- [ ] Firmware: I2C sample output
+- [X] Firmware: I2C sample output
 - [X] Firmware: Runt pulse (+ve & -ve runt pulses)
 - [ ] Firmware: Sine wave pattern
 - [X] Firmware: Triangle wave pattern

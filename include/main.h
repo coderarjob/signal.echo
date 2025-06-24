@@ -31,6 +31,9 @@
 #define TRIANGLE_TEST_LOW_LEVEL                 0x00
 #define TRIANGLE_TEST_INCREMENT                 0x01
 
+#define I2C_TEST_SCL_HOLD_DELAY                 10
+#define I2C_TEST_STRING                         "Hello"
+
 typedef enum TestModes {
     UNKNOWN_TEST,
     USART_TEST,
@@ -38,6 +41,7 @@ typedef enum TestModes {
     TWO_PULSES_TEST,
     SAWTOOTH_TEST,
     TRIANGLE_TEST,
+    I2C_TEST,
     TEST_COUNT
 } TestModes;
 
@@ -51,3 +55,4 @@ void runt_pulse_test();
 void two_pulses_test();
 void sawtooth_test();
 void triangle_test();
+void i2c_test();
