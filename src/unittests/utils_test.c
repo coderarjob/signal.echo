@@ -144,6 +144,7 @@ void reset()
 
 int main (void)
 {
+    YT_INIT();
     high8();
     low8();
     bits_clear_mask();
@@ -153,5 +154,5 @@ int main (void)
     is_bit_set_mask();
     is_bit_set();
     bit_mask_creation();
-    return 0;
+    YT_RETURN_WITH_REPORT();
 }

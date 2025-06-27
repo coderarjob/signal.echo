@@ -39,9 +39,9 @@
 #include <stdarg.h>
 
 /*
- * =================================================================================
+ * ========================================================================================
  * SECTION 0: SUPPORTING
- * =================================================================================
+ * ========================================================================================
  * */
 
 /* ----------------------------------------------------------------------------
@@ -115,36 +115,30 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
 #define YT_PRI_FAILED(t, fnt, ...)                                                     \
     do {                                                                               \
-        yt_pri_failed_test_count++;                                                    \
+        yt_pri_current_testrecord->failed_exp_count++;                                 \
         printf ("\n  %s** FAIL ** %s: %-20s: ", YT_PRI_COL_RED, YT_PRI_COL_RESET, #t); \
         printf (fnt, ##__VA_ARGS__);                                                   \
     } while (0)
 
-#define YT_RETURN_WITH_REPORT()                                                               \
-    do {                                                                                      \
-        if (yt_pri_failed_test_count == 0) {                                                  \
-            printf ("\n  %sAll tests passed [%d of %d failed]%s\n", YT_PRI_COL_GREEN,         \
-                    yt_pri_failed_test_count, yt_pri_total_test_count, YT_PRI_COL_RESET);     \
-        } else {                                                                              \
-            printf ("\n  %s** Not all tests passed ** [%d of %d failed]%s\n", YT_PRI_COL_RED, \
-                    yt_pri_failed_test_count, yt_pri_total_test_count, YT_PRI_COL_RESET);     \
-        }                                                                                     \
-        return yt_pri_failed_test_count;                                                      \
+#define YT_PRI_PANIC(str)                                            \
+    do {                                                             \
+        printf ("YT_PRI_PANIC! %s.\n", (str) == NULL ? "" : str);    \
+        printf ("   at %s:%d in %s.", __func__, __LINE__, __FILE__); \
+        exit (1);                                                    \
     } while (0)
+
 /*
- * =================================================================================
- * FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
- * =================================================================================
- * SECTION 1: RECORD CALL MACROS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
+ * ========================================================================================
+ * 1.1: RECORD CALL MACROS
+ * ========================================================================================
  * */
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 
 #ifndef YUKTI_TEST_NO_MUST_CALL
-extern uint32_t yt_pri_total_test_count;
-extern uint32_t yt_pri_failed_test_count;
 
 void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
                             const char* const sourceFileName, int n, const char* const fn, ...);
@@ -191,11 +185,11 @@ typedef struct YT_PRI_Arg {
 #endif /* YUKTI_TEST_NO_MUST_CALL */
 
 /*
- * =================================================================================
- * FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
- * =================================================================================
- * SECTION 1.1: MOCKS TO CREATE FAKE/MOCK FUNCTION DEFINITIONS & DECLARATIONS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
+ * ========================================================================================
+ * 1.2: MOCKS TO CREATE FAKE/MOCK FUNCTION DEFINITIONS & DECLARATIONS
+ * ========================================================================================
  * */
 void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 
@@ -305,28 +299,113 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 #define YT_RESET_MOCK(f) memset (&YT_PRI_STRUCT_VAR (f), 0, sizeof (YT_PRI_STRUCT_VAR (f)))
 
 /*
- * =================================================================================
- * FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE AND TEXT EXPECTATIONS
- * =================================================================================
- * SECTION 2: FUNCTION & MACROS TO TEST EXPECTATIONS ON FUNCTION CALLS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
+ * ========================================================================================
+ * 2.1: FOR REPORTING LIST OF FALIED TESTS IN THE END.
+ * ========================================================================================
  * */
 #ifdef YUKTI_TEST_IMPLEMENTATION
-uint32_t yt_pri_total_test_count  = 0;
-uint32_t yt_pri_failed_test_count = 0;
 
-    #ifndef YUKTI_TEST_NO_MUST_CALL
+    #define YT_PRI_MAX_TEST_FUNCTION_NAME_LENGTH 250
+    #define YT_PRI_EXIT_FAILURE                  1
+    #define YT_PRI_EXIT_SUCCESS                  0
 
+typedef struct YT_PRI_TestRecord {
+    char test_function_name[YT_PRI_MAX_TEST_FUNCTION_NAME_LENGTH];
+    uint32_t total_exp_count;
+    uint32_t failed_exp_count;
+    ACL_ListNode failedTestListNode;
+} YT_PRI_TestRecord;
+
+static ACL_ListNode yt_pri_failedTestsListHead;
+static YT_PRI_TestRecord* yt_pri_current_testrecord = NULL;
+static uint32_t yt_pri_total_test_count             = 0;
+static uint32_t yt_pri_failed_test_count            = 0;
+
+static YT_PRI_TestRecord* yt_pri_create_testRecord (char* testname)
+{
+    assert (testname != NULL);
+
+    YT_PRI_TestRecord* newrec = NULL;
+    if (!(newrec = calloc (1, sizeof (YT_PRI_TestRecord)))) {
+        perror ("malloc");
+        YT_PRI_PANIC (NULL);
+    }
+
+    newrec->total_exp_count  = 0;
+    newrec->failed_exp_count = 0;
+    strncpy (newrec->test_function_name, testname, YT_PRI_MAX_TEST_FUNCTION_NAME_LENGTH - 1);
+    acl_list_init (&newrec->failedTestListNode);
+
+    return newrec;
+}
+
+static void yt_pri_free_testRecord (YT_PRI_TestRecord* trecord)
+{
+    // Expectation: Input pointers are not NULL. They are not user facing!
+    assert (trecord != NULL);
+    free (trecord);
+}
+
+    #define YT_INIT()                                    \
+        do {                                             \
+            acl_list_init (&yt_pri_failedTestsListHead); \
+            yt_pri_total_test_count = 0;                 \
+        } while (0)
+
+    #define YT_RETURN_WITH_REPORT()                                                           \
+        do {                                                                                  \
+            printf ("\n%s[ Tests Summary ]%s", YT_PRI_COL_HIGHLIGHT, YT_PRI_COL_RESET);       \
+            if (yt_pri_failed_test_count == 0) {                                              \
+                printf ("\n  %sAll tests passed [0 of %d failed]%s\n", YT_PRI_COL_GREEN,      \
+                        yt_pri_total_test_count, YT_PRI_COL_RESET);                           \
+            } else {                                                                          \
+                printf ("\n%sNot all tests passed [%d of %d failed]%s", YT_PRI_COL_RED,       \
+                        yt_pri_failed_test_count, yt_pri_total_test_count, YT_PRI_COL_RESET); \
+                ACL_ListNode* node;                                                           \
+                acl_list_for_each (&yt_pri_failedTestsListHead, node)                         \
+                {                                                                             \
+                    YT_PRI_TestRecord* test = ACL_LIST_ITEM (node, YT_PRI_TestRecord,         \
+                                                             failedTestListNode);             \
+                    printf ("\n    %s* '%s' test failed%s", YT_PRI_COL_RED,                   \
+                            test->test_function_name, YT_PRI_COL_RESET);                      \
+                }                                                                             \
+            }                                                                                 \
+            printf ("\n");                                                                    \
+            return yt_pri_failed_test_count == 0 ? YT_PRI_EXIT_SUCCESS : YT_PRI_EXIT_FAILURE; \
+        } while (0)
+
+    /*
+     * ========================================================================================
+     * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
+     * ========================================================================================
+     * 2.2: FUNCTION & MACROS TO TEST EXPECTATIONS ON FUNCTION CALLS
+     * ========================================================================================
+     * */
+    #ifdef YUKTI_TEST_NO_MUST_CALL
+        // Compilation will fail since the these macros will expand to invalid C code.
+        #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
+
+        #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
+
+        #define yt_pri_validate_expectations() (void)0
+        #define yt_pri_teardown()              (void)0
+        #define yt_pri_ec_init()               (void)0
+    #else
         #define YT_MUST_NEVER_CALL(f, ...)                                                        \
             do {                                                                                  \
-                yt_pri_total_test_count++;                                                        \
+                yt_pri_current_testrecord->total_exp_count++;                                     \
                 yt_pri_add_callrecord (&yt_pri_neverCallExceptationsListHead, __LINE__, __FILE__, \
                                        YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__);   \
             } while (0)
 
         #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
             do {                                                                                \
-                yt_pri_total_test_count++;                                                      \
+                yt_pri_current_testrecord->total_exp_count++;                                   \
                 yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead, __LINE__, __FILE__,  \
                                        YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
             } while (0)
@@ -338,7 +417,7 @@ uint32_t yt_pri_failed_test_count = 0;
 
         #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
             do {                                                                                \
-                yt_pri_total_test_count++;                                                      \
+                yt_pri_current_testrecord->total_exp_count++;                                   \
                 yt_pri_add_callrecord (&yt_pri_globalExceptationListHead, __LINE__, __FILE__,   \
                                        YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
             } while (0)
@@ -348,31 +427,13 @@ uint32_t yt_pri_failed_test_count = 0;
                 YT_MUST_CALL_ANY_ORDER (f, ##__VA_ARGS__);      \
             }
 
-    #else
-        // Compilation will fail since the these macros will expand to invalid C code.
-        #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
-
-        #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
-        #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT_PRI_ERROR_MESSAGE
-        #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
-        #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
-
-    #endif /* YUKTI_TEST_NO_MUST_CALL */
-
-    #define YT_PRI_MAX_STRING_SIZE          250
-    #define YT_PRI_MAX_SOURCE_FILE_NAME_LEN 250
-    #define YT_PRI_ARG_OPTIONAL_CHAR        '!'
-    #define YT_PRI_ARG_SEPARATOR_CHAR       ','
-
-    #define YT_PRI_PANIC(str)                                            \
-        do {                                                             \
-            printf ("YT_PRI_PANIC! %s.\n", (str) == NULL ? "" : str);    \
-            printf ("   at %s:%d in %s.", __func__, __LINE__, __FILE__); \
-            exit (1);                                                    \
-        } while (0)
+        #define YT_PRI_MAX_CALLSTRING_SIZE      250
+        #define YT_PRI_MAX_SOURCE_FILE_NAME_LEN 250
+        #define YT_PRI_ARG_OPTIONAL_CHAR        '!'
+        #define YT_PRI_ARG_SEPARATOR_CHAR       ','
 
 typedef struct YT_PRI_CallRecord {
-    char callString[YT_PRI_MAX_STRING_SIZE];
+    char callString[YT_PRI_MAX_CALLSTRING_SIZE];
     enum {
         YT_CALLRECORD_TYPE_ORDERED_EXPECTATION,
         YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION,
@@ -388,13 +449,13 @@ static bool yt_pri_match_call_strings (const char* exp, const char* actual);
 static void yt_pri_string_append (char* str, size_t size, const char* const fmt, ...);
 static void yt_pri_call_record_free (YT_PRI_CallRecord* node);
 static void yt_pri_free_call_list (ACL_ListNode* head);
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
 static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-    #else
+        #else
 static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
 
 static void yt_pri_print_unmet_expectations();
 static void yt_pri_validate_expectations();
@@ -478,13 +539,13 @@ static void yt_pri_call_record_free (YT_PRI_CallRecord* node)
     free (node);
 }
 
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
 void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                 const char* const fn, va_list l)
-    #else
+        #else
 void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n, const char* const fn,
                                 va_list l)
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
 {
     // Expectation: Input pointers are not NULL and Buffer size > 0. They are not user facing!
     assert (buffer != NULL && fn != NULL && buffer_size > 0);
@@ -496,10 +557,10 @@ void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n, const c
         char separator  = (i == 0) ? ' ' : YT_PRI_ARG_SEPARATOR_CHAR;
 
         if (item.isOpt) {
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
             // Expectation: Actual call list must not have optional arguments
             assert (head != &yt_pri_actualCallListHead);
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
             yt_pri_string_append (buffer, buffer_size, "%c%c", separator, YT_PRI_ARG_OPTIONAL_CHAR);
         } else {
             yt_pri_string_append (buffer, buffer_size, "%c%d", separator, item.val);
@@ -514,9 +575,11 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
 {
     YT_PRI_CallRecord* newrec = NULL;
     if (!(newrec = malloc (sizeof (YT_PRI_CallRecord)))) {
+        perror ("malloc");
         YT_PRI_PANIC (NULL);
     }
     if (!(newrec->sourceFileName = malloc (sizeof (char) * YT_PRI_MAX_SOURCE_FILE_NAME_LEN))) {
+        perror ("malloc");
         YT_PRI_PANIC (NULL);
     }
 
@@ -536,15 +599,15 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
     acl_list_add_before (head, &newrec->listNode);
     newrec->callString[0]    = '\0';
     newrec->sourceLineNumber = sourceLineNumber;
-    strncpy (newrec->sourceFileName, sourceFileName, YT_PRI_MAX_SOURCE_FILE_NAME_LEN);
+    strncpy (newrec->sourceFileName, sourceFileName, YT_PRI_MAX_SOURCE_FILE_NAME_LEN - 1);
 
     va_list l;
     va_start (l, fn);
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
     yt_pri_create_call_string (head, newrec->callString, sizeof (newrec->callString), n, fn, l);
-    #else
+        #else
     yt_pri_create_call_string (newrec->callString, sizeof (newrec->callString), n, fn, l);
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
     va_end (l);
 }
 
@@ -590,7 +653,7 @@ void yt_pri_print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedLi
         }
     }
 
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
     printf ("\n  Actual order of functions calls was the following:\n");
     acl_list_for_each (&yt_pri_actualCallListHead, node)
     {
@@ -601,7 +664,7 @@ void yt_pri_print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedLi
 
         printf ("    * %s\n", item->callString);
     }
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
 }
 
 void yt_pri_validate_expectations()
@@ -688,14 +751,15 @@ static void yt_pri_ec_init()
     acl_list_init (&yt_pri_orderedExceptationListHead);
     acl_list_init (&yt_pri_actualCallListHead);
 }
-#endif /* YUKTI_TEST_IMPLEMENTATION */
+    #endif     /* YUKTI_TEST_NO_MUST_CALL */
+#endif         /* YUKTI_TEST_IMPLEMENTATION */
 
 /*
- * =================================================================================
- * FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE AND TEXT EXPECTATIONS
- * =================================================================================
- * SECTION 2.1: FUNCTION & MACROS TO TEST STATE EXPECTATIONS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
+ * ========================================================================================
+ * 2.3: FUNCTION & MACROS TO TEST STATE EXPECTATIONS
+ * ========================================================================================
  * */
 #ifdef YUKTI_TEST_IMPLEMENTATION
 static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, int* i);
@@ -705,7 +769,7 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         do {                                                          \
             __auto_type ut_a = (a);                                   \
             __auto_type ut_b = (b);                                   \
-            yt_pri_total_test_count++;                                \
+            yt_pri_current_testrecord->total_exp_count++;             \
             if (ut_a o ut_b)                                          \
                 YT_PRI_PASSED (a o b);                                \
             else                                                      \
@@ -716,7 +780,7 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         do {                                                                                \
             __auto_type ut_a = (a);                                                         \
             __auto_type ut_b = (b);                                                         \
-            yt_pri_total_test_count++;                                                      \
+            yt_pri_current_testrecord->total_exp_count++;                                   \
             int i;                                                                          \
             if (ut_equal_mem (ut_a, ut_b, sz, &i) o 1)                                      \
                 YT_PRI_PASSED (a o b);                                                      \
@@ -728,7 +792,7 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         do {                                                                                \
             __auto_type ut_a = (a);                                                         \
             __auto_type ut_b = (b);                                                         \
-            yt_pri_total_test_count++;                                                      \
+            yt_pri_current_testrecord->total_exp_count++;                                   \
             int i;                                                                          \
             if (ut_equal_string (ut_a, ut_b, &i) o 1)                                       \
                 YT_PRI_PASSED (a o b);                                                      \
@@ -754,16 +818,37 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         {                                                                                    \
             reset();                                                                         \
             yt_pri_ec_init();                                                                \
+            yt_pri_total_test_count++;                                                       \
+            /* Following assert ensures we are not overriding it. It was taken cared of      \
+             * in the previous test's YT_END. */                                             \
+            assert (yt_pri_current_testrecord == NULL);                                      \
+            yt_pri_current_testrecord = yt_pri_create_testRecord (#fn);                      \
             printf ("%s[%20s - %-20s]%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
             do
 
-    #define YT_END()                    \
-        yt_pri_validate_expectations(); \
-        yt_pri_teardown();              \
-        }                               \
-        while (0)                       \
-            ;                           \
-        printf ("\n")
+    // clang-format off
+    #define YT_END()                                                              \
+        yt_pri_validate_expectations();                                           \
+        yt_pri_teardown();                                                        \
+        if (yt_pri_current_testrecord->failed_exp_count != 0) {                   \
+            /* Add test to failed test list */                                    \
+            printf ("\n  %sSome test expectations failed [%d of %d failed]%s",    \
+                    YT_PRI_COL_RED, yt_pri_current_testrecord->failed_exp_count,  \
+                    yt_pri_current_testrecord->total_exp_count, YT_PRI_COL_RESET);\
+            yt_pri_failed_test_count++;                                           \
+            acl_list_add_before (&yt_pri_failedTestsListHead,                     \
+                                 &yt_pri_current_testrecord->failedTestListNode); \
+        } else {                                                                  \
+            printf ("\n  %sAll test expectations passed [0 of %d failed]%s",      \
+                    YT_PRI_COL_GREEN, yt_pri_current_testrecord->total_exp_count, \
+                    YT_PRI_COL_RESET);                                            \
+            yt_pri_free_testRecord (yt_pri_current_testrecord);                   \
+        }                                                                         \
+        yt_pri_current_testrecord = NULL;                                         \
+        /* following '}' is for closing YT_TEST's do loop */                      \
+        } while (0);                                                              \
+        printf ("\n");
+// clang-format on
 
 static int yt_pri_equal_string (const char* a, const char* b, int* i)
 {

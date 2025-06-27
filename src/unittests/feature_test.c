@@ -266,6 +266,7 @@ void reset()
 
 int main (void)
 {
+    YT_INIT();
     usart_test_normal();
     usart_test_reset_after_char_overflow();
     runt_pulse_test_normal_pulses();

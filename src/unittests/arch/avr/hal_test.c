@@ -212,7 +212,6 @@ YT_TEST (hal, loop_delay)
 {
     YT_MUST_CALL_IN_ORDER (_delay_loop_2, YT_V (0xFF10));
     HAL_LOOP_DELAY (0xFF10);
-    YT_EQ_SCALAR (true, true);
     YT_END();
 }
 
@@ -220,7 +219,6 @@ YT_TEST (hal, interrupt_set)
 {
     YT_MUST_CALL_IN_ORDER (sei);
     HAL_INTERRUPT_SET();
-    YT_EQ_SCALAR (true, true);
     YT_END();
 }
 
@@ -228,7 +226,6 @@ YT_TEST (hal, interrupt_clear)
 {
     YT_MUST_CALL_IN_ORDER (cli);
     HAL_INTERRUPT_CLEAR();
-    YT_EQ_SCALAR (true, true);
     YT_END();
 }
 
@@ -270,6 +267,7 @@ void reset()
 
 int main (void)
 {
+    YT_INIT();
     io_write_byte();
     io_read_byte();
     io_write_bits();
@@ -282,5 +280,5 @@ int main (void)
     interrupt_clear();
     interrupt_set();
     baud_counter();
-    return 0;
+    YT_RETURN_WITH_REPORT();
 }
