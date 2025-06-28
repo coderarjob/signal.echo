@@ -1,140 +1,109 @@
+#include <stdbool.h>
 #include <utils.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #include <yukti.h>
 
-YT_TEST (utils, high8)
+YT_TESTP (utils, high8_16bits, int, int)
 {
-    YT_EQ_SCALAR (HIGH8_16BITS (0xFA13), 0xFA);
-    YT_EQ_SCALAR (HIGH8_16BITS (0x13FA), 0x13);
-    YT_EQ_SCALAR (HIGH8_16BITS (0x13), 0x00);
-    YT_EQ_SCALAR (HIGH8_16BITS (0x00), 0x00);
-    YT_EQ_SCALAR (HIGH8_16BITS (0xFFFF), 0xFF);
-    YT_EQ_SCALAR (HIGH8_32BITS (0x12345678), 0x12);
+    int input = YT_ARG_0();
+    int exp   = YT_ARG_1();
+
+    YT_EQ_SCALAR (HIGH8_16BITS (input), exp);
 
     YT_END();
 }
 
-YT_TEST (utils, low8)
+YT_TESTP (utils, high8_32bits, int, int)
 {
-    YT_EQ_SCALAR (LOW8 (0xFA13), 0x13);
-    YT_EQ_SCALAR (LOW8 (0x13FA), 0xFA);
-    YT_EQ_SCALAR (LOW8 (0x13), 0x13);
-    YT_EQ_SCALAR (LOW8 (0x00), 0x00);
-    YT_EQ_SCALAR (LOW8 (0xFFFF), 0xFF);
-    YT_EQ_SCALAR (LOW8 (0x123456), 0x56);
-    YT_END();
-}
+    int input = YT_ARG_0();
+    int exp   = YT_ARG_1();
 
-YT_TEST (utils, bits_clear_mask)
-{
-    uint32_t v1 = 0xFFFF0000;
-    BIT_CLEAR_MASK (v1, v1);
-    YT_EQ_SCALAR (v1, 0x0);
-
-    uint32_t v2 = 0xFFFF0000;
-    BIT_CLEAR_MASK (v2, 0xFF000000);
-    YT_EQ_SCALAR (v2, 0xFF0000);
-
-    uint32_t v3 = 0xFF;
-    BIT_CLEAR_MASK (v3, 0x1);
-    YT_EQ_SCALAR (v3, 0xFE);
+    YT_EQ_SCALAR (HIGH8_32BITS (input), exp);
 
     YT_END();
 }
 
-YT_TEST (utils, bits_set_mask)
+YT_TESTP (utils, low8, int, int)
 {
-    uint32_t v1 = 0xFFFF0000;
-    BIT_SET_MASK (v1, v1);
-    YT_EQ_SCALAR (v1, v1);
+    int input = YT_ARG_0();
+    int exp   = YT_ARG_1();
 
-    uint32_t v2 = 0xFF00;
-    BIT_SET_MASK (v2, 0xFF0000);
-    YT_EQ_SCALAR (v2, 0xFFFF00);
+    YT_EQ_SCALAR (LOW8 (input), exp);
+    YT_END();
+}
 
-    uint32_t v3 = 0xFE;
-    BIT_SET_MASK (v3, 0x1);
-    YT_EQ_SCALAR (v3, 0xFF);
+YT_TESTP (utils, bits_clear_mask, int, int, int)
+{
+    int data = YT_ARG_0();
+    int mask = YT_ARG_1();
+    int exp  = YT_ARG_2();
+
+    BIT_CLEAR_MASK (data, mask);
+    YT_EQ_SCALAR (data, exp);
 
     YT_END();
 }
 
-YT_TEST (utils, is_bit_set_mask)
+YT_TESTP (utils, bits_set_mask, int, int, int)
 {
-    uint32_t v1 = 0xFFFF0000;
+    int data = YT_ARG_0();
+    int mask = YT_ARG_1();
+    int exp  = YT_ARG_2();
 
-    YT_EQ_SCALAR (IS_BIT_SET_MASK (v1, (1 << 0)), 0);
-    YT_EQ_SCALAR (IS_BIT_SET_MASK (v1, (1 << 15)), 0);
-    YT_EQ_SCALAR (IS_BIT_SET_MASK (v1, (1 << 24)), 1);
-    YT_EQ_SCALAR (IS_BIT_SET_MASK (v1, (1 << 31)), 1);
-
-    // v1 remains unchanged after this
-    YT_EQ_SCALAR (v1, 0xFFFF0000);
+    BIT_SET_MASK (data, mask);
+    YT_EQ_SCALAR (data, exp);
 
     YT_END();
 }
 
-YT_TEST (utils, bits_clear)
+YT_TESTP (utils, is_bit_set_mask, int, int, bool)
 {
-    uint32_t v1 = 0xFFFF0000;
-    BIT_CLEAR (v1, 31);
-    YT_EQ_SCALAR (v1, 0x7FFF0000);
+    int data      = YT_ARG_0();
+    int bit_index = YT_ARG_1();
+    int exp       = YT_ARG_2();
 
-    uint32_t v2 = 0xF0;
-    BIT_CLEAR (v2, 0);
-    YT_EQ_SCALAR (v2, v2);
-
-    uint32_t v3 = 0xFF;
-    BIT_CLEAR (v3, 0);
-    YT_EQ_SCALAR (v3, 0xFE);
+    YT_EQ_SCALAR (IS_BIT_SET_MASK (data, (1 << bit_index)), (int)exp);
+    YT_EQ_SCALAR (IS_BIT_SET (data, bit_index), (int)exp);
+    // data remains unchanged after this
+    YT_EQ_SCALAR (data, YT_ARG_0());
 
     YT_END();
 }
 
-YT_TEST (utils, bits_set)
+YT_TESTP (utils, bits_clear, int, int, int)
 {
-    uint32_t v1 = 0xFFFF0000;
-    BIT_SET (v1, 31);
-    YT_EQ_SCALAR (v1, v1);
+    uint32_t data      = YT_ARG_0();
+    uint32_t bit_index = YT_ARG_1();
+    uint32_t exp       = YT_ARG_2();
 
-    uint32_t v2 = 0xFF00;
-    BIT_SET (v2, 16);
-    BIT_SET (v2, 17);
-    BIT_SET (v2, 18);
-    BIT_SET (v2, 19);
-    YT_EQ_SCALAR (v2, 0xFFF00);
-
-    uint32_t v3 = 0xFE;
-    BIT_SET (v3, 0);
-    YT_EQ_SCALAR (v3, 0xFF);
+    BIT_CLEAR (data, bit_index);
+    YT_EQ_SCALAR (data, exp);
 
     YT_END();
 }
 
-YT_TEST (utils, is_bit_set)
+YT_TESTP (utils, bits_set, int, size_t, int*, int)
 {
-    uint32_t v1 = 0xFFFF0000;
+    uint32_t data            = YT_ARG_0();
+    size_t bit_indices_count = YT_ARG_1();
+    int* bit_index           = YT_ARG_2();
+    uint32_t exp             = YT_ARG_3();
 
-    YT_EQ_SCALAR (IS_BIT_SET (v1, 0), 0);
-    YT_EQ_SCALAR (IS_BIT_SET (v1, 15), 0);
-    YT_EQ_SCALAR (IS_BIT_SET (v1, 24), 1);
-    YT_EQ_SCALAR (IS_BIT_SET (v1, 31), 1);
-
-    // v1 remains unchanged after this
-    YT_EQ_SCALAR (v1, 0xFFFF0000);
+    for (size_t i = 0; i < bit_indices_count; i++) {
+        BIT_SET (data, bit_index[i]);
+    }
+    YT_EQ_SCALAR (data, exp);
 
     YT_END();
 }
 
-YT_TEST (utils, bit_mask_creation)
+YT_TESTP (utils, bit_mask_creation, int, int, int)
 {
-    YT_EQ_SCALAR(BIT_MASK(0, 2), 0x3);
-    YT_EQ_SCALAR(BIT_MASK(0, 6), 0x3F);
-    YT_EQ_SCALAR(BIT_MASK(0, 3), 0x7);
+    uint32_t mask_start_bit = YT_ARG_0();
+    uint32_t mask_bit_len   = YT_ARG_1();
+    uint32_t exp            = YT_ARG_2();
 
-    YT_EQ_SCALAR(BIT_MASK(1, 2), 0x6);
-    YT_EQ_SCALAR(BIT_MASK(2, 6), 0xFC);
-    YT_EQ_SCALAR(BIT_MASK(3, 3), 0x38);
+    YT_EQ_SCALAR (BIT_MASK (mask_start_bit, mask_bit_len), (int)exp);
     YT_END();
 }
 
@@ -145,14 +114,43 @@ void reset()
 int main (void)
 {
     YT_INIT();
-    high8();
-    low8();
-    bits_clear_mask();
-    bits_clear();
-    bits_set_mask();
-    bits_set();
-    is_bit_set_mask();
-    is_bit_set();
-    bit_mask_creation();
+
+    // clang-format off
+    high8_16bits (5, YT_ARG (int){ 0xFA13, 0x13FA, 0x13, 0x00, 0xFFFF }, // 16 bit data
+                     YT_ARG (int){ 0xFA, 0x0013, 0x00, 0x00, 0x00FF });  // high byte
+
+    high8_32bits (3, YT_ARG (int){ 0x13, 0x00, 0x12345678 },  // 32 bit data
+                     YT_ARG (int){ 0x00, 0x00, 0x00000012 }); // high byte
+
+    low8 (6, YT_ARG (int){ 0xFA13, 0x13FA, 0x13, 0x00, 0xFFFF, 0x12345678 },  // data
+             YT_ARG (int){ 0x0013, 0x00FA, 0x13, 0x00, 0x00FF, 0x00000078 }); // low byte
+
+    bits_clear_mask (3, YT_ARG (int){ 0xFFFF0000, 0xFFFF0000, 0xFF },  // data
+                        YT_ARG (int){ 0xFFFF0000, 0xFF000000, 0x01 },  // clear mask
+                        YT_ARG (int){ 0x00000000, 0x00FF0000, 0xFE }); // outcome
+
+    bits_set_mask (3, YT_ARG (int){ 0xFFFF0000, 0x00FF00, 0xFE },    // data
+                      YT_ARG (int){ 0xFFFF0000, 0xFF0000, 0x01 },    // mask
+                      YT_ARG (int){ 0xFFFF0000, 0xFFFF00, 0xFF });   // outcome
+
+    is_bit_set_mask(4, YT_ARG(int) {0xFFFF0000, 0xFFFF0000, 0xFFFF0000, 0xFFFF0000}, // data
+                       YT_ARG(int){0, 15, 24, 31},                                   // bit pos
+                       YT_ARG(bool){false, false, true, true});                      // is bit set
+
+    bits_clear(3, YT_ARG(int){0xFFFF0000, 0xF0, 0xFF},   // data
+                  YT_ARG(int){31, 0, 0},                 // bit positions
+                  YT_ARG(int){0x7FFF0000, 0xF0, 0xFE}); // outcome
+
+    bits_set(3, YT_ARG(int){0xFFFF0000,0xFF00,0xFE},          // data
+                YT_ARG(size_t){1,2,1},                        // num of bit positions in below array
+                YT_ARG(int*){YT_ARG_SUB_ARRAY(int, {31   }),  // bit positions
+                             YT_ARG_SUB_ARRAY(int, {16, 4}),
+                             YT_ARG_SUB_ARRAY(int, {0    })},
+                YT_ARG(int){0xFFFF0000,0x1FF10,0xFF});        // outcome
+
+    bit_mask_creation(6, YT_ARG(int) {0,    0,   0,   1,   2,    3},    // mask start bit position
+                         YT_ARG(int) {2,    6,   3,   2,   6,    3},    // mask bit length
+                         YT_ARG(int) {0x3,0x3F,0x7, 0x6, 0xFC, 0x38});  // resulting mask
+    // clang-format on
     YT_RETURN_WITH_REPORT();
 }
