@@ -43,7 +43,7 @@ static inline bool hal_usart_is_transmit_complete()
 #define AVR_HAL_IO_OUT_WRITE_BITS(gpio, value, shift, mask) \
     do {                                                    \
         BIT_CLEAR_MASK (gpio##_PORT_REG, mask);             \
-        gpio##_PORT_REG |= ((value << (shift)) & (mask));   \
+        gpio##_PORT_REG |= (((value) << (shift)) & (mask));   \
     } while (0)
 
 #define AVR_HAL_IO_OUT_WRITE(gpio, value)  (gpio##_PORT_REG = (value))

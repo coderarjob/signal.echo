@@ -74,8 +74,8 @@ void hw_init()
 
 static inline void set_status_led (uint8_t state)
 {
-    HAL_IO_OUT_WRITE_BITS (STATUS_OUTPUT_GPIO, state, STATUS_OUTPUT_PIN_SHIFT,
-                           STATUS_OUTPUT_PIN_MASK);
+    HAL_IO_OUT_WRITE_BITS (STATUS_OUTPUT_GPIO, MODE_LED_VALUE_FROM_TESTMODE (state),
+                           STATUS_OUTPUT_PIN_SHIFT, STATUS_OUTPUT_PIN_MASK);
 }
 
 __attribute__ ((noreturn)) int main (void)
@@ -112,7 +112,7 @@ __attribute__ ((noreturn)) int main (void)
 
 void hal_impl_panic()
 {
-    HAL_IO_OUT_HIGH (STATUS_OUTPUT_GPIO, STATUS_OUTPUT_PIN_MASK);
+    set_status_led (ERROR_MODE);
     while (1)
         ;
 }

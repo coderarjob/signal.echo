@@ -34,15 +34,17 @@
 #define I2C_TEST_SCL_HOLD_DELAY                 10
 #define I2C_TEST_STRING                         "Hello"
 
+#define MODE_LED_VALUE_FROM_TESTMODE(state)     ((state) != ERROR_MODE ? (state) + 1 : (state))
+
 typedef enum TestModes {
-    UNKNOWN_TEST,
-    USART_TEST,
-    RUNT_PULSE,
-    TWO_PULSES_TEST,
-    SAWTOOTH_TEST,
-    TRIANGLE_TEST,
-    I2C_TEST,
-    TEST_COUNT
+    USART_TEST      = 0,
+    RUNT_PULSE      = 1,
+    TWO_PULSES_TEST = 2,
+    SAWTOOTH_TEST   = 3,
+    TRIANGLE_TEST   = 4,
+    I2C_TEST        = 5,
+    TEST_COUNT,
+    ERROR_MODE = 7
 } TestModes;
 
 void mode_advance();
