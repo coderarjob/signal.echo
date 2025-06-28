@@ -6,16 +6,6 @@
 #include <stdbool.h>
 #include <hal.h>
 
-// -----------------------------------------------------------------------------
-YT_DECLARE_FUNC_VOID (mode_advance);
-YT_DECLARE_FUNC (TestModes, mode_get);
-YT_DECLARE_FUNC (bool, mode_is_dirty);
-
-// -----------------------------------------------------------------------------
-YT_DEFINE_FUNC_VOID (mode_advance);
-YT_DEFINE_FUNC (TestModes, mode_get);
-YT_DEFINE_FUNC (bool, mode_is_dirty);
-
 YT_DEFINE_FUNC_VOID (HAL_IO_OUT_WRITE_BITS, uint8_t, uint8_t, uint8_t, uint8_t);
 YT_DEFINE_FUNC_VOID (HAL_IO_OUT_WRITE, uint8_t, uint8_t);
 YT_DEFINE_FUNC(uint8_t, HAL_IO_IN_READ, uint8_t);
@@ -40,12 +30,8 @@ YT_DEFINE_FUNC_VOID (hal_usart_send_char, char);
 YT_DEFINE_FUNC_VOID (hal_usart_wait_transmit_complete);
 // -----------------------------------------------------------------------------
 
-void reset_all_mocks()
+void reset_hal_mocks()
 {
-    YT_RESET_MOCK (mode_advance);
-    YT_RESET_MOCK (mode_get);
-    YT_RESET_MOCK (mode_is_dirty);
-
     YT_RESET_MOCK (HAL_IO_OUT_WRITE_BITS);
     YT_RESET_MOCK (HAL_IO_OUT_WRITE);
     YT_RESET_MOCK (HAL_IO_IN_READ);

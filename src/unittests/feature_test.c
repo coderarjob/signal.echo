@@ -2,7 +2,8 @@
 #include <stdbool.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #include <yukti.h>
-#include <mocks.h>
+#include <mode_mock.h>
+#include <hal_mock.h>
 #include <assert.h>
 #if HW_VER == 1
     #include <hw/v1/hwspec.h>
@@ -261,7 +262,8 @@ YT_TEST (triangle, triangle_test_normal)
 
 void reset()
 {
-    reset_all_mocks();
+    reset_hal_mocks();
+    reset_mode_mocks();
 }
 
 int main (void)
