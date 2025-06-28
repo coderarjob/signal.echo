@@ -1,0 +1,123 @@
+#include <main.h>
+#define YUKTI_TEST_IMPLEMENTATION
+#include <yukti.h>
+#include <hal.h>
+#include <tests_mock.h>
+#include <hal_mock.h>
+#include <mode_mock.h>
+#if HW_VER == 1
+    #include <hw/v1/hwspec.h>
+#endif
+
+void fw_main (void);
+
+YT_TEST (fwmain, hw_init_test)
+{
+    // Output GPIOs
+    YT_MUST_CALL_ANY_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (DIGITAL_OUTPUT_GPIO),
+                            YT_V (DIGITAL_OUTPUT_PIN_MASK));
+    YT_MUST_CALL_ANY_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (ANALOG_OUTPUT_GPIO),
+                            YT_V (ANALOG_OUTPUT_PIN_MASK));
+    YT_MUST_CALL_ANY_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (STATUS_OUTPUT_GPIO),
+                            YT_V (STATUS_OUTPUT_PIN_MASK));
+
+    // Input GPIOs
+    YT_MUST_CALL_ANY_ORDER (HAL_IO_MAKE_INPUT_WITH_PULLUP, YT_V (SWITCH_INPUT_GPIO),
+                            YT_V (SWITCH_INPUT_PIN_MASK));
+    YT_MUST_CALL_ANY_ORDER (hal_interrupt_enable, YT_V (SWITCH_INPUT_INTERRUPT));
+
+    // Enable interrupts
+    YT_MUST_CALL_ANY_ORDER (HAL_INTERRUPT_SET);
+
+    /* DUT function call */
+    fw_main();
+
+    YT_END();
+}
+
+YT_TESTP (fwmain, valid_mode_switch, TestModes)
+{
+    TestModes mode = YT_ARG_0();
+
+    /* Setup */
+    mode_get_fake.ret = mode;
+
+    /* Expectations */
+    // All modes are valid modes. Must never call hal_impl_panic.
+    YT_MUST_NEVER_CALL (HAL_IO_OUT_WRITE_BITS, YT_V (STATUS_OUTPUT_GPIO),
+                        YT_V (MODE_LED_VALUE_FROM_TESTMODE (ERROR_MODE)),
+                        YT_V (STATUS_OUTPUT_PIN_SHIFT), YT_V (STATUS_OUTPUT_PIN_MASK));
+
+    // mode_reset was called
+    YT_MUST_CALL_IN_ORDER (mode_reset);
+
+    // set_status_led function
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE_BITS, YT_V (STATUS_OUTPUT_GPIO),
+                           YT_V (MODE_LED_VALUE_FROM_TESTMODE (mode)),
+                           YT_V (STATUS_OUTPUT_PIN_SHIFT), YT_V (STATUS_OUTPUT_PIN_MASK));
+
+    // feature function called based on mode
+    switch (mode_get()) {
+    case USART_TEST:
+        YT_MUST_CALL_IN_ORDER (usart_test);
+        break;
+    case RUNT_PULSE:
+        YT_MUST_CALL_IN_ORDER (runt_pulse_test);
+        break;
+    case TWO_PULSES_TEST:
+        YT_MUST_CALL_IN_ORDER (two_pulses_test);
+        break;
+    case SAWTOOTH_TEST:
+        YT_MUST_CALL_IN_ORDER (sawtooth_test);
+        break;
+    case TRIANGLE_TEST:
+        YT_MUST_CALL_IN_ORDER (triangle_test);
+        break;
+    case I2C_TEST:
+        YT_MUST_CALL_IN_ORDER (i2c_test);
+        break;
+    default:
+        break;
+    }
+
+    /* DUT function call */
+    fw_main();
+
+    YT_END();
+}
+
+YT_TEST (fwmain, invalid_mode_switch)
+{
+    TestModes mode = TEST_COUNT;
+
+    /* Setup */
+    mode_get_fake.ret = mode;
+
+    /* Expectations */
+    // hal_impl_panic must be called for invalid modes.
+    YT_MUST_CALL_ANY_ORDER (HAL_IO_OUT_WRITE_BITS, YT_V (STATUS_OUTPUT_GPIO),
+                            YT_V (MODE_LED_VALUE_FROM_TESTMODE (ERROR_MODE)),
+                            YT_V (STATUS_OUTPUT_PIN_SHIFT), YT_V (STATUS_OUTPUT_PIN_MASK));
+
+    /* DUT function call */
+    fw_main();
+
+    YT_END();
+}
+
+void reset()
+{
+    reset_hal_mocks();
+    reset_mode_mocks();
+    rest_test_mocks();
+}
+
+int main()
+{
+    YT_INIT();
+    hw_init_test();
+    valid_mode_switch (6, YT_ARG (TestModes){ USART_TEST, RUNT_PULSE, TWO_PULSES_TEST,
+                                              SAWTOOTH_TEST, TRIANGLE_TEST, I2C_TEST });
+    invalid_mode_switch();
+    YT_RETURN_WITH_REPORT();
+}

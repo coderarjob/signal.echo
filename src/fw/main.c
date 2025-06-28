@@ -78,11 +78,15 @@ static inline void set_status_led (uint8_t state)
                            STATUS_OUTPUT_PIN_SHIFT, STATUS_OUTPUT_PIN_MASK);
 }
 
-__attribute__ ((noreturn)) int main (void)
+__attribute__ ((noreturn)) void fw_main (void)
 {
     hw_init();
     mode_reset();
-    while (1) {
+
+#if !defined(UNITTESTS)
+    while (1)
+#endif // !defined(UNITTESTS)
+    {
         set_status_led (mode_get());
         switch (mode_get()) {
         case USART_TEST:
@@ -110,9 +114,18 @@ __attribute__ ((noreturn)) int main (void)
     }
 }
 
+#if !defined(UNITTESTS)
+__attribute__ ((noreturn)) int main (void)
+{
+    fw_main();
+}
+#endif // !defined(UNITTESTS)
+
 void hal_impl_panic()
 {
     set_status_led (ERROR_MODE);
+#if !defined(UNITTESTS)
     while (1)
         ;
+#endif
 }

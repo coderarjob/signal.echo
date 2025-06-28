@@ -32,6 +32,18 @@ $(call compile_target,feature_test)
 $(call link_target,feature_test)
 # ==================================================================
 
+fwmain_test_SRC := $(SRC_DIR)fwmain_test.c  \
+				   $(SRC_ROOT_DIR)/fw/main.c
+
+fwmain_test_CFLAGS := $(cc_flags)
+fwmain_test_LDFLAGS := $(ld_flags)
+fwmain_test_DEP :=
+
+$(call compile_target,fwmain_test)
+$(call link_target,fwmain_test)
+# ==================================================================
+
 ALL := $(utils_test_ELF)       \
 	   $($(ARCH)_hal_test_ELF) \
 	   $(feature_test_ELF)     \
+	   $(fwmain_test_ELF)      \
