@@ -1,7 +1,7 @@
-#include <main.h>
-#include <stdbool.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #include <yukti.h>
+#include <main.h>
+#include <stdbool.h>
 #include <mode_mock.h>
 #include <hal_mock.h>
 #include <assert.h>

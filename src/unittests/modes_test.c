@@ -1,7 +1,6 @@
-#include <main.h>
-#include <stdio.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #include <yukti.h>
+#include <main.h>
 
 YT_TEST (mode, default_mode_after_reset)
 {

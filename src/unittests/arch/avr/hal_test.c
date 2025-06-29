@@ -1,7 +1,7 @@
-#include <arch/avr/hal.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #define YUKTI_TEST_DEBUG
 #include <yukti.h>
+#include <arch/avr/hal.h>
 #include <utils.h>
 
 /* ====================================================

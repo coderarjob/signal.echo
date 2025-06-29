@@ -1,7 +1,7 @@
-#include <stdbool.h>
-#include <utils.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #include <yukti.h>
+#include <stdbool.h>
+#include <utils.h>
 
 YT_TESTP (utils, high8_16bits, int, int)
 {

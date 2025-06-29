@@ -1,6 +1,6 @@
-#include <main.h>
 #define YUKTI_TEST_IMPLEMENTATION
 #include <yukti.h>
+#include <main.h>
 #include <hal.h>
 #include <tests_mock.h>
 #include <hal_mock.h>
