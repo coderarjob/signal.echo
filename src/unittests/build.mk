@@ -30,6 +30,7 @@ feature_test_DEP :=
 
 $(call compile_target,feature_test)
 $(call link_target,feature_test)
+
 # ==================================================================
 
 fwmain_test_SRC := $(SRC_DIR)fwmain_test.c  \
@@ -41,9 +42,23 @@ fwmain_test_DEP :=
 
 $(call compile_target,fwmain_test)
 $(call link_target,fwmain_test)
+
+# ==================================================================
+
+modes_test_SRC := $(SRC_DIR)modes_test.c    \
+				  $(SRC_ROOT_DIR)/fw/mode.c
+
+modes_test_CFLAGS := $(cc_flags)
+modes_test_LDFLAGS := $(ld_flags)
+modes_test_DEP :=
+
+$(call compile_target,modes_test)
+$(call link_target,modes_test)
+
 # ==================================================================
 
 ALL := $(utils_test_ELF)       \
 	   $($(ARCH)_hal_test_ELF) \
 	   $(feature_test_ELF)     \
 	   $(fwmain_test_ELF)      \
+	   $(modes_test_ELF)
