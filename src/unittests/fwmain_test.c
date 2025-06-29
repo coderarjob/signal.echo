@@ -45,7 +45,7 @@ YT_TESTP (fwmain, valid_mode_switch, TestModes)
     /* Expectations */
     // All modes are valid modes. Must never call hal_impl_panic.
     YT_MUST_NEVER_CALL (HAL_IO_OUT_WRITE_BITS, YT_V (STATUS_OUTPUT_GPIO),
-                        YT_V (MODE_LED_VALUE_FROM_TESTMODE (ERROR_MODE)),
+                        YT_V (MODE_LED_VALUE_FROM_TESTMODE (TEST_MODE_ERROR)),
                         YT_V (STATUS_OUTPUT_PIN_SHIFT), YT_V (STATUS_OUTPUT_PIN_MASK));
 
     // mode_reset was called
@@ -58,22 +58,22 @@ YT_TESTP (fwmain, valid_mode_switch, TestModes)
 
     // feature function called based on mode
     switch (mode_get()) {
-    case USART_TEST:
+    case TEST_MODE_USART_TEST:
         YT_MUST_CALL_IN_ORDER (usart_test);
         break;
-    case RUNT_PULSE:
+    case TEST_MODE_RUNT_PULSE_TEST:
         YT_MUST_CALL_IN_ORDER (runt_pulse_test);
         break;
-    case TWO_PULSES_TEST:
+    case TEST_MODE_TWO_PULSES_TEST:
         YT_MUST_CALL_IN_ORDER (two_pulses_test);
         break;
-    case SAWTOOTH_TEST:
+    case TEST_MODE_SAWTOOTH_TEST:
         YT_MUST_CALL_IN_ORDER (sawtooth_test);
         break;
-    case TRIANGLE_TEST:
+    case TEST_MODE_TRIANGLE_TEST:
         YT_MUST_CALL_IN_ORDER (triangle_test);
         break;
-    case I2C_TEST:
+    case TEST_MODE_I2C_TEST:
         YT_MUST_CALL_IN_ORDER (i2c_test);
         break;
     default:
@@ -88,7 +88,7 @@ YT_TESTP (fwmain, valid_mode_switch, TestModes)
 
 YT_TEST (fwmain, invalid_mode_switch)
 {
-    TestModes mode = TEST_COUNT;
+    TestModes mode = TEST_MODE_COUNT;
 
     /* Setup */
     mode_get_fake.ret = mode;
@@ -96,7 +96,7 @@ YT_TEST (fwmain, invalid_mode_switch)
     /* Expectations */
     // hal_impl_panic must be called for invalid modes.
     YT_MUST_CALL_ANY_ORDER (HAL_IO_OUT_WRITE_BITS, YT_V (STATUS_OUTPUT_GPIO),
-                            YT_V (MODE_LED_VALUE_FROM_TESTMODE (ERROR_MODE)),
+                            YT_V (MODE_LED_VALUE_FROM_TESTMODE (TEST_MODE_ERROR)),
                             YT_V (STATUS_OUTPUT_PIN_SHIFT), YT_V (STATUS_OUTPUT_PIN_MASK));
 
     /* DUT function call */
@@ -116,8 +116,9 @@ int main()
 {
     YT_INIT();
     hw_init_test();
-    valid_mode_switch (6, YT_ARG (TestModes){ USART_TEST, RUNT_PULSE, TWO_PULSES_TEST,
-                                              SAWTOOTH_TEST, TRIANGLE_TEST, I2C_TEST });
+    valid_mode_switch (6, YT_ARG (TestModes){ TEST_MODE_USART_TEST, TEST_MODE_RUNT_PULSE_TEST,
+                                              TEST_MODE_TWO_PULSES_TEST, TEST_MODE_SAWTOOTH_TEST,
+                                              TEST_MODE_TRIANGLE_TEST, TEST_MODE_I2C_TEST });
     invalid_mode_switch();
     YT_RETURN_WITH_REPORT();
 }

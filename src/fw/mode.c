@@ -6,8 +6,8 @@ static volatile bool modeIsDirty;
 
 void mode_advance()
 {
-    if (++currentMode >= TEST_COUNT) {
-        currentMode = USART_TEST;
+    if (++currentMode >= TEST_MODE_COUNT) {
+        currentMode = TEST_MODE_USART_TEST;
     }
     modeIsDirty = true;
 }
@@ -26,5 +26,5 @@ bool mode_is_dirty()
 void mode_reset()
 {
     modeIsDirty = false;
-    currentMode = USART_TEST;
+    currentMode = TEST_MODE_USART_TEST;
 }

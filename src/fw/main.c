@@ -89,22 +89,22 @@ __attribute__ ((noreturn)) void fw_main (void)
     {
         set_status_led (mode_get());
         switch (mode_get()) {
-        case USART_TEST:
+        case TEST_MODE_USART_TEST:
             usart_test();
             break;
-        case RUNT_PULSE:
+        case TEST_MODE_RUNT_PULSE_TEST:
             runt_pulse_test();
             break;
-        case TWO_PULSES_TEST:
+        case TEST_MODE_TWO_PULSES_TEST:
             two_pulses_test();
             break;
-        case SAWTOOTH_TEST:
+        case TEST_MODE_SAWTOOTH_TEST:
             sawtooth_test();
             break;
-        case TRIANGLE_TEST:
+        case TEST_MODE_TRIANGLE_TEST:
             triangle_test();
             break;
-        case I2C_TEST:
+        case TEST_MODE_I2C_TEST:
             i2c_test();
             break;
         default:
@@ -123,7 +123,7 @@ __attribute__ ((noreturn)) int main (void)
 
 void hal_impl_panic()
 {
-    set_status_led (ERROR_MODE);
+    set_status_led (TEST_MODE_ERROR);
 #if !defined(UNITTESTS)
     while (1)
         ;
