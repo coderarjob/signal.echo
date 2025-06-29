@@ -58,4 +58,7 @@
 #define I2C_TEST_OUTPUT_PIN_SCL_MASK        (1 << I2C_TEST_OUTPUT_PIN_SCL)
 #define I2C_TEST_OUTPUT_PIN_SDA_MASK        (1 << I2C_TEST_OUTPUT_PIN_SDA)
 
+#define DAC_WIDTH_BITS                      6U
+#define DAC_WIDTH_MAX_VALUE                 64U
+
 #define HAL_IMPL_USART_BAUD                 10000U
