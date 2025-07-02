@@ -43,6 +43,7 @@ typedef enum TestModes {
     TEST_MODE_SAWTOOTH_TEST   = 3,
     TEST_MODE_TRIANGLE_TEST   = 4,
     TEST_MODE_I2C_TEST        = 5,
+    TEST_MODE_SINE_TEST       = 6,
     TEST_MODE_COUNT,
     TEST_MODE_ERROR = 7
 } TestModes;
@@ -58,3 +59,4 @@ void two_pulses_test();
 void sawtooth_test();
 void triangle_test();
 void i2c_test();
+void sine_test();

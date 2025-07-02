@@ -14,7 +14,8 @@ YT_TEST (mode, modes_advance_test)
 {
     TestModes modes_exp[]        = { TEST_MODE_USART_TEST,      TEST_MODE_RUNT_PULSE_TEST,
                                      TEST_MODE_TWO_PULSES_TEST, TEST_MODE_SAWTOOTH_TEST,
-                                     TEST_MODE_TRIANGLE_TEST,   TEST_MODE_I2C_TEST };
+                                     TEST_MODE_TRIANGLE_TEST,   TEST_MODE_I2C_TEST,
+                                     TEST_MODE_SINE_TEST };
     const size_t modes_exp_count = sizeof (modes_exp) / sizeof (TEST_MODE_USART_TEST);
 
     // We should be checking every test, so modes_exp must have TEST_COUNT number of items

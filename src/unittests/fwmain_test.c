@@ -76,6 +76,9 @@ YT_TESTP (fwmain, valid_mode_switch, TestModes)
     case TEST_MODE_I2C_TEST:
         YT_MUST_CALL_IN_ORDER (i2c_test);
         break;
+    case TEST_MODE_SINE_TEST:
+        YT_MUST_CALL_IN_ORDER (sine_test);
+        break;
     default:
         break;
     }
@@ -116,9 +119,10 @@ int main()
 {
     YT_INIT();
     hw_init_test();
-    valid_mode_switch (6, YT_ARG (TestModes){ TEST_MODE_USART_TEST, TEST_MODE_RUNT_PULSE_TEST,
+    valid_mode_switch (7, YT_ARG (TestModes){ TEST_MODE_USART_TEST, TEST_MODE_RUNT_PULSE_TEST,
                                               TEST_MODE_TWO_PULSES_TEST, TEST_MODE_SAWTOOTH_TEST,
-                                              TEST_MODE_TRIANGLE_TEST, TEST_MODE_I2C_TEST });
+                                              TEST_MODE_TRIANGLE_TEST, TEST_MODE_I2C_TEST,
+                                              TEST_MODE_SINE_TEST });
     invalid_mode_switch();
     YT_RETURN_WITH_REPORT();
 }

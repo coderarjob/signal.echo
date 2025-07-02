@@ -107,6 +107,9 @@ __attribute__ ((noreturn)) void fw_main (void)
         case TEST_MODE_I2C_TEST:
             i2c_test();
             break;
+        case TEST_MODE_SINE_TEST:
+            sine_test();
+            break;
         default:
             hal_impl_panic();
             break;
