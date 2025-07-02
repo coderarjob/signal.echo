@@ -21,8 +21,8 @@
 #define SWITCH_INPUT_INTERRUPT              HAL_Interrupt_External0
 
 #define STATUS_OUTPUT_GPIO                  HAL_GPIO_D
-#define STATUS_OUTPUT_PIN_SHIFT             5
-#define STATUS_OUTPUT_PIN_COUNT             3
+#define STATUS_OUTPUT_PIN_SHIFT             4
+#define STATUS_OUTPUT_PIN_COUNT             4
 #define STATUS_OUTPUT_PIN_MASK              BIT_MASK (STATUS_OUTPUT_PIN_SHIFT, STATUS_OUTPUT_PIN_COUNT)
 
 #define RUNT_PULSE_TEST_OUTPUT_GPIO         ANALOG_OUTPUT_GPIO

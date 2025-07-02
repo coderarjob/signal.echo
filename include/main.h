@@ -45,7 +45,7 @@ typedef enum TestModes {
     TEST_MODE_I2C_TEST        = 5,
     TEST_MODE_SINE_TEST       = 6,
     TEST_MODE_COUNT,
-    TEST_MODE_ERROR = 7
+    TEST_MODE_ERROR = 15
 } TestModes;
 
 void mode_advance();
