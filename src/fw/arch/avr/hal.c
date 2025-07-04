@@ -44,6 +44,8 @@ void hal_interrupt_enable (HAL_Interrupts interrupt)
     if ((AVR_HAL_Interrupts)interrupt == AVR_HAL_INTERRUPTS_EXT_INTERRUPT0) {
         BIT_CLEAR_MASK (MCUCR, (1 << ISC01 | 1 << ISC00)); // Trigger at Low level
         BIT_SET_MASK (GICR, (1 << INT0));                  // Enable the interrupt
+    } else if ((AVR_HAL_Interrupts)interrupt == AVR_HAL_INTERRUPTS_TIM0_OVF_INTERRUPT) {
+        BIT_SET_MASK (TIMSK, (1 << TOIE0)); // Enable Timer 0 overflow interrupt
     } else {
         UNREACHABLE();
     }

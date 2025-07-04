@@ -15,6 +15,7 @@
 /* There are other interrupts, but for now it includes only those needed by this project */
 typedef enum AVR_HAL_Interrupts {
     AVR_HAL_INTERRUPTS_EXT_INTERRUPT0,
+    AVR_HAL_INTERRUPTS_TIM0_OVF_INTERRUPT
 } AVR_HAL_Interrupts;
 
 #if !defined(UNITTESTS)
@@ -43,7 +44,7 @@ static inline bool hal_usart_is_transmit_complete()
 #define AVR_HAL_IO_OUT_WRITE_BITS(gpio, value, shift, mask) \
     do {                                                    \
         BIT_CLEAR_MASK (gpio##_PORT_REG, mask);             \
-        gpio##_PORT_REG |= (((value) << (shift)) & (mask));   \
+        gpio##_PORT_REG |= (((value) << (shift)) & (mask)); \
     } while (0)
 
 #define AVR_HAL_IO_OUT_WRITE(gpio, value)  (gpio##_PORT_REG = (value))
@@ -133,7 +134,8 @@ __attribute__ ((noreturn)) void hal_impl_panic();
 #define HAL_LOOP_DELAY(count)                     _delay_loop_2 (count)
 
 typedef enum HAL_Interrupts {
-    HAL_Interrupt_External0 = AVR_HAL_INTERRUPTS_EXT_INTERRUPT0
+    HAL_Interrupt_External0       = AVR_HAL_INTERRUPTS_EXT_INTERRUPT0,
+    HAL_Interrupt_Timer0_Overflow = AVR_HAL_INTERRUPTS_TIM0_OVF_INTERRUPT
 } HAL_Interrupts;
 
 #define HAL_INTERRUPT_SET()   sei()
