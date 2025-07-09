@@ -2127,12 +2127,12 @@
   )
 
   (symbol (lib_id "power:GND") (at 27.305 45.72 270) (unit 1)
-    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (in_bom yes) (on_board yes)
     (uuid 43b02ddd-f584-4f99-ba88-aa75ee88b79d)
-    (property "Reference" "#PWR?" (id 0) (at 20.955 45.72 0)
+    (property "Reference" "#PWR0118" (id 0) (at 20.955 45.72 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Value" "GND" (id 1) (at 27.94 45.7199 90)
+    (property "Value" "GND" (id 1) (at 19.685 45.72 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "" (id 2) (at 27.305 45.72 0)
@@ -2198,7 +2198,7 @@
   (symbol (lib_id "power:GND") (at 37.465 45.72 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 49d74109-df68-473a-922a-f2d20aa21baf)
-    (property "Reference" "#PWR?" (id 0) (at 43.815 45.72 0)
+    (property "Reference" "#PWR0117" (id 0) (at 43.815 45.72 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (id 1) (at 40.64 45.7199 90)
@@ -3089,11 +3089,11 @@
     (path "/0020cff6-d2df-4f95-8420-c7990acd402d"
       (reference "#PWR0116") (unit 1) (value "+5V") (footprint "")
     )
-    (path "/43b02ddd-f584-4f99-ba88-aa75ee88b79d"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
-    )
     (path "/49d74109-df68-473a-922a-f2d20aa21baf"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0117") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/43b02ddd-f584-4f99-ba88-aa75ee88b79d"
+      (reference "#PWR0118") (unit 1) (value "GND") (footprint "")
     )
     (path "/d296a615-c4ba-40da-b84d-31d01d3ec12b"
       (reference "C1") (unit 1) (value "100nF") (footprint "Capacitor_THT:C_Disc_D3.0mm_W1.6mm_P2.50mm")
