@@ -12,4 +12,6 @@
 #define BIT_SET(data, bit)            BIT_SET_MASK (data, 1 << (bit))
 #define IS_BIT_SET(data, bit)         IS_BIT_SET_MASK (data, 1 << (bit))
 
+#define ARRAY_LEN(a)                  (sizeof (a) / sizeof (a[0]))
+
 #define BIT_MASK(start_bit, num_bits) (((1 << num_bits) - 1) << start_bit)

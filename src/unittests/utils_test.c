@@ -107,6 +107,17 @@ YT_TESTP (utils, bit_mask_creation, int, int, int)
     YT_END();
 }
 
+YT_TEST (utils, array_length)
+{
+    int ar1[] = { 1, 2, 4 };
+    int ar2[] = {};
+    int ar3[] = { 1 };
+    YT_EQ_SCALAR (ARRAY_LEN (ar1), (size_t)3);
+    YT_EQ_SCALAR (ARRAY_LEN (ar2), (size_t)0);
+    YT_EQ_SCALAR (ARRAY_LEN (ar3), (size_t)1);
+    YT_END();
+}
+
 void reset()
 {
 }
@@ -152,5 +163,6 @@ int main (void)
                          YT_ARG(int) {2,    6,   3,   2,   6,    3},    // mask bit length
                          YT_ARG(int) {0x3,0x3F,0x7, 0x6, 0xFC, 0x38});  // resulting mask
     // clang-format on
+    array_length();
     YT_RETURN_WITH_REPORT();
 }
