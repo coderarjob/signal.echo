@@ -37,13 +37,15 @@
 #define MODE_LED_VALUE_FROM_TESTMODE(state)     ((state) != TEST_MODE_ERROR ? (state) + 1 : (state))
 
 typedef enum TestModes {
-    TEST_MODE_USART_TEST      = 0,
-    TEST_MODE_RUNT_PULSE_TEST = 1,
-    TEST_MODE_TWO_PULSES_TEST = 2,
-    TEST_MODE_SAWTOOTH_TEST   = 3,
-    TEST_MODE_TRIANGLE_TEST   = 4,
-    TEST_MODE_I2C_TEST        = 5,
-    TEST_MODE_SINE_TEST       = 6,
+    TEST_MODE_USART_TEST       = 0,
+    TEST_MODE_RUNT_PULSE_TEST  = 1,
+    TEST_MODE_TWO_PULSES_TEST  = 2,
+    TEST_MODE_SAWTOOTH_TEST    = 3,
+    TEST_MODE_TRIANGLE_TEST    = 4,
+    TEST_MODE_I2C_TEST         = 5,
+    TEST_MODE_SINE_TEST        = 6,
+    TEST_MODE_SINE_X_ON_X_TEST = 7,
+    TEST_MODE_AMP_MOD_TEST     = 8,
     TEST_MODE_COUNT,
     TEST_MODE_ERROR = 15
 } TestModes;
@@ -60,3 +62,5 @@ void sawtooth_test();
 void triangle_test();
 void i2c_test();
 void sine_test();
+void sine_x_on_x_test();
+void am_test();

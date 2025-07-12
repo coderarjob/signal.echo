@@ -110,6 +110,12 @@ __attribute__ ((noreturn)) void fw_main (void)
         case TEST_MODE_SINE_TEST:
             sine_test();
             break;
+        case TEST_MODE_SINE_X_ON_X_TEST:
+            sine_x_on_x_test();
+            break;
+        case TEST_MODE_AMP_MOD_TEST:
+            am_test();
+            break;
         default:
             hal_impl_panic();
             break;
