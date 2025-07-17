@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <main.h>
 #include <utils.h>
+#include <hw/hwdetect.h>
 #if MPU_ARCH == AVR
     #if !defined(UNITTESTS)
         #include <avr/pgmspace.h>
