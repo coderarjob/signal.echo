@@ -7,9 +7,9 @@ AR := ar
 # Convert ARCH to upper case.
 MPU_ARCH := $(shell echo $(ARCH)|tr 'a-z' 'A-Z')
 
-cc_definitions := -DF_CPU=$(clock)        \
-				  -DMPU_ARCH=$(MPU_ARCH)  \
-				  -DHW_VER=$(HW_VER)      \
+cc_definitions := -DF_CPU=$(clock)    \
+				  -DARCH=$(MPU_ARCH)  \
+				  -DHW_VER=$(HW_VER)  \
 				  -DUNITTESTS
 
 ld_flags :=
@@ -23,6 +23,6 @@ cc_flags := $(cc_definitions)           \
 		    -MMD                        \
 		    -MP
 
-ifdef DEBUG
+ifeq ($(DEBUG), 1)
 	cc_flags += -g
 endif

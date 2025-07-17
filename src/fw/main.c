@@ -8,7 +8,7 @@
 #if defined(DEBUG)
 void hwspec_sanity_check()
 {
-    #if MPU_ARCH == AVR && SWITCH_INPUT_GPIO_PIN != PD2
+    #if ARCH == AVR && SWITCH_INPUT_GPIO_PIN != PD2
         #error "Wrong switch pin set"
     #endif
 

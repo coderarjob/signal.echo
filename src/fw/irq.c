@@ -13,10 +13,10 @@ void irq_switch_pressed()
         ;
 }
 
-#if MPU_ARCH == AVR
+#if ARCH == AVR
     #include <avr/interrupt.h>
 ISR (INT0_vect)
 {
     irq_switch_pressed();
 }
-#endif // MPU_ARCH == AVR
+#endif // ARCH == AVR

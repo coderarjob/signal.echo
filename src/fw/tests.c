@@ -6,7 +6,7 @@
 #include <main.h>
 #include <utils.h>
 #include <hw/hwdetect.h>
-#if MPU_ARCH == AVR
+#if ARCH == AVR
     #if !defined(UNITTESTS)
         #include <avr/pgmspace.h>
         #define ARCH_IMPL_PROG_MEM PROGMEM
