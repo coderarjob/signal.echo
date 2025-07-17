@@ -2097,7 +2097,7 @@
     (property "Reference" "Y1" (id 0) (at 91.44 91.44 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "12MHz" (id 1) (at 91.44 93.345 90)
+    (property "Value" "16MHz" (id 1) (at 91.44 93.345 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Crystal:Crystal_HC49-4H_Vertical" (id 2) (at 89.535 92.075 0)
@@ -3222,7 +3222,7 @@
       (reference "U1") (unit 1) (value "ATmega8A-P") (footprint "Package_DIP:DIP-28_W7.62mm")
     )
     (path "/3ffcb15a-c4e8-4f14-8a7f-117409243806"
-      (reference "Y1") (unit 1) (value "12MHz") (footprint "Crystal:Crystal_HC49-4H_Vertical")
+      (reference "Y1") (unit 1) (value "16MHz") (footprint "Crystal:Crystal_HC49-4H_Vertical")
     )
   )
 )
