@@ -12,8 +12,8 @@ void hal_usart_wait_transmit_complete()
 
 void hal_usart_on (uint32_t baud)
 {
-    UBRRH = HIGH8_16BITS (HAL_BAUD_COUNTER (baud));
-    UBRRL = LOW8 (HAL_BAUD_COUNTER (baud));
+    UBRRH = HIGH8_16BITS (HAL_BAUD_COUNTER (baud, F_CPU));
+    UBRRL = LOW8 (HAL_BAUD_COUNTER (baud, F_CPU));
 
     BIT_SET_MASK (UCSRC, (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0) | (1 << USBS));
     BIT_SET_MASK (UCSRB, (1 << TXEN));

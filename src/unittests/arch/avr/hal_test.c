@@ -229,14 +229,15 @@ YT_TEST (hal, interrupt_clear)
     YT_END();
 }
 
-YT_TEST (hal, baud_counter)
+YT_TESTP (hal, baud_counter, uint32_t, uint16_t, uint16_t)
 {
-#define F_CPU 12E6
-    uint16_t counter = HAL_BAUD_COUNTER (10000U);
-    YT_EQ_SCALAR (counter, 74);
+    uint32_t cpu_freq         = YT_ARG_0();
+    uint16_t baud             = YT_ARG_1();
+    uint16_t exp_baud_counter = YT_ARG_2();
 
-    counter = HAL_BAUD_COUNTER (9600U);
-    YT_EQ_SCALAR (counter, 77);
+    uint16_t counter = HAL_BAUD_COUNTER (baud, cpu_freq);
+    YT_EQ_SCALAR (counter, exp_baud_counter);
+
     YT_END();
 }
 
@@ -279,6 +280,10 @@ int main (void)
     loop_delay();
     interrupt_clear();
     interrupt_set();
-    baud_counter();
+    // clang-format off
+    baud_counter (4, YT_ARG (uint32_t){ 12e6 , 12e6, 16e6 , 16e6 },
+                     YT_ARG (uint16_t){ 10000, 9600, 10000, 9600 },
+                     YT_ARG (uint16_t){ 74U  , 77  , 99   , 103 });
+    // clang-format on
     YT_RETURN_WITH_REPORT();
 }
