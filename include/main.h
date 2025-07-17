@@ -6,6 +6,12 @@
     #include <hw/v1/hwspec.h>
 #endif
 
+#if !defined(UNITTESTS)
+    #define NORETURN __attribute__ ((noreturn))
+#else
+#define NORETURN
+#endif // !defined(UNITTESTS)
+
 #define USART_TEST_DELAY_LOOP_COUNT             65535U
 #define USART_TEST_STRING                       "Hello"
 

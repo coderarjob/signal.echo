@@ -43,10 +43,7 @@ YT_TESTP (fwmain, valid_mode_switch, TestModes)
     mode_get_fake.ret = mode;
 
     /* Expectations */
-    // All modes are valid modes. Must never call hal_impl_panic.
-    YT_MUST_NEVER_CALL (HAL_IO_OUT_WRITE_BITS, YT_V (STATUS_OUTPUT_GPIO),
-                        YT_V (MODE_LED_VALUE_FROM_TESTMODE (TEST_MODE_ERROR)),
-                        YT_V (STATUS_OUTPUT_PIN_SHIFT), YT_V (STATUS_OUTPUT_PIN_MASK));
+    YT_MUST_NEVER_CALL (hal_impl_panic);
 
     // mode_reset was called
     YT_MUST_CALL_IN_ORDER (mode_reset);
@@ -104,10 +101,7 @@ YT_TEST (fwmain, invalid_mode_switch)
     mode_get_fake.ret = mode;
 
     /* Expectations */
-    // hal_impl_panic must be called for invalid modes.
-    YT_MUST_CALL_ANY_ORDER (HAL_IO_OUT_WRITE_BITS, YT_V (STATUS_OUTPUT_GPIO),
-                            YT_V (MODE_LED_VALUE_FROM_TESTMODE (TEST_MODE_ERROR)),
-                            YT_V (STATUS_OUTPUT_PIN_SHIFT), YT_V (STATUS_OUTPUT_PIN_MASK));
+    YT_MUST_CALL_ANY_ORDER(hal_impl_panic);
 
     /* DUT function call */
     fw_main();

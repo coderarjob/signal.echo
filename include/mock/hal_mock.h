@@ -28,6 +28,8 @@ YT_DECLARE_FUNC_VOID (hal_usart_send_string, const char*);
 YT_DECLARE_FUNC_VOID (hal_usart_send_char, char);
 YT_DECLARE_FUNC_VOID (hal_usart_wait_transmit_complete);
 
+YT_DECLARE_FUNC_VOID (hal_impl_panic);
+
 /************************************************************************/
 YT_DEFINE_FUNC_VOID (HAL_IO_OUT_WRITE_BITS, uint8_t, uint8_t, uint8_t, uint8_t);
 YT_DEFINE_FUNC_VOID (HAL_IO_OUT_WRITE, uint8_t, uint8_t);
@@ -51,6 +53,8 @@ YT_DEFINE_FUNC_VOID (hal_usart_off);
 YT_DEFINE_FUNC_VOID (hal_usart_send_string, const char*);
 YT_DEFINE_FUNC_VOID (hal_usart_send_char, char);
 YT_DEFINE_FUNC_VOID (hal_usart_wait_transmit_complete);
+
+YT_DEFINE_FUNC_VOID (hal_impl_panic);
 /************************************************************************/
 
 void reset_hal_mocks()
@@ -72,4 +76,5 @@ void reset_hal_mocks()
     YT_RESET_MOCK (hal_usart_send_string);
     YT_RESET_MOCK (hal_usart_send_char);
     YT_RESET_MOCK (hal_usart_wait_transmit_complete);
+    YT_RESET_MOCK(hal_impl_panic);
 }

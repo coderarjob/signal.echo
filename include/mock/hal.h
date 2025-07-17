@@ -68,3 +68,4 @@ void hal_usart_off();
 void hal_usart_send_string (const char*);
 void hal_usart_send_char (char);
 void hal_usart_wait_transmit_complete();
+void hal_impl_panic();

@@ -79,7 +79,7 @@ static inline void set_status_led (uint8_t state)
                            STATUS_OUTPUT_PIN_SHIFT, STATUS_OUTPUT_PIN_MASK);
 }
 
-__attribute__ ((noreturn)) void fw_main (void)
+NORETURN void fw_main (void)
 {
     hw_init();
     mode_reset();
@@ -131,11 +131,11 @@ __attribute__ ((noreturn)) int main (void)
 }
 #endif // !defined(UNITTESTS)
 
+#if !defined(UNITTESTS)
 void hal_impl_panic()
 {
     set_status_led (TEST_MODE_ERROR);
-#if !defined(UNITTESTS)
     while (1)
         ;
-#endif
 }
+#endif
