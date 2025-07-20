@@ -244,7 +244,7 @@ YT_TESTP (hal, baud_counter, uint32_t, uint16_t, uint16_t)
 /* ====================================================
  * reset() & main()
  * ====================================================*/
-void reset()
+void yt_reset()
 {
     ddra = 0xFF;
     ddrb = 0xFF;

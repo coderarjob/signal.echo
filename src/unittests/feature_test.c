@@ -260,7 +260,7 @@ YT_TEST (triangle, triangle_test_normal)
     YT_END();
 }
 
-void reset()
+void yt_reset()
 {
     reset_hal_mocks();
     reset_mode_mocks();

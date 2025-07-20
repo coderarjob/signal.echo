@@ -118,7 +118,7 @@ YT_TEST (utils, array_length)
     YT_END();
 }
 
-void reset()
+void yt_reset()
 {
 }
 

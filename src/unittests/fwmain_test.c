@@ -109,7 +109,7 @@ YT_TEST (fwmain, invalid_mode_switch)
     YT_END();
 }
 
-void reset()
+void yt_reset()
 {
     reset_hal_mocks();
     reset_mode_mocks();

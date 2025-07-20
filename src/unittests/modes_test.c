@@ -46,7 +46,7 @@ YT_TEST (mode, modes_reset_after_full_cycle)
     YT_END();
 }
 
-void reset()
+void yt_reset()
 {
     mode_reset();
 }
