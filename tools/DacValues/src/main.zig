@@ -32,7 +32,7 @@ fn usage(args: [][:0]u8) void {
 }
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
     const allocator = gpa.allocator();
     defer assert(gpa.deinit() == .ok);
 
