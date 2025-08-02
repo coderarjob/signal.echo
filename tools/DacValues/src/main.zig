@@ -14,26 +14,21 @@ const Waves = enum {
     sine,
     amplitude_modulation,
     sine_x_on_x,
-
-    pub fn fromString(v: []const u8) ?@This() {
-        const values = .{
-            .{ Waves.amplitude_modulation, "am" },
-            .{ Waves.sine, "sin" },
-            .{ Waves.sine_x_on_x, "sinxonx" },
-        };
-
-        inline for (values) |vl| {
-            const wave, const name = vl;
-            if (std.mem.eql(u8, v, name)) return wave;
-        }
-        return null;
-    }
 };
 
 fn parse_args(args: [][:0]u8) !Waves {
     if (args.len < 2) return error.NoArguments;
-    const mode = Waves.fromString(args[1]) orelse return error.InvalidArgument;
+    const mode = std.meta.stringToEnum(Waves, args[1]) orelse return error.InvalidArgument;
     return mode;
+}
+
+fn usage(args: [][:0]u8) void {
+    std.debug.print("Usage: {s} ", .{args[0]});
+    inline for (std.meta.tags(Waves), 0..) |t, i| {
+        const c = if (i == 0) '[' else '|';
+        std.debug.print("{c}{s}", .{ c, @tagName(t) });
+    }
+    std.debug.print("]\n", .{});
 }
 
 pub fn main() !void {
@@ -46,7 +41,7 @@ pub fn main() !void {
 
     const mode = parse_args(args) catch |err| {
         std.debug.print("Error: {any}\n", .{err});
-        std.debug.print("Usage: {s} sin | sinxonx | am\n", .{args[0]});
+        usage(args);
         return;
     };
 
