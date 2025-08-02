@@ -83,6 +83,12 @@ We can build every unittests and run them using the `run` target.
 BUILD=ut BUILD_DIR=out/ut make run
 ```
 
+### Tools
+
+Some tools which are used exclusively in this project are/will be put into the `tools` folder. Each
+may have different prerequisites and build procedures. For information see `Readme.md` of each
+tool.
+
 # Feedback
 
 Open a GitHub issue or drop a email at arjobmukherjee@gmail.com. I would love to hear your
