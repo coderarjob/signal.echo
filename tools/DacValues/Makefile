@@ -1,12 +1,17 @@
 BUILD_DIR ?= out
 SRC_DIR := src
 BUILD ?= Debug
+LLVM ?= 1
 
 all:
 
 # ==========================================================
 BIN := $(BUILD_DIR)/dv
 BUILD_FLAGS := --color on -O $(BUILD) -femit-bin=$(BIN)
+
+ifeq ($(LLVM), 0)
+BUILD_FLAGS += -fno-llvm
+endif
 
 $(BIN): $(SRC_DIR)/main.zig
 	mkdir -p $(BUILD_DIR)
