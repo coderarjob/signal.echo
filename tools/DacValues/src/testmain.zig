@@ -6,7 +6,7 @@ const Dac = @import("Dac.zig");
 test "dac creation" {
     const dac = Dac.new(6);
     try expect(dac.bits == 6);
-    try expect(dac.max_value == 63);
+    try expectApproxEqAbs(63.999, dac.max_value, 1e-3);
     try expect(dac.length == 64);
     try expectApproxEqAbs(15.635e-3, dac.resolution_volts, 1e-3);
 }

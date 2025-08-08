@@ -9,11 +9,11 @@ resolution_volts: f64,
 
 const Self = @This();
 
-pub fn new(bits: u32) Self {
+pub fn new(comptime bits: u32) Self {
     const length = @as(f64, @floatFromInt(std.math.pow(u32, 2, bits)));
     return .{
         .bits = bits,
-        .max_value = length - 1.0,
+        .max_value = (length - 0.0001),
         .length = length,
         .resolution_volts = 1.0 / length,
     };
