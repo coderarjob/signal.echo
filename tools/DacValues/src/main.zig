@@ -16,35 +16,42 @@ const Waves = enum {
     sine_x_on_x,
 };
 
-fn parse_args(args: [][:0]u8) !struct { Waves, bool, f64 } {
-    if (args.len < 2) return error.NoArguments;
-    const mode = std.meta.stringToEnum(Waves, args[1]) orelse return error.InvalidMode;
+const ParsedArgResult = struct {
+    mode: Waves,
+    interpolate: bool,
+    freq_scalar: f64,
+    dac_bits: u32
+};
 
+fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
     var interpolate: bool = false;
     var freq_scalar: f64 = 1.0;
-    var skip_next = false;
-    if (args.len > 2) for (args[2..], 2..) |arg, i| {
-        if (skip_next == true) {
-            skip_next = false;
-            continue;
-        }
-
+    var dac_bits: ?u32 = null;
+    var mode: ?Waves = null;
+    while (args.next()) |arg| {
         if (std.mem.eql(u8, arg, "--interpolate")) {
             interpolate = true;
         } else if (std.mem.eql(u8, arg, "--freq")) {
-            if (args.len <= i + 1) return error.InvalidFrequency;
-            freq_scalar = try std.fmt.parseFloat(f64, args[i + 1]);
-            skip_next = true;
+            const value = args.next() orelse return error.InvalidFrequency;
+            freq_scalar = try std.fmt.parseFloat(f64, value);
+        } else if (std.mem.eql(u8, arg, "--bits")) {
+            const value = args.next() orelse return error.InvalidDacBits;
+            dac_bits = try std.fmt.parseInt(u32, value, 10);
         } else {
-            std.debug.print("Invalid argument {s}\n", .{arg});
-            return error.InvalidArgument;
+            mode = std.meta.stringToEnum(Waves, arg) orelse return error.InvalidModeOrOption;
         }
+    }
+
+    return .{
+        .mode = mode orelse return error.ModeNotSet,
+        .interpolate = interpolate,
+        .freq_scalar =  freq_scalar,
+        .dac_bits = dac_bits orelse return error.DacBitsNotSet
     };
-    return .{ mode, interpolate, freq_scalar };
 }
 
-fn usage(args: [][:0]u8) void {
-    std.debug.print("Usage: {s} [--interpolate] [--freq=<freq>] ", .{args[0]});
+fn usage(program_name: []const u8) void {
+    std.debug.print("Usage: {s} [--interpolate] [--freq=<freq>] ", .{program_name});
     inline for (std.meta.tags(Waves), 0..) |t, i| {
         const c = if (i == 0) '[' else '|';
         std.debug.print("{c}{s}", .{ c, @tagName(t) });
@@ -57,24 +64,25 @@ pub fn main() !void {
     const allocator = gpa.allocator();
     defer assert(gpa.deinit() == .ok);
 
-    const args = try std.process.argsAlloc(allocator);
-    defer std.process.argsFree(allocator, args);
+    var args = try std.process.argsWithAllocator(allocator);
+    defer args.deinit();
 
-    const mode, const interpolation_enabled, const freq_scalar = parse_args(args) catch |err| {
-        std.debug.print("Error: {any}\n", .{err});
-        usage(args);
-        return;
+    const program_name = args.next() orelse unreachable;
+    const input = parse_args(&args) catch |err| {
+        std.debug.print("Error: {s}\n", .{@errorName(err)});
+        usage(program_name);
+        std.process.exit(1);
     };
 
-    const dac = Dac.new(6);
-    const rvalues, const dac_offset: f64 = switch (mode) {
-        .sine => .{ try sine(allocator, &dac, freq_scalar), 0.5 },
-        .sine_x_on_x => .{ try sine_x_on_x(allocator, &dac, freq_scalar), 0.2 },
-        .amplitude_modulation => .{ try amplitude_modulation(allocator, &dac, freq_scalar), 0.5 },
+    const dac = Dac.new(input.dac_bits);
+    const rvalues, const dac_offset: f64 = switch (input.mode) {
+        .sine => .{ try sine(allocator, &dac, input.freq_scalar), 0.5 },
+        .sine_x_on_x => .{ try sine_x_on_x(allocator, &dac, input.freq_scalar), 0.2 },
+        .amplitude_modulation => .{ try amplitude_modulation(allocator, &dac, input.freq_scalar), 0.5 },
     };
     defer allocator.free(rvalues);
 
-    const dac_values = try dac.transform_waveform(allocator, rvalues, interpolation_enabled, dac_offset);
+    const dac_values = try dac.transform_waveform(allocator, rvalues, input.interpolate, dac_offset);
     defer allocator.free(dac_values);
 
     for (dac_values) |v| try stdout.print("{},\n", .{v});
