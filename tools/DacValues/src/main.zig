@@ -16,14 +16,35 @@ const Waves = enum {
     sine_x_on_x,
 };
 
-fn parse_args(args: [][:0]u8) !Waves {
+fn parse_args(args: [][:0]u8) !struct { Waves, bool, f64 } {
     if (args.len < 2) return error.NoArguments;
-    const mode = std.meta.stringToEnum(Waves, args[1]) orelse return error.InvalidArgument;
-    return mode;
+    const mode = std.meta.stringToEnum(Waves, args[1]) orelse return error.InvalidMode;
+
+    var interpolate: bool = false;
+    var freq_scalar: f64 = 1.0;
+    var skip_next = false;
+    if (args.len > 2) for (args[2..], 2..) |arg, i| {
+        if (skip_next == true) {
+            skip_next = false;
+            continue;
+        }
+
+        if (std.mem.eql(u8, arg, "--interpolate")) {
+            interpolate = true;
+        } else if (std.mem.eql(u8, arg, "--freq")) {
+            if (args.len <= i + 1) return error.InvalidFrequency;
+            freq_scalar = try std.fmt.parseFloat(f64, args[i + 1]);
+            skip_next = true;
+        } else {
+            std.debug.print("Invalid argument {s}\n", .{arg});
+            return error.InvalidArgument;
+        }
+    };
+    return .{ mode, interpolate, freq_scalar };
 }
 
 fn usage(args: [][:0]u8) void {
-    std.debug.print("Usage: {s} ", .{args[0]});
+    std.debug.print("Usage: {s} [--interpolate] [--freq=<freq>] ", .{args[0]});
     inline for (std.meta.tags(Waves), 0..) |t, i| {
         const c = if (i == 0) '[' else '|';
         std.debug.print("{c}{s}", .{ c, @tagName(t) });
@@ -39,7 +60,7 @@ pub fn main() !void {
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
-    const mode = parse_args(args) catch |err| {
+    const mode, const interpolation_enabled, const freq_scalar = parse_args(args) catch |err| {
         std.debug.print("Error: {any}\n", .{err});
         usage(args);
         return;
@@ -47,13 +68,13 @@ pub fn main() !void {
 
     const dac = Dac.new(6);
     const rvalues, const dac_offset: f64 = switch (mode) {
-        .sine => .{ try sine(allocator, &dac, 1), 0.5 },
-        .sine_x_on_x => .{ try sine_x_on_x(allocator, &dac, 2.0), 0.2 },
-        .amplitude_modulation => .{ try amplitude_modulation(allocator, &dac, 1.0), 0.5 },
+        .sine => .{ try sine(allocator, &dac, freq_scalar), 0.5 },
+        .sine_x_on_x => .{ try sine_x_on_x(allocator, &dac, freq_scalar), 0.2 },
+        .amplitude_modulation => .{ try amplitude_modulation(allocator, &dac, freq_scalar), 0.5 },
     };
     defer allocator.free(rvalues);
 
-    const dac_values = try dac.transform_waveform(allocator, rvalues, dac_offset);
+    const dac_values = try dac.transform_waveform(allocator, rvalues, interpolation_enabled, dac_offset);
     defer allocator.free(dac_values);
 
     for (dac_values) |v| try stdout.print("{},\n", .{v});

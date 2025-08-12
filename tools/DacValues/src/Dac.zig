@@ -19,7 +19,25 @@ pub fn new(comptime bits: u32) Self {
     };
 }
 
-pub fn transform_waveform(self: *const Self, allocator: mem.Allocator, waveform: []const f64, start_offset: f64) ![]const u32 {
+fn lin_interpol(allocator: mem.Allocator, dac_values: []const u32) ![]const u32 {
+    var ret = std.ArrayList(u32).init(allocator);
+    defer ret.deinit();
+
+    for (dac_values, 0..) |value, i| {
+        if (i > 0) {
+            const prev = @as(i64, @intCast(dac_values[i - 1]));
+            const v = @as(i64, @intCast(value));
+            const mid = prev + @divFloor((v - prev), 2);
+            if (mid != prev and mid != v) {
+                try ret.append(@as(u32, @intCast(mid)));
+            }
+        }
+        try ret.append(value);
+    }
+    return ret.toOwnedSlice();
+}
+
+pub fn transform_waveform(self: *const Self, allocator: mem.Allocator, waveform: []const f64, interpolate: bool, start_offset: f64) ![]const u32 {
     var ret = std.ArrayList(u32).init(allocator);
     defer ret.deinit();
 
@@ -29,5 +47,6 @@ pub fn transform_waveform(self: *const Self, allocator: mem.Allocator, waveform:
         const out_dac_value: u32 = @intFromFloat(math.floor(offset_dac_value + item * (self.max_value - offset_dac_value)));
         try ret.append(out_dac_value);
     }
-    return ret.toOwnedSlice();
+    if (!interpolate) return ret.toOwnedSlice();
+    return lin_interpol(allocator, ret.items);
 }
