@@ -6,31 +6,28 @@ in the firmware code to generate various waveforms.
 ### Prerequisites
 
 1. Zig compiler 0.14.0
-2. GPU Make
 
 There is no particular reason to use Zig language, other than my liking for it.
 
 ### Building and running
 
-`make` will build a binary in the `out` directory. 
+`zig build` by default puts the binary within the `zig-out/bin` directory.
+
 ```bash
-$ make
-$ ./out/dv sine     # to produce values representing a sine wave
+$ zig build
+$ ./zig-out/bin/dv sine     # 'sine' option to produce values representing a sine wave
 ```
 
-It is possible to run the binary using `make run` like shown below. `ARGS` environment variable
-is used to pass arguments to the `dv` binary.
-
-Or using the shortcut mentioned above
+It is also possible to run the binary using `zig build` as shown below.
 
 ```bash
-$ ARGS=sine make run
+$ zig build run -- sine
 ```
 
 ### Unittests
 
 ```bash
-$ make test
+$ zig build test
 ```
 
 # Feedback
