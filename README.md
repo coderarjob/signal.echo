@@ -53,6 +53,7 @@ along with firmware in this repo.
 - [X] Firmware: I2C sample output
 - [X] Firmware: Runt pulse (+ve & -ve runt pulses)
 - [X] Firmware: Sine wave pattern
+- [X] Firmware: Amplitude Modulation wave pattern
 - [X] Firmware: Triangle wave pattern
 - [X] Firmware: Sawtooth wave pattern
 - [X] Firmware: Burst data in two lines
