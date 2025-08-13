@@ -1,20 +1,10 @@
 const std = @import("std");
 const Dac = @import("Dac.zig");
+const Gen = @import("waves.zig");
+const Waves = Gen.Waves;
+
 const Allocator = std.mem.Allocator;
-const math = std.math;
-const expect = std.testing.expect;
-const expectApproxEqAbs = std.testing.expectApproxEqAbs;
-const assert = std.debug.assert;
 const stdout = std.io.getStdOut().writer();
-
-const PI = math.pi;
-const F64ArrayList = std.ArrayList(f64);
-
-const Waves = enum {
-    sine,
-    amp_modulation,
-    sine_x_on_x,
-};
 
 const ParsedArgResult = struct { 
     mode: Waves,
@@ -72,7 +62,7 @@ fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
 
 fn usage(program_name: []const u8) void {
     const usage_str = "[--interpolate] [--freq=<freq>]";
-    std.debug.print("Usage: {s} {s}", .{program_name, usage_str});
+    std.debug.print("Usage: {s}\n{s} ", .{program_name, usage_str});
     inline for (std.meta.tags(Waves), 0..) |t, i| {
         const c = if (i == 0) '[' else '|';
         std.debug.print("{c}{s}", .{ c, @tagName(t) });
@@ -83,7 +73,7 @@ fn usage(program_name: []const u8) void {
 pub fn main() !void {
     var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
     const allocator = gpa.allocator();
-    defer assert(gpa.deinit() == .ok);
+    defer std.debug.assert(gpa.deinit() == .ok);
 
     var args = try std.process.argsWithAllocator(allocator);
     defer args.deinit();
@@ -95,77 +85,16 @@ pub fn main() !void {
     };
 
     const dac = Dac.new(input.dac_bits);
+    const gen = Gen.init(allocator, dac);
     const rvalues, const dac_offset: f64 = switch (input.mode) {
-        .sine =>           .{ try sine(allocator, &dac, input.freq_scalar), 0.5 },
-        .sine_x_on_x =>    .{ try sine_x_on_x(allocator, &dac, input.freq_scalar), 0.2 },
-        .amp_modulation => .{ try amp_modulation(allocator, &dac, input.freq_scalar), 0.5 },
+        .sine =>           .{ try gen.sine(input.freq_scalar), 0.5 },
+        .sine_x_on_x =>    .{ try gen.sine_x_on_x(input.freq_scalar), 0.2 },
+        .amp_modulation => .{ try gen.amp_modulation(input.freq_scalar), 0.5 },
     };
-    defer allocator.free(rvalues);
+    defer gen.deinit(rvalues);
 
     const dac_values = try dac.transform_waveform(allocator, rvalues, input.interpolate, dac_offset);
     defer allocator.free(dac_values);
 
     for (dac_values) |v| try stdout.print("{},\n", .{v});
-}
-
-fn amp_modulation(allocator: Allocator, dac: *const Dac, freq_scaler: f64) ![]const f64 {
-    const INNER_WAVE_RADIANS: f64 = PI / 8.0;
-    var values = F64ArrayList.init(allocator);
-    defer values.deinit();
-
-    const end_rad = 2.0 * PI;
-    const step_rad = freq_scaler * (PI / 2.0) / dac.length;
-
-    var angle_rad: f64 = 0.0;
-    var end_inner_rad: f64 = 0.0;
-    var angle_inner_rad: f64 = 0.0;
-    while (angle_rad <= end_rad) : (angle_rad += step_rad) {
-        const ampl = math.sin(angle_rad);
-        angle_inner_rad = end_inner_rad;
-        end_inner_rad += INNER_WAVE_RADIANS;
-
-        if (end_inner_rad > 2.0 * PI) end_inner_rad = INNER_WAVE_RADIANS;
-        if (angle_inner_rad > end_inner_rad) angle_inner_rad = 0.0;
-
-        while (angle_inner_rad <= end_inner_rad) : (angle_inner_rad += step_rad) {
-            try values.append((ampl * math.cos(angle_inner_rad)));
-        }
-    }
-    return values.toOwnedSlice();
-}
-
-fn sine_x_on_x(allocator: Allocator, dac: *const Dac, freq_scaler: f64) ![]const f64 {
-    var values = F64ArrayList.init(allocator);
-    defer values.deinit();
-
-    const end_rad = 2.0 * PI;
-    const step_rad = freq_scaler * (PI / 2.0) / dac.length;
-
-    var angle_rad: f64 = -end_rad;
-    while (angle_rad <= end_rad) : (angle_rad += step_rad) {
-        try values.append(math.sin(angle_rad) / angle_rad);
-    }
-
-    return values.toOwnedSlice();
-}
-
-fn sine(allocator: Allocator, dac: *const Dac, freq_scaler: f64) ![]const f64 {
-    var values = F64ArrayList.init(allocator);
-    defer values.deinit();
-
-    const end_rad = 2.0 * PI;
-
-    // Frequency scaling works by reaching the full cycle faster/slower, that is
-    // increasing/decreasing the step value by that much amount. When freq_scaler > 1, we will be
-    // incrementing the angle in larger steps so there will be less number of points in the output
-    // vector (and full cycle will be reached with less number of points i.e faster). When
-    // freq_scaler < 1, the opposite happens and there will be more number of points.
-    const step_rad = freq_scaler * (PI / 2.0) / dac.length;
-
-    var angle_rad: f64 = 0.0;
-    while (angle_rad <= end_rad) : (angle_rad += step_rad) {
-        try values.append(math.sin(angle_rad));
-    }
-
-    return values.toOwnedSlice();
 }
