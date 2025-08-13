@@ -35,6 +35,11 @@ along with firmware in this repo.
 ![Sine wave](docs/images/sine_wave_freq_dist.png)
 ![Sine wave](docs/images/sine_wave_fft.png)
 
+##### 5. Amplitude Modulation wave
+
+![Sine wave](docs/images/am_wave.png)
+![Sine wave](docs/images/am_wave_fft.png)
+
 ##### 6. Triangle wave
 
 ![Triangle wave](docs/images/triangle_wave.png)
