@@ -12,11 +12,11 @@ const F64ArrayList = std.ArrayList(f64);
 
 const Waves = enum {
     sine,
-    amplitude_modulation,
+    amp_modulation,
     sine_x_on_x,
 };
 
-const ParsedArgResult = struct {
+const ParsedArgResult = struct { 
     mode: Waves,
     interpolate: bool,
     freq_scalar: f64,
@@ -32,26 +32,47 @@ fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
         if (std.mem.eql(u8, arg, "--interpolate")) {
             interpolate = true;
         } else if (std.mem.eql(u8, arg, "--freq")) {
-            const value = args.next() orelse return error.InvalidFrequency;
-            freq_scalar = try std.fmt.parseFloat(f64, value);
+            const value = args.next() orelse {
+                std.debug.print("Frequency value was not provided.\n", .{});
+                return error.Failed;
+            };
+            freq_scalar = std.fmt.parseFloat(f64, value) catch |e|{
+                std.debug.print("Invalid floating point value: {s}.\n", .{value});
+                return e;
+            };
         } else if (std.mem.eql(u8, arg, "--bits")) {
-            const value = args.next() orelse return error.InvalidDacBits;
-            dac_bits = try std.fmt.parseInt(u32, value, 10);
+            const value = args.next() orelse {
+                std.debug.print("Dac bits was not provided.\n", .{});
+                return error.Failed;
+            };
+            dac_bits = std.fmt.parseInt(u32, value, 10) catch |e|{
+                std.debug.print("Invalid numeric value: {s}.\n", .{value});
+                return e;
+            };
         } else {
-            mode = std.meta.stringToEnum(Waves, arg) orelse return error.InvalidModeOrOption;
+            mode = std.meta.stringToEnum(Waves, arg) orelse {
+                std.debug.print("Invalid mode: {s}.\n", .{arg});
+                return error.Failed;
+            };
         }
     }
 
     return .{
-        .mode = mode orelse return error.ModeNotSet,
+        .mode = mode orelse {
+            std.debug.print("Wave value was not provided\n", .{});
+            return error.Failed;
+        },
         .interpolate = interpolate,
-        .freq_scalar =  freq_scalar,
-        .dac_bits = dac_bits orelse return error.DacBitsNotSet
-    };
+        .freq_scalar = freq_scalar,
+        .dac_bits = dac_bits orelse {
+            std.debug.print("Dac bits was not provided\n", .{});
+            return error.Failed;
+        }};
 }
 
 fn usage(program_name: []const u8) void {
-    std.debug.print("Usage: {s} [--interpolate] [--freq=<freq>] ", .{program_name});
+    const usage_str = "[--interpolate] [--freq=<freq>]";
+    std.debug.print("Usage: {s} {s}", .{program_name, usage_str});
     inline for (std.meta.tags(Waves), 0..) |t, i| {
         const c = if (i == 0) '[' else '|';
         std.debug.print("{c}{s}", .{ c, @tagName(t) });
@@ -68,17 +89,16 @@ pub fn main() !void {
     defer args.deinit();
 
     const program_name = args.next() orelse unreachable;
-    const input = parse_args(&args) catch |err| {
-        std.debug.print("Error: {s}\n", .{@errorName(err)});
+    const input = parse_args(&args) catch {
         usage(program_name);
         std.process.exit(1);
     };
 
     const dac = Dac.new(input.dac_bits);
     const rvalues, const dac_offset: f64 = switch (input.mode) {
-        .sine => .{ try sine(allocator, &dac, input.freq_scalar), 0.5 },
-        .sine_x_on_x => .{ try sine_x_on_x(allocator, &dac, input.freq_scalar), 0.2 },
-        .amplitude_modulation => .{ try amplitude_modulation(allocator, &dac, input.freq_scalar), 0.5 },
+        .sine =>           .{ try sine(allocator, &dac, input.freq_scalar), 0.5 },
+        .sine_x_on_x =>    .{ try sine_x_on_x(allocator, &dac, input.freq_scalar), 0.2 },
+        .amp_modulation => .{ try amp_modulation(allocator, &dac, input.freq_scalar), 0.5 },
     };
     defer allocator.free(rvalues);
 
@@ -88,7 +108,7 @@ pub fn main() !void {
     for (dac_values) |v| try stdout.print("{},\n", .{v});
 }
 
-fn amplitude_modulation(allocator: Allocator, dac: *const Dac, freq_scaler: f64) ![]const f64 {
+fn amp_modulation(allocator: Allocator, dac: *const Dac, freq_scaler: f64) ![]const f64 {
     const INNER_WAVE_RADIANS: f64 = PI / 8.0;
     var values = F64ArrayList.init(allocator);
     defer values.deinit();
