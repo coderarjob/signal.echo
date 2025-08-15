@@ -1,6 +1,9 @@
 <p align="center">
     <img src="/docs/images/logo.png"/>
     <br/>
+    <br/>
+    <img src="https://github.com/coderarjob/ScopeTester/actions/workflows/utbuild.yaml/badge.svg"/>
+    <img src="https://github.com/coderarjob/ScopeTester/actions/workflows/fwbuild.yaml/badge.svg"/>
 </p>
 
 ## About
