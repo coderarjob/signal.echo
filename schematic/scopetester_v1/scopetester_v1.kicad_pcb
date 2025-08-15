@@ -58,7 +58,7 @@
 		(allow_soldermask_bridges_in_footprints no)
 		(tenting front back)
 		(pcbplotparams
-			(layerselection 0x00000000_00000000_55555555_5755f5ff)
+			(layerselection 0x00000000_00000000_55555555_d75555f4)
 			(plot_on_all_layers_selection 0x00000000_00000000_00000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
@@ -92,9 +92,9 @@
 			(subtractmaskfromsilk no)
 			(outputformat 1)
 			(mirror no)
-			(drillshape 1)
+			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "")
+			(outputdirectory "manufacturing/")
 		)
 	)
 	(net 0 "")
@@ -5194,7 +5194,7 @@
 			(net 2 "GND")
 			(pinfunction "1")
 			(pintype "passive")
-			(uuid "049ea1ff-7a48-4471-9371-fe8f7a9a51af")
+			(uuid "23a3c8e8-3e87-4e50-8e98-fc876ff74943")
 		)
 		(pad "2" thru_hole circle
 			(at 0 4.5 90)
@@ -5216,7 +5216,7 @@
 			(net 3 "SW_MODE")
 			(pinfunction "2")
 			(pintype "passive")
-			(uuid "52a7ebd6-cea6-46ca-8b0d-588123f84a9e")
+			(uuid "b1ca7c71-e23a-4d99-a0f4-1409c193dbbf")
 		)
 		(embedded_fonts no)
 		(model "${KICAD9_3DMODEL_DIR}/Button_Switch_THT.3dshapes/SW_PUSH_6mm_H4.3mm.step"
