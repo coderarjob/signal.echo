@@ -17,68 +17,53 @@ pub const Waves = enum {
     sine_x_on_x,
 };
 
-
 pub fn init(allocator: Allocator, dac: Dac) Self {
     return .{ .allocator = allocator, .dac = dac };
 }
 
-pub fn amp_modulation(self: Self, freq_scaler: f64) ![]const f64 {
-    const INNER_WAVE_RADIANS: f64 = PI / 8.0;
+pub fn amp_modulation(self: Self, freq_scaler: f64, sample_count: u32) ![]const f64 {
     var values = F64ArrayList.init(self.allocator);
     defer values.deinit();
 
-    const end_rad = 2.0 * PI;
-    const step_rad = freq_scaler * (PI / 2.0) / self.dac.length;
+    const step_time = 1.0 / @as(f64, @floatFromInt(sample_count));
 
-    var angle_rad: f64 = 0.0;
-    var end_inner_rad: f64 = 0.0;
-    var angle_inner_rad: f64 = 0.0;
-    while (angle_rad <= end_rad) : (angle_rad += step_rad) {
-        const ampl = math.sin(angle_rad);
-        angle_inner_rad = end_inner_rad;
-        end_inner_rad += INNER_WAVE_RADIANS;
+    // 50 is chosen just as some base. The base value will make freq_scaler value behave more how it
+    // behaves for the sine wave generation, i.e it simply scales the frequency.
+    const carrier_freq = 50.0 * freq_scaler;
 
-        if (end_inner_rad > 2.0 * PI) end_inner_rad = INNER_WAVE_RADIANS;
-        if (angle_inner_rad > end_inner_rad) angle_inner_rad = 0.0;
-
-        while (angle_inner_rad <= end_inner_rad) : (angle_inner_rad += step_rad) {
-            try values.append((ampl * math.cos(angle_inner_rad)));
-        }
+    var time: f64 = 0.0;
+    while (time <= 1.0) : (time += step_time) {
+        try values.append(math.sin(2.0 * PI * time * 0.5) * math.cos(2.0 * PI * time * carrier_freq));
     }
     return values.toOwnedSlice();
 }
 
-pub fn sine_x_on_x(self: Self, freq_scaler: f64) ![]const f64 {
+pub fn sine_x_on_x(self: Self, freq_scaler: f64, sample_count: u32) ![]const f64 {
     var values = F64ArrayList.init(self.allocator);
     defer values.deinit();
 
-    const end_rad = 2.0 * PI;
-    const step_rad = freq_scaler * (PI / 2.0) / self.dac.length;
+    const time_step = freq_scaler / @as(f64, @floatFromInt(sample_count));
 
-    var angle_rad: f64 = -end_rad;
-    while (angle_rad <= end_rad) : (angle_rad += step_rad) {
-        try values.append(math.sin(angle_rad) / angle_rad);
+    var time: f64 = -5.0;
+    while (time <= 5.0) : (time += time_step) {
+        const x = 2.0 * PI * time;
+        try values.append(math.sin(x) / x);
     }
 
     return values.toOwnedSlice();
 }
 
-pub fn sine(self: Self, freq_scaler: f64) ![]const f64 {
+pub fn sine(self: Self, freq_scaler: f64, sample_count: u32) ![]const f64 {
     var values = F64ArrayList.init(self.allocator);
     defer values.deinit();
 
-    const end_rad = 2.0 * PI;
+    // Frequency scaling works by reaching the full cycle faster/slower in more/less number of
+    // samples.
+    const time_step = freq_scaler / @as(f64, @floatFromInt(sample_count));
 
-    // Frequency scaling works by reaching the full cycle faster/slower, that is
-    // increasing/decreasing the step value by that much amount. When freq_scaler > 1, we will be
-    // incrementing the angle in larger steps so there will be less number of points in the output
-    // vector (and full cycle will be reached with less number of points i.e faster). When
-    // freq_scaler < 1, the opposite happens and there will be more number of points.
-    const step_rad = freq_scaler * (PI / 2.0) / self.dac.length;
-
-    var angle_rad: f64 = 0.0;
-    while (angle_rad <= end_rad) : (angle_rad += step_rad) {
-        try values.append(math.sin(angle_rad));
+    var time: f64 = 0.0;
+    while (time <= 1.0) : (time += time_step) {
+        try values.append(math.sin(2.0 * PI * time));
     }
 
     return values.toOwnedSlice();

@@ -10,7 +10,8 @@ const ParsedArgResult = struct {
     mode: Waves,
     interpolate: bool,
     freq_scalar: f64,
-    dac_bits: u32
+    dac_bits: u32,
+    sample_count: u32
 };
 
 fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
@@ -18,24 +19,26 @@ fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
     var freq_scalar: f64 = 1.0;
     var dac_bits: ?u32 = null;
     var mode: ?Waves = null;
+    var sample_count: ?u32 = null;
+
     while (args.next()) |arg| {
         if (std.mem.eql(u8, arg, "--interpolate")) {
             interpolate = true;
         } else if (std.mem.eql(u8, arg, "--freq")) {
-            const value = args.next() orelse {
-                std.debug.print("Frequency value was not provided.\n", .{});
-                return error.Failed;
-            };
+            const value = args.next() orelse continue;
             freq_scalar = std.fmt.parseFloat(f64, value) catch |e|{
                 std.debug.print("Invalid floating point value: {s}.\n", .{value});
                 return e;
             };
         } else if (std.mem.eql(u8, arg, "--bits")) {
-            const value = args.next() orelse {
-                std.debug.print("Dac bits was not provided.\n", .{});
-                return error.Failed;
-            };
+            const value = args.next() orelse continue;
             dac_bits = std.fmt.parseInt(u32, value, 10) catch |e|{
+                std.debug.print("Invalid numeric value: {s}.\n", .{value});
+                return e;
+            };
+        } else if (std.mem.eql(u8, arg, "--samples")) {
+            const value = args.next() orelse continue;
+            sample_count = std.fmt.parseInt(u32, value, 10) catch |e|{
                 std.debug.print("Invalid numeric value: {s}.\n", .{value});
                 return e;
             };
@@ -52,17 +55,30 @@ fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
             std.debug.print("Wave value was not provided\n", .{});
             return error.Failed;
         },
-        .interpolate = interpolate,
-        .freq_scalar = freq_scalar,
         .dac_bits = dac_bits orelse {
             std.debug.print("Dac bits was not provided\n", .{});
             return error.Failed;
-        }};
+        },
+        .sample_count = sample_count orelse {
+            std.debug.print("Sample count was not provided\n", .{});
+            return error.Failed;
+        },
+        .interpolate = interpolate,
+        .freq_scalar = freq_scalar
+    };
 }
 
-fn usage(program_name: []const u8) void {
-    const usage_str = "[--interpolate] [--freq=<freq>]";
-    std.debug.print("Usage: {s}\n{s} ", .{program_name, usage_str});
+fn usage(program_path: []const u8) void {
+    const usage_str =
+        \\USAGE: {s} <Modes> --bits <Bits> --samples <Sample count> [--interpolate] [--freq=<Freq>]
+        \\Bits            Number of bits of DAC
+        \\Sample Count    Maximum number of points to in the output
+        \\Freq            Frequency will be scaled by this amount. (Default is 1.0)
+        \\Modes           
+        ;
+
+    const program_name = std.fs.path.basename(program_path);
+    std.debug.print(usage_str, .{program_name});
     inline for (std.meta.tags(Waves), 0..) |t, i| {
         const c = if (i == 0) '[' else '|';
         std.debug.print("{c}{s}", .{ c, @tagName(t) });
@@ -78,18 +94,18 @@ pub fn main() !void {
     var args = try std.process.argsWithAllocator(allocator);
     defer args.deinit();
 
-    const program_name = args.next() orelse unreachable;
+    const program_path = args.next() orelse unreachable;
     const input = parse_args(&args) catch {
-        usage(program_name);
+        usage(program_path);
         std.process.exit(1);
     };
 
     const dac = Dac.new(input.dac_bits);
     const gen = Gen.init(allocator, dac);
     const rvalues, const dac_offset: f64 = switch (input.mode) {
-        .sine =>           .{ try gen.sine(input.freq_scalar), 0.5 },
-        .sine_x_on_x =>    .{ try gen.sine_x_on_x(input.freq_scalar), 0.2 },
-        .amp_modulation => .{ try gen.amp_modulation(input.freq_scalar), 0.5 },
+        .sine =>           .{ try gen.sine(input.freq_scalar, input.sample_count), 0.5 },
+        .sine_x_on_x =>    .{ try gen.sine_x_on_x(input.freq_scalar, input.sample_count), 0.2 },
+        .amp_modulation => .{ try gen.amp_modulation(input.freq_scalar, input.sample_count), 0.5 },
     };
     defer gen.deinit(rvalues);
 
