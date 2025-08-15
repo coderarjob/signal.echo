@@ -260,6 +260,79 @@ YT_TEST (triangle, triangle_test_normal)
     YT_END();
 }
 
+YT_TEST (am, am_wave_normal)
+{
+    unsigned int iter_num        = 1;
+    mode_is_dirty_fake.resources = &iter_num;
+    mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
+
+    YT_MUST_CALL_IN_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V (ANALOG_OUTPUT_PIN_MASK));
+
+    // Following traces the general sine wave pattern expecting the followings
+
+    // 1. Starting with half way value
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V (DAC_WIDTH_MAX_VALUE / 2));
+
+    // As AM wave slowly increases in amplitde we expect more than 10 carrier waves reaching rail to
+    // rail values.
+    YT_IN_SEQUENCE (10)
+    {
+        // 2. Then it must reach the maximum value
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO),
+                               YT_V (DAC_WIDTH_MAX_VALUE - 1));
+
+        // 3. Then it must reach the zero
+        YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO), YT_V (0));
+    }
+
+    // 4. End it end with again around half way
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V ((DAC_WIDTH_MAX_VALUE / 2) - 1));
+
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V (ANALOG_OUTPUT_PIN_MASK));
+
+    am_test();
+    YT_END();
+}
+
+// TODO: In order to write a test to check if only one cycle of the wave is outputed and not more,
+// requires YT_MUST_CALL_IN_ORDER_EXACT_TIMES, which does not exist yet.
+
+YT_TEST (sine, sine_wave_normal)
+{
+    unsigned int iter_num        = 1;
+    mode_is_dirty_fake.resources = &iter_num;
+    mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
+
+    YT_MUST_CALL_IN_ORDER (HAL_IO_MAKE_OUTPUT, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V (ANALOG_OUTPUT_PIN_MASK));
+
+    // Following traces the general sine wave pattern expecting the followings
+    // 1. Starting with half way value
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V (DAC_WIDTH_MAX_VALUE / 2));
+
+    // 2. Then it must reach the maximum value
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V (DAC_WIDTH_MAX_VALUE - 1));
+
+    // 3. Then it must reach the zero
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO), YT_V (0));
+
+    // 4. Then again it reaches around half way
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V ((DAC_WIDTH_MAX_VALUE / 2) - 1));
+
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (ANALOG_OUTPUT_GPIO),
+                           YT_V (ANALOG_OUTPUT_PIN_MASK));
+
+    sine_test();
+    YT_END();
+}
+
 void yt_reset()
 {
     reset_hal_mocks();
@@ -276,5 +349,7 @@ int main (void)
     two_pulse_test_normal();
     sawtooth_test_normal();
     triangle_test_normal();
+    sine_wave_normal();
+    am_wave_normal();
     YT_RETURN_WITH_REPORT();
 }
