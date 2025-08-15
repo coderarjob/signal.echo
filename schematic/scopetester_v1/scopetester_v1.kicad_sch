@@ -2858,9 +2858,9 @@
 		)
 		(uuid "80bc70b7-d894-443c-baf8-dff3f65fb31e")
 	)
-	(text "STATUS LED MEANING\n\nSTAT_LED_0     STAT_LED_1     STAT_LED_2      STAT_LED_3    Op Mode\n     1             0               0               0        USART TEST\n     0             1               0               0        RUNT PULSE TEST\n     1             1               0               0        TWO PULSE TEST\n     0             0               1               0        SAWTOOTH WAVE\n     1             0               1               0        TRIANGLE WAVE\n     0             1               1               0        I2C TEST\n     1             1               1               0        SINE WAVE\n     1             1               1               1        ERROR"
+	(text "STATUS LED MEANING\n\nSTAT_LED_3     STAT_LED_2     STAT_LED_1      STAT_LED_0    Op Mode\n     0             0               0               1        USART TEST\n     0             0               1               0        RUNT PULSE TEST\n     0             0               1               1        TWO PULSE TEST\n     0             1               0               0        SAWTOOTH WAVE\n     0             1               0               1        TRIANGLE WAVE\n     0             1               1               0        I2C TEST\n     0             1               1               1        SINE WAVE\n     1             0               0               0        AM WAVE\n     1             1               1               1        ERROR"
 		(exclude_from_sim no)
-		(at 202.565 144.78 0)
+		(at 201.676 150.622 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3049,7 +3049,7 @@
 	)
 	(polyline
 		(pts
-			(xy 280.67 121.92) (xy 200.66 121.92)
+			(xy 280.67 125.73) (xy 200.66 125.73)
 		)
 		(stroke
 			(width 0)
@@ -3779,7 +3779,7 @@
 	)
 	(polyline
 		(pts
-			(xy 200.66 121.92) (xy 200.66 147.32)
+			(xy 200.66 125.73) (xy 200.66 151.13)
 		)
 		(stroke
 			(width 0)
@@ -3819,7 +3819,7 @@
 	)
 	(polyline
 		(pts
-			(xy 280.67 125.73) (xy 280.67 125.095)
+			(xy 280.67 129.54) (xy 280.67 128.905)
 		)
 		(stroke
 			(width 0)
@@ -3879,7 +3879,7 @@
 	)
 	(polyline
 		(pts
-			(xy 280.67 147.32) (xy 280.67 121.92)
+			(xy 280.67 151.13) (xy 280.67 125.73)
 		)
 		(stroke
 			(width 0)
@@ -4089,7 +4089,7 @@
 	)
 	(polyline
 		(pts
-			(xy 200.66 125.095) (xy 280.67 125.095)
+			(xy 200.66 128.905) (xy 280.67 128.905)
 		)
 		(stroke
 			(width 0)
@@ -4199,7 +4199,7 @@
 	)
 	(polyline
 		(pts
-			(xy 200.66 147.32) (xy 280.67 147.32)
+			(xy 200.66 151.13) (xy 280.67 151.13)
 		)
 		(stroke
 			(width 0)
