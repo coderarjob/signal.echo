@@ -16,7 +16,7 @@ test "transform waveform" {
     const dac = Dac.new(6);
 
     const data_in = [_]f64{ 0.0, 0.5, 1.0 };
-    const data_out = try dac.transform_waveform(allocator, &data_in, 0.5);
+    const data_out = try dac.transform_waveform(allocator, &data_in, false, 0.5);
     defer allocator.free(data_out);
 
     try expect(data_out.len == data_in.len);
