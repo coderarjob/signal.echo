@@ -52,7 +52,7 @@ fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
 
     return .{
         .mode = mode orelse {
-            std.debug.print("Wave value was not provided\n", .{});
+            std.debug.print("Mode value was not provided\n", .{});
             return error.Failed;
         },
         .dac_bits = dac_bits orelse {
@@ -70,7 +70,7 @@ fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
 
 fn usage(program_path: []const u8) void {
     const usage_str =
-        \\USAGE: {s} <Modes> --bits <Bits> --samples <Sample count> [--interpolate] [--freq=<Freq>]
+        \\USAGE: {s} <Mode> --bits <Bits> --samples <Sample count> [--interpolate] [--freq=<Freq>]
         \\Bits            Number of bits of DAC
         \\Sample Count    Maximum number of points to in the output
         \\Freq            Frequency will be scaled by this amount. (Default is 1.0)
