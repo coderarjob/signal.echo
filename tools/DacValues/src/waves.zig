@@ -4,7 +4,7 @@ const Dac = @import("Dac.zig");
 const math = std.math;
 
 const PI = math.pi;
-const F64ArrayList = std.ArrayList(f64);
+const F64ArrayList = std.array_list.Managed(f64);
 
 allocator: Allocator,
 dac: Dac,

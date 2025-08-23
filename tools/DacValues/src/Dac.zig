@@ -2,6 +2,8 @@ const std = @import("std");
 const mem = std.mem;
 const math = std.math;
 
+const U32ArrayList = std.array_list.Managed(u32);
+
 bits: u32,
 max_value: f64,
 length: f64,
@@ -20,7 +22,7 @@ pub fn new(bits: u32) Self {
 }
 
 fn lin_interpol(allocator: mem.Allocator, dac_values: []const u32) ![]const u32 {
-    var ret = std.ArrayList(u32).init(allocator);
+    var ret = U32ArrayList.init(allocator);
     defer ret.deinit();
 
     for (dac_values, 0..) |value, i| {
@@ -38,7 +40,7 @@ fn lin_interpol(allocator: mem.Allocator, dac_values: []const u32) ![]const u32 
 }
 
 pub fn transform_waveform(self: *const Self, allocator: mem.Allocator, waveform: []const f64, interpolate: bool, start_offset: f64) ![]const u32 {
-    var ret = std.ArrayList(u32).init(allocator);
+    var ret = U32ArrayList.init(allocator);
     defer ret.deinit();
 
     const offset_dac_value = self.length * start_offset;

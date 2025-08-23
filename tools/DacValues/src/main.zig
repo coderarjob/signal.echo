@@ -4,7 +4,8 @@ const Gen = @import("waves.zig");
 const Waves = Gen.Waves;
 
 const Allocator = std.mem.Allocator;
-const stdout = std.io.getStdOut().writer();
+var stdout_writer = std.fs.File.stdout().writer(&.{});
+const stdout = &stdout_writer.interface;
 
 const ParsedArgResult = struct { 
     mode: Waves,

@@ -4,9 +4,11 @@ pub fn build(b: *std.Build) !void {
 
     const exe = b.addExecutable(.{
         .name = "dv",
-        .root_source_file =  b.path("src/main.zig"),
-        .target = b.graph.host,
-        .optimize = b.standardOptimizeOption(.{})
+        .root_module = b.createModule(.{
+            .root_source_file =  b.path("src/main.zig"),
+            .target = b.graph.host,
+            .optimize = b.standardOptimizeOption(.{})
+        }),
     });
     b.installArtifact(exe);
     
@@ -15,8 +17,10 @@ pub fn build(b: *std.Build) !void {
     b.step("run", "Runs the application").dependOn(&run_exe.step);
 
     const test_exe = b.addTest(.{
-        .root_source_file = b.path("src/testmain.zig"),
-        .target = b.graph.host
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/testmain.zig"),
+            .target = b.graph.host
+        }),
     });
     const run_test = b.addRunArtifact(test_exe);
     run_test.skip_foreign_checks = true;
