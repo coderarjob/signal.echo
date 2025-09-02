@@ -5,7 +5,7 @@
       "Application": "Pcbnew",
       "Version": "9.0.2+dfsg-1"
     },
-    "CreationDate": "2025-08-27T01:07:13+05:30"
+    "CreationDate": "2025-09-03T01:51:33+05:30"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -44,8 +44,18 @@
       "FilePolarity": "Positive"
     },
     {
+      "Path": "scopetester_v1-B_Mask.gbr",
+      "FileFunction": "SolderMask,Bot",
+      "FilePolarity": "Negative"
+    },
+    {
       "Path": "scopetester_v1-Edge_Cuts.gbr",
       "FileFunction": "Profile",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "scopetester_v1-F_Fab.gbr",
+      "FileFunction": "AssemblyDrawing,Top",
       "FilePolarity": "Positive"
     }
   ],
