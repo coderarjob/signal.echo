@@ -13,7 +13,9 @@ personal need for a demo board to test my new oscilloscope. I plan to create a c
 along with firmware in this repo.
 
 **Caution**: The master branch contains changes for the upcoming version and may not always be
-stable. Use one of the released versions if you intend to manufacture. See Releases.
+stable. Use one of the [released](https://github.com/coderarjob/signal.echo/releases) versions if
+you intend to manufacture. See [LICENCE](./LICENSE) for terms under which this project is released
+and developed.
 
 ### Screenshots
 
