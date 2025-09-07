@@ -1,10 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include <stdint.h>
-#if HW_VER == 1
-    #include <hw/v1/hwspec.h>
-#endif
+#include <hw/hwspec.h>
 
 #if !defined(UNITTESTS)
     #define NORETURN __attribute__ ((noreturn))

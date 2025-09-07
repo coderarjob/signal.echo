@@ -5,9 +5,7 @@
 #include <tests_mock.h>
 #include <hal_mock.h>
 #include <mode_mock.h>
-#if HW_VER == 1
-    #include <hw/v1/hwspec.h>
-#endif
+#include <hw/hwspec.h>
 
 void fw_main (void);
 

@@ -8,8 +8,7 @@ PROGRAMMER := avrdude
 MPU_ARCH   := AVR
 
 cc_definitions := -DF_CPU=$(clock)    \
-				  -DARCH=$(MPU_ARCH)  \
-				  -DHW_VER=$(HW_VER)
+				  -DARCH=$(MPU_ARCH)
 
 ifeq ($(DEBUG), 1)
 	cc_definitions += -DDEBUG

@@ -1,7 +1,5 @@
 #include <hal.h>
-#if HW_VER == 1
-    #include <hw/v1/hwspec.h>
-#endif
+#include <hw/hwspec.h>
 #include <hw/hwdetect.h>
 #include <main.h>
 

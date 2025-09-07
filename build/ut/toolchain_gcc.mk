@@ -9,7 +9,6 @@ MPU_ARCH := $(shell echo $(ARCH)|tr 'a-z' 'A-Z')
 
 cc_definitions := -DF_CPU=$(clock)    \
 				  -DARCH=$(MPU_ARCH)  \
-				  -DHW_VER=$(HW_VER)  \
 				  -DUNITTESTS
 
 ld_flags :=

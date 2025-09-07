@@ -5,9 +5,7 @@
 #include <mode_mock.h>
 #include <hal_mock.h>
 #include <assert.h>
-#if HW_VER == 1
-    #include <hw/v1/hwspec.h>
-#endif
+#include <hw/hwspec.h>
 
 bool mode_is_dirty_after_some_iterations_handler()
 {
