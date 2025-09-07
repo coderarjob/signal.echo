@@ -12,6 +12,9 @@ This is a hardware project based on Atmega8A microcontroller. This project came 
 personal need for a demo board to test my new oscilloscope. I plan to create a complete PCB
 along with firmware in this repo.
 
+**Caution**: The master branch contains changes for the upcoming version and may not always be
+stable. Use one of the released versions if you intend to manufacture. See Releases.
+
 ### Screenshots
 
 ##### 1. Serial RS232 (TTL Level) decoding test
@@ -68,7 +71,7 @@ along with firmware in this repo.
 - [X] Firmware: Separate arch independent codes
 - [X] Unittests: Add unittests for utils
 - [X] Unittests: Add unittests for existing tests
-- [ ] Manufacturing: Build the PCB board
+- [X] Manufacturing: Build the PCB board
 
 ## Building prerequisites
 
