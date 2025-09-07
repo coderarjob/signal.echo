@@ -12,8 +12,8 @@ This is a hardware project based on Atmega8A microcontroller. This project came 
 personal need for a demo board to test my new oscilloscope. I plan to create a complete PCB
 along with firmware in this repo.
 
-**Caution**: The master branch contains changes for the upcoming version and may not always be
-stable. Use one of the released versions if you intend to manufacture. See Releases.
+**Note**: This is the release branch for version 1.x. Work on the next version is done in the master
+branch.
 
 ### Screenshots
 
