@@ -84,17 +84,30 @@ and developed.
 
 ### Firmware
 
-```
+Build the firmware using the following command. Firmware binary is the `./out/firmware.hex` file.
+
+```bash
 BUILD_DIR=out make
 ```
 
-Firmware is the `./out/firmware.hex` file. To program micro with avrdude, we can do `make program`.
+To program using avrdude we run the following command.
+
+```bash
+make program
+```
+
+When programming a new microcontroller, we also need to program the required fuse bits. This can be
+using the following command
+
+```bash
+make program_fuses
+```
 
 ### Unittests
 
 We can build every unittests and run them using the `run` target.
 
-```
+```bash
 BUILD=ut BUILD_DIR=out/ut make run
 ```
 
