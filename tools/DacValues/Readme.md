@@ -5,7 +5,7 @@ in the firmware code to generate various waveforms.
 
 ### Prerequisites
 
-1. Zig compiler 0.14.0
+1. Zig compiler 0.15.1
 
 There is no particular reason to use Zig language, other than my liking for it.
 
@@ -15,13 +15,13 @@ There is no particular reason to use Zig language, other than my liking for it.
 
 ```bash
 $ zig build
-$ ./zig-out/bin/dv sine     # 'sine' option to produce values representing a sine wave
+$ ./zig-out/bin/dv # Displays help and uage information
 ```
 
 It is also possible to run the binary using `zig build` as shown below.
 
 ```bash
-$ zig build run -- sine
+$ zig build run -- <args> # Refer to usage for <args>
 ```
 
 ### Unittests
