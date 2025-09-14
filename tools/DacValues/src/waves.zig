@@ -33,7 +33,8 @@ pub fn amp_modulation(self: Self, freq_scaler: f64, sample_count: u32) ![]const 
 
     var time: f64 = 0.0;
     while (time <= 1.0) : (time += step_time) {
-        try values.append(math.sin(2.0 * PI * time * 0.5) * math.cos(2.0 * PI * time * carrier_freq));
+        const v = (1 + math.sin(2.0 * PI * time - PI / 2.0)) * 0.5 * math.cos(2.0 * PI * time * carrier_freq);
+        try values.append(v);
     }
     return values.toOwnedSlice();
 }

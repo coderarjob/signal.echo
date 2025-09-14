@@ -275,7 +275,7 @@ YT_TEST (am, am_wave_normal)
 
     // As AM wave slowly increases in amplitde we expect more than 10 carrier waves reaching rail to
     // rail values.
-    YT_IN_SEQUENCE (10)
+    YT_IN_SEQUENCE (5)
     {
         // 2. Then it must reach the maximum value
         YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_WRITE, YT_V (ANALOG_OUTPUT_GPIO),
