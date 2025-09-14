@@ -98,9 +98,10 @@ about. Lets recap the parameters which are common and the new ones
 1. Number of sample points: `sample_count`
 2. Number of cycles per envelop eye: $n = BASE\_FREQ * freq\_scale$. Where `BASE_FREQ` is any constant,
    currently its `50`.
-3. Number of sample points per cycle: $S = sample\_count/n$. This many samples make up each cycle of
-   the carrier wave. Larger `S` makes a smoother wave which less prominent steps. This however
-   cannot be larger than $2^{DAC\_BITS} - 1$. We use 6 bit DAC so `DAC_BITS` is 6 in our case.
+3. Number of sample points per cycle: $S = sample\_count/n$. This many samples points will make up
+   each cycle of the carrier wave. Larger `S` makes up for a smoother wave with less prominent
+   steps. Note that this has nothing to do the DAC width. Its the number of sample points not the
+   max value of it.
 
 In order to control both the carrier frequency and the signal frequency a relation need to be made
 between them and the number of sample points.
@@ -109,11 +110,11 @@ We know that the total number of samples (`sample_count`) determines the signal 
 be said
 
 * $sample\_count \propto t_m$ where $t_m$ is the time period of the signal wave.
-* $sample\_count \propto n * t_c$ where $n$ is as defined above and t_c$ is the time period of the
+* $sample\_count \propto n * t_c$ where $n$ is as defined above and $t_c$ is the time period of the
   carrier wave.
 * Thus $t_m = n * t_c$ <br/>
   or ${t_m/t_c} = n$ <br/>
-  or ${f_c/f_m} = n$ where $f_c$ & $f_m$ are carrier frequency & singal frequency respectively.
+  or ${f_c/f_m} = n$ where $f_c$ & $f_m$ are carrier frequency & signal frequency respectively.
 
 This above relation makes it possible to change one frequency by keeping the other fixed and varying
 $n$. For example in order to increase the signal frequency for some carrier frequency, we have to
@@ -123,7 +124,8 @@ From a general understanding the following relation between the frequencies and 
 established.
 
 * $f_c \propto 1/S$. Less number of points in one cycle of the carrier wave, more it the resulting
-  frequency of the wave.
+  frequency of the wave. This implies the following
+* $f_c \propto n$. Less number of cycles per envelop eye, more is the carrier frequency.
 * $f_m \propto 1/sample\_count$. Less is the total number of points, more is the overall frequency
   and thus the envelop/signal frequency.
 
