@@ -20,6 +20,6 @@ See ./schematic/scopetester_schematic.pdf for details
 | I2C           | Decode address to 0x5, data to should read 'Hello' repeatedly.  | SCL=DIGI_OUT_0 |
 |               | Spec: R/W bit is present.                                       | SDA=DIGI_OUT_1 |
 | SINE WAVE     | Sine wave of a fixed frequency.                                 | ANG_OUT_0      |
-|               | Spec: 4 Khz output frequency.                                   |                |
+|               | Spec: ~4 Khz output frequency.                                  |                |
 | AM WAVE       | Amplitude modulation wave of a fixed frequency.                 | ANG_OUT_0      |
-|               | Spec: Signal of 102 Hz, Carrier of 40 KHz  output frequency.    |                |
+|               | Spec: Signal of ~540 Hz, Carrier of ~41 KHz  output frequency.  |                |
