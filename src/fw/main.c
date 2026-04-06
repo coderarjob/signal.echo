@@ -4,6 +4,7 @@
 #include <main.h>
 
 #if defined(DEBUG)
+    #include <static_assert.h>
 void hwspec_sanity_check()
 {
     #if ARCH == AVR && SWITCH_INPUT_GPIO_PIN != PD2
@@ -36,6 +37,10 @@ void hwspec_sanity_check()
     #if CHECK_OVERLAP(GPIO_C_COMB, RUNT_PULSE_TEST_OUTPUT_PIN_MASK)
         #error "GPIO_C pin overlapped"
     #endif // GPIO_C_COMB checks
+
+    // Mode count must not exceed the number of displayable states in hw
+    STATIC_ASSERT (TEST_MODE_ERROR == ((1 << STATUS_OUTPUT_PIN_COUNT) - 1));
+    STATIC_ASSERT (TEST_MODE_COUNT < TEST_MODE_ERROR);
 }
 #endif // defined(DEBUG)
 
