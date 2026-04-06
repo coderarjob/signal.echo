@@ -12,6 +12,7 @@ YT_DECLARE_FUNC_VOID (i2c_test);
 YT_DECLARE_FUNC_VOID (sine_test);
 YT_DECLARE_FUNC_VOID (sine_x_on_x_test);
 YT_DECLARE_FUNC_VOID (am_test);
+YT_DECLARE_FUNC_VOID (burst_pulses_test);
 
 YT_DEFINE_FUNC_VOID (usart_test);
 YT_DEFINE_FUNC_VOID (runt_pulse_test);
@@ -22,6 +23,7 @@ YT_DEFINE_FUNC_VOID (i2c_test);
 YT_DEFINE_FUNC_VOID (sine_test);
 YT_DEFINE_FUNC_VOID (sine_x_on_x_test);
 YT_DEFINE_FUNC_VOID (am_test);
+YT_DEFINE_FUNC_VOID (burst_pulses_test);
 
 void rest_test_mocks()
 {
@@ -34,4 +36,5 @@ void rest_test_mocks()
     YT_RESET_MOCK (sine_test);
     YT_RESET_MOCK (sine_x_on_x_test);
     YT_RESET_MOCK (am_test);
+    YT_RESET_MOCK (burst_pulses_test);
 }
