@@ -190,6 +190,53 @@ void runt_pulse_test()
     dac_output_deinit();
 }
 
+static inline void burst_pulses_test_init()
+{
+    HAL_IO_MAKE_OUTPUT (BURST_PULSES_TEST_OUTPUT_GPIO, BURST_PULSES_TEST_OUTPUT_PIN_MASK);
+}
+
+static inline void burst_pulses_test_exit()
+{
+    HAL_IO_OUT_LOW (BURST_PULSES_TEST_OUTPUT_GPIO, BURST_PULSES_TEST_OUTPUT_PIN_MASK);
+}
+
+static void burst_pulses_test_gen_pulse (uint8_t pin_mask, uint16_t num_pulses,
+                                         uint16_t pulse_width)
+{
+    while (num_pulses--) {
+        HAL_IO_OUT_HIGH (BURST_PULSES_TEST_OUTPUT_GPIO, pin_mask);
+        HAL_LOOP_DELAY (pulse_width);
+        HAL_IO_OUT_LOW (BURST_PULSES_TEST_OUTPUT_GPIO, pin_mask);
+        HAL_LOOP_DELAY (pulse_width);
+    }
+}
+
+static void long_delay (uint16_t inner_count, uint16_t outer_count)
+{
+    while (outer_count--) {
+        HAL_LOOP_DELAY (inner_count);
+    }
+}
+
+void burst_pulses_test()
+{
+    burst_pulses_test_init();
+
+    unsigned int num_pulses = 1;
+    while (!mode_is_dirty()) {
+        burst_pulses_test_gen_pulse (BURST_PULSES_TEST_OUTPUT_PIN_MASK, num_pulses,
+                                     BURST_PULSES_TEST_PULSE_DELAY_LOOP_CONT);
+        long_delay (BURST_PULSES_TEST_BURST_DELAY_LOOP_CONT,
+                    BURST_PULSES_TEST_BURST_DELAY_LOOP_CONT);
+        num_pulses++;
+        if (num_pulses > BURST_PULSES_TEST_MAX_NUMBER_OF_PULSES) {
+            num_pulses = 1;
+        }
+    }
+
+    burst_pulses_test_exit();
+}
+
 static inline void two_pulses_test_init()
 {
     HAL_IO_MAKE_OUTPUT (TWO_PULSES_TEST_OUTPUT_GPIO, TWO_PULSES_TEST_OUTPUT_PIN_MASK);

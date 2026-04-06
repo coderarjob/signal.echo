@@ -6,7 +6,7 @@
 #if !defined(UNITTESTS)
     #define NORETURN __attribute__ ((noreturn))
 #else
-#define NORETURN
+    #define NORETURN
 #endif // !defined(UNITTESTS)
 
 #define USART_TEST_DELAY_LOOP_COUNT             65535U
@@ -37,17 +37,22 @@
 #define I2C_TEST_SCL_HOLD_DELAY                 10
 #define I2C_TEST_STRING                         "Hello"
 
+#define BURST_PULSES_TEST_MAX_NUMBER_OF_PULSES  4U
+#define BURST_PULSES_TEST_PULSE_DELAY_LOOP_CONT 20U
+#define BURST_PULSES_TEST_BURST_DELAY_LOOP_CONT 65535U
+
 #define MODE_LED_VALUE_FROM_TESTMODE(state)     ((state) != TEST_MODE_ERROR ? (state) + 1 : (state))
 
 typedef enum TestModes {
-    TEST_MODE_USART_TEST       = 0,
-    TEST_MODE_RUNT_PULSE_TEST  = 1,
-    TEST_MODE_TWO_PULSES_TEST  = 2,
-    TEST_MODE_SAWTOOTH_TEST    = 3,
-    TEST_MODE_TRIANGLE_TEST    = 4,
-    TEST_MODE_I2C_TEST         = 5,
-    TEST_MODE_SINE_TEST        = 6,
-    TEST_MODE_AMP_MOD_TEST     = 7,
+    TEST_MODE_USART_TEST      = 0,
+    TEST_MODE_RUNT_PULSE_TEST = 1,
+    TEST_MODE_TWO_PULSES_TEST = 2,
+    TEST_MODE_SAWTOOTH_TEST   = 3,
+    TEST_MODE_TRIANGLE_TEST   = 4,
+    TEST_MODE_I2C_TEST        = 5,
+    TEST_MODE_SINE_TEST       = 6,
+    TEST_MODE_AMP_MOD_TEST    = 7,
+    TEST_MODE_BURST_PULSES    = 8,
     TEST_MODE_COUNT,
     TEST_MODE_ERROR = 15
 } TestModes;
@@ -65,3 +70,4 @@ void triangle_test();
 void i2c_test();
 void sine_test();
 void am_test();
+void burst_pulses_test();
