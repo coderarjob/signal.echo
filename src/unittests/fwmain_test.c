@@ -77,6 +77,9 @@ YT_TESTP (fwmain, valid_mode_switch, TestModes)
     case TEST_MODE_AMP_MOD_TEST:
         YT_MUST_CALL_IN_ORDER (am_test);
         break;
+    case TEST_MODE_BURST_PULSES:
+        YT_MUST_CALL_IN_ORDER (burst_pulses_test);
+        break;
     default:
         YT_EQ_SCALAR (false, true);
         break;
@@ -119,7 +122,8 @@ int main()
                        YT_ARG (TestModes){ TEST_MODE_USART_TEST, TEST_MODE_RUNT_PULSE_TEST,
                                            TEST_MODE_TWO_PULSES_TEST, TEST_MODE_SAWTOOTH_TEST,
                                            TEST_MODE_TRIANGLE_TEST, TEST_MODE_I2C_TEST,
-                                           TEST_MODE_SINE_TEST, TEST_MODE_AMP_MOD_TEST });
+                                           TEST_MODE_SINE_TEST, TEST_MODE_AMP_MOD_TEST,
+                                           TEST_MODE_BURST_PULSES });
     invalid_mode_switch();
     YT_RETURN_WITH_REPORT();
 }
