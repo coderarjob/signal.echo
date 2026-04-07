@@ -226,8 +226,8 @@ void burst_pulses_test()
     while (!mode_is_dirty()) {
         burst_pulses_test_gen_pulse (BURST_PULSES_TEST_OUTPUT_PIN_MASK, num_pulses,
                                      BURST_PULSES_TEST_PULSE_DELAY_LOOP_CONT);
-        long_delay (BURST_PULSES_TEST_BURST_DELAY_LOOP_CONT,
-                    BURST_PULSES_TEST_BURST_DELAY_LOOP_CONT);
+        long_delay (BURST_PULSES_TEST_BURST_DELAY0_LOOP_CONT,
+                    BURST_PULSES_TEST_BURST_DELAY1_LOOP_CONT);
         num_pulses++;
         if (num_pulses > BURST_PULSES_TEST_MAX_NUMBER_OF_PULSES) {
             num_pulses = 1;
