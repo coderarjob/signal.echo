@@ -2859,7 +2859,7 @@
 		)
 		(uuid "80bc70b7-d894-443c-baf8-dff3f65fb31e")
 	)
-	(text "MODE OUTPUTS\n\nIdx  Mode             Output               \n                                           \n---  ---------------  --------------       \n0    Usart test       DIGI_OUT_1           \n1    Runt pulse test  ANG_OUT_0            \n2    Two pulse test   Pulse 1=DIGI_OUT_0, Pulse 2=DIGI_OUT_1\n3    Sawtooth wave    ANG_OUT_0            \n4    Triangle wave    ANG_OUT_0            \n5    I2c test         SCL=DIGI_OUT_0, SDA=DIGI_OUT_1  \n6    Sine wave        ANG_OUT_0            \n7    Am wave          ANG_OUT_0            \n8    ERROR            ------               \n"
+	(text "MODE OUTPUTS\n\nIdx  Mode             Output               \n                                           \n---  ---------------  --------------       \n0    Usart test       DIGI_OUT_1           \n1    Runt pulse test  ANG_OUT_0            \n2    Two pulse test   Pulse 1=DIGI_OUT_0, Pulse 2=DIGI_OUT_1\n3    Sawtooth wave    ANG_OUT_0            \n4    Triangle wave    ANG_OUT_0            \n5    I2c test         SCL=DIGI_OUT_0, SDA=DIGI_OUT_1  \n6    Sine wave        ANG_OUT_0            \n7    Am wave          ANG_OUT_0            \n8    Burst Pulses     DIGI_OUT_0\n9    ERROR            ------               \n"
 		(exclude_from_sim yes)
 		(at 221.996 49.022 0)
 		(effects
@@ -2871,7 +2871,7 @@
 		)
 		(uuid "97be98e1-354f-4416-8afa-ef3a98c1f2d4")
 	)
-	(text "STATUS LED MEANING\n\nIdx  Mode             Status Leds                      \n                      (STAT_LED_3, LED_2, LED_1, LED_0)\n---  ---------------  ---------------------------------\n0    Usart test       0, 0, 0, 1                       \n1    Runt pulse test  0, 0, 1, 0                       \n2    Two pulse test   0, 0, 1, 1                       \n3    Sawtooth wave    0, 1, 0, 0                       \n4    Triangle wave    0, 1, 0, 1                       \n5    I2c test         0, 1, 1, 0                       \n6    Sine wave        0, 1, 1, 1                       \n7    Am wave          1, 0, 0, 0                       \n8    ERROR            1, 1, 1, 1                       \n"
+	(text "STATUS LED MEANING\n\nIdx  Mode             Status Leds                      \n                      (STAT_LED_3, LED_2, LED_1, LED_0)\n---  ---------------  ---------------------------------\n0    Usart test       0, 0, 0, 1                       \n1    Runt pulse test  0, 0, 1, 0                       \n2    Two pulse test   0, 0, 1, 1                       \n3    Sawtooth wave    0, 1, 0, 0                       \n4    Triangle wave    0, 1, 0, 1                       \n5    I2c test         0, 1, 1, 0                       \n6    Sine wave        0, 1, 1, 1                       \n7    Am wave          1, 0, 0, 0                       \n8    Burst Pulses     1, 0, 0, 1    \n9    ERROR            1, 1, 1, 1                       \n"
 		(exclude_from_sim yes)
 		(at 222.25 151.13 0)
 		(effects
@@ -3063,7 +3063,7 @@
 	)
 	(polyline
 		(pts
-			(xy 277.114 119.888) (xy 221.234 119.888)
+			(xy 276.86 118.11) (xy 220.98 118.11)
 		)
 		(stroke
 			(width 0)
@@ -3573,7 +3573,7 @@
 	)
 	(polyline
 		(pts
-			(xy 281.94 17.78) (xy 220.98 17.78)
+			(xy 281.94 15.24) (xy 220.98 15.24)
 		)
 		(stroke
 			(width 0)
@@ -3723,7 +3723,7 @@
 	)
 	(polyline
 		(pts
-			(xy 220.98 17.78) (xy 220.98 49.53)
+			(xy 220.98 15.24) (xy 220.98 49.53)
 		)
 		(stroke
 			(width 0)
@@ -3823,7 +3823,7 @@
 	)
 	(polyline
 		(pts
-			(xy 221.234 119.888) (xy 221.234 151.638)
+			(xy 220.98 118.11) (xy 220.98 151.638)
 		)
 		(stroke
 			(width 0)
@@ -3860,16 +3860,6 @@
 			(type default)
 		)
 		(uuid "ada2aa75-aa15-46c9-bea9-4c6aee8c37d8")
-	)
-	(polyline
-		(pts
-			(xy 280.67 129.54) (xy 280.67 128.905)
-		)
-		(stroke
-			(width 0)
-			(type dash)
-		)
-		(uuid "ae25104c-0d4c-45ea-93b9-65ad4a64d3d3")
 	)
 	(wire
 		(pts
@@ -3923,7 +3913,7 @@
 	)
 	(polyline
 		(pts
-			(xy 277.114 151.638) (xy 277.114 119.888)
+			(xy 276.86 151.638) (xy 276.86 118.11)
 		)
 		(stroke
 			(width 0)
@@ -4213,7 +4203,7 @@
 	)
 	(polyline
 		(pts
-			(xy 281.94 49.53) (xy 281.94 17.78)
+			(xy 281.94 49.53) (xy 281.94 15.24)
 		)
 		(stroke
 			(width 0)
