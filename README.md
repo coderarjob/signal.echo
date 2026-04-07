@@ -32,29 +32,32 @@ See [LICENCE](./LICENSE) for terms under which this project is released and deve
 
 ![Runt pulse](docs/images/runt_pulses.png)
 
+##### 4. Burst pulses (long delay)
 
-##### 4. Burst mode pulses
+![Burst pulse](docs/images/long_delay_burst_pulses.png)
 
-![Negative runt pulse](docs/images/burst_pulses.png)
+##### 5. Two burst (time coorolated) pulses
 
-##### 5. Sine wave
+![two burst pulse](docs/images/burst_pulses.png)
+
+##### 6. Sine wave
 
 ![Sine wave](docs/images/sine_wave.png)
 ![Sine wave](docs/images/sine_wave_freq_dist.png)
 ![Sine wave](docs/images/sine_wave_fft.png)
 
-##### 5. Amplitude Modulation wave
+##### 7. Amplitude Modulation wave
 
 ![Sine wave](docs/images/am_wave.png)
 ![Sine wave](docs/images/am_wave_fft.png)
 
-##### 6. Triangle wave
+##### 8. Triangle wave
 
 ![Triangle wave](docs/images/triangle_wave.png)
 ![Triangle wave](docs/images/triangle_wave_freq_dist.png)
 ![Triangle wave](docs/images/triangle_wave_fft.png)
 
-##### 7. Sawtooth wave
+##### 9. Sawtooth wave
 
 ![Sawtooth wave](docs/images/sawtooth_wave.png)
 ![Sawtooth wave](docs/images/sawtooth_wave_freq_dist.png)
