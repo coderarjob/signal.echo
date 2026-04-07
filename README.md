@@ -30,9 +30,8 @@ See [LICENCE](./LICENSE) for terms under which this project is released and deve
 
 ##### 3. Positive & negative Runt detection pulse
 
-![Positive runt pulse](docs/images/positive_runt.png)
+![Runt pulse](docs/images/runt_pulses.png)
 
-![Negative runt pulse](docs/images/negative_runt.png)
 
 ##### 4. Burst mode pulses
 
