@@ -213,7 +213,7 @@ static void burst_pulses_test_gen_pulse (uint8_t pin_mask, uint16_t num_pulses,
 
 static void long_delay (uint16_t inner_count, uint16_t outer_count)
 {
-    while (!mode_is_dirty() && outer_count--) {
+    while (outer_count-- && !mode_is_dirty()) {
         HAL_LOOP_DELAY (inner_count);
     }
 }

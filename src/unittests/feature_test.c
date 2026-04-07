@@ -333,24 +333,28 @@ YT_TEST (sine, sine_wave_normal)
 
 YT_TEST (burst_pulses, burst_pulses_increasing_pulse_count)
 {
-    unsigned int iter_num        = 2;
+    // mode_is_dirty is called (1 + BURST_PULSES_TEST_BURST_DELAY1_LOOP_CONT) times in each
+    // iteration
+    unsigned int iter_num        = 2 * (1 + BURST_PULSES_TEST_BURST_DELAY1_LOOP_CONT);
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
-    // Two interrations, 3 pulses in total
-    // * Burst pulse #1 - 1 burst pulse
-    // * Burst pulse #2 - 2 burst pulse (thus total 3)
-
-    // Note: With the absense of EXACT_TIMES macros we cannot test if there where exactly two
+    // Two iterations, 3 pulses in total
+    // Note: With the absence of EXACT_TIMES macros we cannot test if there where exactly two
     // pulses, but we can see if it was at least two.
-    YT_IN_SEQUENCE (3)
+
+    // * Burst pulse #1 - 1 burst pulse
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_HIGH, YT_V (BURST_PULSES_TEST_OUTPUT_GPIO),
+                           YT_V (BURST_PULSES_TEST_OUTPUT_PIN_MASK));
+    YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (BURST_PULSES_TEST_OUTPUT_GPIO),
+                           YT_V (BURST_PULSES_TEST_OUTPUT_PIN_MASK));
+    // * Burst pulse #2 - 2 burst pulse (thus total 3)
+    YT_IN_SEQUENCE (2)
     {
         YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_HIGH, YT_V (BURST_PULSES_TEST_OUTPUT_GPIO),
                                YT_V (BURST_PULSES_TEST_OUTPUT_PIN_MASK));
-        YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (BURST_PULSES_TEST_PULSE_DELAY_LOOP_CONT));
         YT_MUST_CALL_IN_ORDER (HAL_IO_OUT_LOW, YT_V (BURST_PULSES_TEST_OUTPUT_GPIO),
                                YT_V (BURST_PULSES_TEST_OUTPUT_PIN_MASK));
-        YT_MUST_CALL_IN_ORDER (HAL_LOOP_DELAY, YT_V (BURST_PULSES_TEST_PULSE_DELAY_LOOP_CONT));
     }
 
     burst_pulses_test();
@@ -377,13 +381,22 @@ YT_TEST (burst_pulses, burst_pulses_init_and_deinit)
 
 YT_TEST (burst_pulses, burst_pulses_delays)
 {
-    unsigned int iter_num        = 2;
+    // mode_is_dirty is called (1 + BURST_PULSES_TEST_BURST_DELAY1_LOOP_CONT) times in each
+    // iteration
+    unsigned int iter_num        = 2 * (1 + BURST_PULSES_TEST_BURST_DELAY1_LOOP_CONT);
     mode_is_dirty_fake.resources = &iter_num;
     mode_is_dirty_fake.handler   = mode_is_dirty_after_some_iterations_handler;
 
-    YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (iter_num * BURST_PULSES_TEST_BURST_DELAY_LOOP_CONT,
-                                         HAL_LOOP_DELAY,
-                                         YT_V (BURST_PULSES_TEST_BURST_DELAY_LOOP_CONT));
+    // Burst one
+    YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (2, HAL_LOOP_DELAY,
+                                         YT_V (BURST_PULSES_TEST_PULSE_DELAY_LOOP_CONT));
+    YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (BURST_PULSES_TEST_BURST_DELAY1_LOOP_CONT, HAL_LOOP_DELAY,
+                                         YT_V (BURST_PULSES_TEST_BURST_DELAY0_LOOP_CONT));
+    // Burst two
+    YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (4, HAL_LOOP_DELAY,
+                                         YT_V (BURST_PULSES_TEST_PULSE_DELAY_LOOP_CONT));
+    YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES (BURST_PULSES_TEST_BURST_DELAY1_LOOP_CONT, HAL_LOOP_DELAY,
+                                         YT_V (BURST_PULSES_TEST_BURST_DELAY0_LOOP_CONT));
 
     burst_pulses_test();
     YT_END();
