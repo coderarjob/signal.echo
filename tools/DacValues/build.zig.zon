@@ -1,0 +1,7 @@
+.{
+    .name = .DacValues,
+    .version = "1.1.0",
+    .minimum_zig_version = "0.16.0",
+    .paths = .{""},
+    .fingerprint = 0x4fa1588bb6fb3db9,
+}
