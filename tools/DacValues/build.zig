@@ -1,17 +1,16 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) !void {
-
     const exe = b.addExecutable(.{
         .name = "dv",
         .root_module = b.createModule(.{
-            .root_source_file =  b.path("src/main.zig"),
+            .root_source_file = b.path("src/main.zig"),
             .target = b.graph.host,
-            .optimize = b.standardOptimizeOption(.{})
+            .optimize = b.standardOptimizeOption(.{}),
         }),
     });
     b.installArtifact(exe);
-    
+
     const run_exe = b.addRunArtifact(exe);
     if (b.args) |args| run_exe.addArgs(args);
     b.step("run", "Runs the application").dependOn(&run_exe.step);
@@ -19,7 +18,7 @@ pub fn build(b: *std.Build) !void {
     const test_exe = b.addTest(.{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/testmain.zig"),
-            .target = b.graph.host
+            .target = b.graph.host,
         }),
     });
     const run_test = b.addRunArtifact(test_exe);

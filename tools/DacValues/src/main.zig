@@ -6,12 +6,12 @@ const Waves = Gen.Waves;
 var stdout_writer: std.Io.File.Writer = undefined;
 const stdout = &stdout_writer.interface;
 
-const ParsedArgResult = struct { 
+const ParsedArgResult = struct {
     mode: Waves,
     interpolate: bool,
     freq_scalar: f64,
     dac_bits: u32,
-    sample_count: u32
+    sample_count: u32,
 };
 
 fn parse_args(args: *std.process.Args.Iterator) !ParsedArgResult {
@@ -26,19 +26,19 @@ fn parse_args(args: *std.process.Args.Iterator) !ParsedArgResult {
             interpolate = true;
         } else if (std.mem.eql(u8, arg, "--freq")) {
             const value = args.next() orelse continue;
-            freq_scalar = std.fmt.parseFloat(f64, value) catch |e|{
+            freq_scalar = std.fmt.parseFloat(f64, value) catch |e| {
                 std.debug.print("Invalid floating point value: {s}.\n", .{value});
                 return e;
             };
         } else if (std.mem.eql(u8, arg, "--bits")) {
             const value = args.next() orelse continue;
-            dac_bits = std.fmt.parseInt(u32, value, 10) catch |e|{
+            dac_bits = std.fmt.parseInt(u32, value, 10) catch |e| {
                 std.debug.print("Invalid numeric value: {s}.\n", .{value});
                 return e;
             };
         } else if (std.mem.eql(u8, arg, "--samples")) {
             const value = args.next() orelse continue;
-            sample_count = std.fmt.parseInt(u32, value, 10) catch |e|{
+            sample_count = std.fmt.parseInt(u32, value, 10) catch |e| {
                 std.debug.print("Invalid numeric value: {s}.\n", .{value});
                 return e;
             };
@@ -64,7 +64,7 @@ fn parse_args(args: *std.process.Args.Iterator) !ParsedArgResult {
             return error.Failed;
         },
         .interpolate = interpolate,
-        .freq_scalar = freq_scalar
+        .freq_scalar = freq_scalar,
     };
 }
 
@@ -75,7 +75,7 @@ fn usage(program_path: []const u8) void {
         \\Sample Count    Maximum number of points to in the output
         \\Freq            Frequency will be scaled by this amount. (Default is 1.0)
         \\Modes           
-        ;
+    ;
 
     const program_name = std.fs.path.basename(program_path);
     std.debug.print(usage_str, .{program_name});
@@ -99,8 +99,8 @@ pub fn main(init: std.process.Init) !void {
     const dac = Dac.new(input.dac_bits);
     const gen = Gen.init(allocator, dac);
     const rvalues, const dac_offset: f64 = switch (input.mode) {
-        .sine =>           .{ try gen.sine(input.freq_scalar, input.sample_count), 0.5 },
-        .sine_x_on_x =>    .{ try gen.sine_x_on_x(input.freq_scalar, input.sample_count), 0.2 },
+        .sine => .{ try gen.sine(input.freq_scalar, input.sample_count), 0.5 },
+        .sine_x_on_x => .{ try gen.sine_x_on_x(input.freq_scalar, input.sample_count), 0.2 },
         .amp_modulation => .{ try gen.amp_modulation(input.freq_scalar, input.sample_count), 0.5 },
     };
     defer gen.deinit(rvalues);
