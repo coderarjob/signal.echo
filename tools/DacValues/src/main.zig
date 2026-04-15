@@ -3,8 +3,7 @@ const Dac = @import("Dac.zig");
 const Gen = @import("waves.zig");
 const Waves = Gen.Waves;
 
-const Allocator = std.mem.Allocator;
-var stdout_writer = std.fs.File.stdout().writer(&.{});
+var stdout_writer: std.Io.File.Writer = undefined;
 const stdout = &stdout_writer.interface;
 
 const ParsedArgResult = struct { 
@@ -15,7 +14,7 @@ const ParsedArgResult = struct {
     sample_count: u32
 };
 
-fn parse_args(args: *std.process.ArgIterator) !ParsedArgResult {
+fn parse_args(args: *std.process.Args.Iterator) !ParsedArgResult {
     var interpolate: bool = false;
     var freq_scalar: f64 = 1.0;
     var dac_bits: ?u32 = null;
@@ -87,14 +86,10 @@ fn usage(program_path: []const u8) void {
     std.debug.print("]\n", .{});
 }
 
-pub fn main() !void {
-    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
-    const allocator = gpa.allocator();
-    defer std.debug.assert(gpa.deinit() == .ok);
+pub fn main(init: std.process.Init) !void {
+    const allocator = init.gpa;
 
-    var args = try std.process.argsWithAllocator(allocator);
-    defer args.deinit();
-
+    var args = init.minimal.args.iterate();
     const program_path = args.next() orelse unreachable;
     const input = parse_args(&args) catch {
         usage(program_path);
@@ -113,5 +108,6 @@ pub fn main() !void {
     const dac_values = try dac.transform_waveform(allocator, rvalues, input.interpolate, dac_offset);
     defer allocator.free(dac_values);
 
+    stdout_writer = .init(.stdout(), init.io, &.{});
     for (dac_values) |v| try stdout.print("{},\n", .{v});
 }
