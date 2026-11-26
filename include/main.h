@@ -12,7 +12,7 @@
 #define USART_TEST_DELAY_LOOP_COUNT             65535U
 #define USART_TEST_STRING                       "Hello"
 
-#define RUNT_PULSE_FREQ                          1000 // 1 runt pulse after this many pulses
+#define RUNT_PULSE_FREQ                          10 // 1 runt pulse after this many pulses
 #define RUNT_TEST_RUNT_PULSE_WIDTH_LOOP_COUNT    2U
 #define RUNT_TEST_NORMAL_PULSE_WIDTH_LOOP_COUNT  512U
 
